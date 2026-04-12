@@ -11,7 +11,6 @@ export type { SimulatorResult };
 export type { Feasibility };
 
 // Capitale reale (EUR) per fascia account.
-// NON è l'exposure — il motore calcola exposure = capital × ESMA_leverage.
 const ACCOUNT_TO_CAPITAL: Record<string, number> = {
   demo:    250,
   micro:   1_250,
@@ -22,6 +21,17 @@ const ACCOUNT_TO_CAPITAL: Record<string, number> = {
 
 const STYLE_TO_DAYS: Record<string, number> = {
   scalping: 0, intraday: 1, swing: 7, position: 30,
+};
+
+// Trades al MESE per stile × frequenza
+// scalping/intraday: × 22 giorni lavorativi
+// swing: × 4 settimane
+// position: diretto
+const FREQ_TRADES_MONTHLY: Record<string, Record<string, number>> = {
+  scalping:  { low: 7 * 22,   mid: 30 * 22,  high: 100 * 22 },  // /giorno × 22gg
+  intraday:  { low: 1 * 22,   mid: 4 * 22,   high: 10 * 22  },  // /giorno × 22gg
+  swing:     { low: 1 * 4,    mid: 4 * 4,    high: 10 * 4   },  // /settimana × 4
+  position:  { low: 1,        mid: 3,        high: 6        },  // /mese
 };
 
 const LEVA_TO_SL_PIPS: Record<string, number> = {
@@ -35,17 +45,37 @@ export type ProfileInput = {
   leva?:    string | null;
 };
 
-/**
- * Converte il profilo UI → parametri EngineInput.
- * nTrades rimosso (v4 engine è sempre per-singolo-trade).
- * Scaling mensile = responsabilità del caller / recommend().
- */
+export type EnrichedResult = SimulatorResult & {
+  tradesPerMonth:   number;
+  spreadMonth:      number;
+  commissionMonth:  number;
+  overnightMonth:   number;
+  slippageMonth:    number;
+  totalMonth:       number;
+};
+
 function profileToEngineParams(p: ProfileInput): Partial<EngineInput> {
-  return {
-    capital:      p.account ? (ACCOUNT_TO_CAPITAL[p.account] ?? 6_000) : 6_000,
-    nDaysOpen:    p.style   ? (STYLE_TO_DAYS[p.style]         ?? 1)    : 1,
-    stopLossPips: p.leva    ? (LEVA_TO_SL_PIPS[p.leva]        ?? 20)   : 20,
-  };
+  const capital = p.account ? (ACCOUNT_TO_CAPITAL[p.account] ?? 6_000) : 6_000;
+  const nDaysOpen = p.style ? (STYLE_TO_DAYS[p.style] ?? 1) : 1;
+  const stopLossPips = p.leva ? (LEVA_TO_SL_PIPS[p.leva] ?? 20) : 20;
+  const tradesPerMonth = (p.style && p.freq)
+    ? (FREQ_TRADES_MONTHLY[p.style]?.[p.freq] ?? 1)
+    : 1;
+  // monthlyVolumeEUR stimato per commission tiering (non usato per scaling UI)
+  // viene calcolato dopo runEngine quando abbiamo i lots reali
+  return { capital, nDaysOpen, stopLossPips, _tradesPerMonth: tradesPerMonth } as Partial<EngineInput> & { _tradesPerMonth: number };
+}
+
+function enrichResults(results: SimulatorResult[], tradesPerMonth: number): EnrichedResult[] {
+  return results.map(r => ({
+    ...r,
+    tradesPerMonth,
+    spreadMonth:     r.spreadCost     * tradesPerMonth,
+    commissionMonth: r.commissionCost * tradesPerMonth,
+    overnightMonth:  r.overnightCost  * tradesPerMonth,
+    slippageMonth:   r.slippageCost   * tradesPerMonth,
+    totalMonth:      r.costPerTradeEUR * tradesPerMonth,
+  }));
 }
 
 export function useSimulatorEngine() {
@@ -56,24 +86,35 @@ export function useSimulatorEngine() {
 
   const [assetClass,  setAssetClassState] = useState<AssetClass | null>(null);
   const [profile,     setProfileState]    = useState<ProfileInput>({});
-  const [results,     setResults]         = useState<SimulatorResult[]>([]);
+  const [results,     setResults]         = useState<EnrichedResult[]>([]);
   const [isComputing, setIsComputing]     = useState(false);
 
-  const assetRef      = useRef<AssetClass | null>(null);
-  const profileRef    = useRef<ProfileInput>({});
-  const debounceRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const assetRef    = useRef<AssetClass | null>(null);
+  const profileRef  = useRef<ProfileInput>({});
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scheduleRun = useCallback(() => {
     if (!assetRef.current) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     setIsComputing(true);
     debounceRef.current = setTimeout(() => {
-      const extra = profileToEngineParams(profileRef.current);
+      const p = profileRef.current;
+      const capital = p.account ? (ACCOUNT_TO_CAPITAL[p.account] ?? 6_000) : 6_000;
+      const nDaysOpen = p.style ? (STYLE_TO_DAYS[p.style] ?? 1) : 1;
+      const stopLossPips = p.leva ? (LEVA_TO_SL_PIPS[p.leva] ?? 20) : 20;
+      const tradesPerMonth = (p.style && p.freq)
+        ? (FREQ_TRADES_MONTHLY[p.style]?.[p.freq] ?? 1)
+        : 1;
+
       const input: EngineInput = {
         assetClass: assetRef.current!,
-        ...extra,
+        capital,
+        nDaysOpen,
+        stopLossPips,
       };
-      setResults(runEngine(input));
+
+      const raw = runEngine(input);
+      setResults(enrichResults(raw, tradesPerMonth));
       setIsComputing(false);
     }, 250);
   }, []);
@@ -105,11 +146,8 @@ export function useSimulatorEngine() {
     scheduleRun();
   }, [syncUrl, scheduleRun]);
 
-  // setExposure: no-op stub — exposure è derivata da capital × ESMA nel motore.
-  // Mantenuto per compatibilità con SimulatoreShell senza modificare il componente.
-  const setExposure = useCallback((_exposure: number) => {
-    // intenzionalmente vuoto: il motore ignora exposure diretta
-  }, []);
+  // no-op stub — exposure derivata dal motore
+  const setExposure = useCallback((_exposure: number) => {}, []);
 
   return {
     assetClass,
