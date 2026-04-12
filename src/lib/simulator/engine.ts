@@ -28,6 +28,11 @@
 //   add(🟢): commission tiering volume-based (monthlyVolumeEUR threshold)
 //
 //   fix(🟠): sort per costBreakdown.range.total.expected ASC
+//
+// PATCH v4.1:
+//   fix(🔴): optional chaining su underlying?.overnightLongPipsPerDay
+//            e underlying?.overnightShortPipsPerDay in calcOvernightEUR
+//            ?? 0 fallback finale — previene crash se underlying è undefined
 // ============================================================
 
 import { INSTRUMENT_OFFERS } from '@/data/simulator/market-data/instrument-offers';
@@ -296,8 +301,8 @@ function calcOvernightEUR(
   const overrides = offer.underlyingOverrides?.[underlying.id];
 
   const pipsPerDay = direction === 'long'
-    ? (overrides?.overnightLongPipsPerDay  ?? offer.overnightLongPipsPerDay  ?? underlying.overnightLongPipsPerDay)
-    : (overrides?.overnightShortPipsPerDay ?? offer.overnightShortPipsPerDay ?? underlying.overnightShortPipsPerDay);
+    ? (overrides?.overnightLongPipsPerDay  ?? offer.overnightLongPipsPerDay  ?? underlying?.overnightLongPipsPerDay  ?? 0)
+    : (overrides?.overnightShortPipsPerDay ?? offer.overnightShortPipsPerDay ?? underlying?.overnightShortPipsPerDay ?? 0);
 
   if (pipsPerDay === 0) return 0;
 
