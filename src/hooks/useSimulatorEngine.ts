@@ -10,18 +10,27 @@ import type { SimulatorResult, EngineInput } from '@/lib/simulator/engine';
 export type { SimulatorResult };
 export type { Feasibility };
 
+// Capitale reale (EUR) per fascia account.
+// NON è l'exposure — il motore calcola exposure = capital × ESMA_leverage.
 const ACCOUNT_TO_CAPITAL: Record<string, number> = {
-  demo: 250, micro: 1_250, retail: 6_000, semipro: 30_000, pro: 100_000,
+  demo:    250,
+  micro:   1_250,
+  retail:  6_000,
+  semipro: 30_000,
+  pro:     100_000,
 };
+
 const STYLE_TO_DAYS: Record<string, number> = {
   scalping: 0, intraday: 1, swing: 7, position: 30,
 };
+
 const FREQ_TRADES: Record<string, Record<string, number>> = {
   scalping:  { low: 7,  mid: 30, high: 100 },
   intraday:  { low: 1,  mid: 4,  high: 10  },
   swing:     { low: 1,  mid: 4,  high: 10  },
   position:  { low: 1,  mid: 3,  high: 6   },
 };
+
 const LEVA_TO_SL_PIPS: Record<string, number> = {
   nessuna: 200, bassa: 100, media: 30, alta: 15,
 };
@@ -33,6 +42,11 @@ export type ProfileInput = {
   leva?:    string | null;
 };
 
+/**
+ * Converte il profilo UI → parametri EngineInput.
+ * Restituisce SOLO capital (non exposure) — il motore deriva
+ * l'exposure applicando la leva ESMA corretta per asset class.
+ */
 function profileToEngineParams(p: ProfileInput): Partial<EngineInput> {
   return {
     capital:      p.account ? (ACCOUNT_TO_CAPITAL[p.account] ?? 6_000) : 6_000,
@@ -48,69 +62,60 @@ export function useSimulatorEngine() {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  // Nessun default: il motore non parte finché l'utente non seleziona i parametri
-  const [exposure,    setExposureState]   = useState<number>(6_000);
   const [assetClass,  setAssetClassState] = useState<AssetClass | null>(null);
   const [profile,     setProfileState]    = useState<ProfileInput>({});
   const [results,     setResults]         = useState<SimulatorResult[]>([]);
   const [isComputing, setIsComputing]     = useState(false);
 
-  const exposureRef   = useRef<number>(6_000);
   const assetRef      = useRef<AssetClass | null>(null);
   const profileRef    = useRef<ProfileInput>({});
   const debounceRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scheduleRun = useCallback(() => {
-    // Non girare se assetClass non è ancora selezionato
     if (!assetRef.current) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     setIsComputing(true);
     debounceRef.current = setTimeout(() => {
       const extra = profileToEngineParams(profileRef.current);
-      setResults(runEngine({
-        exposure:   exposureRef.current,
+      // NON passiamo exposure: il motore la calcola da capital × ESMA_leverage.
+      // Se capital è assente (profilo incompleto) il motore usa il default 6k.
+      const input: EngineInput = {
         assetClass: assetRef.current!,
         ...extra,
-      }));
+      };
+      setResults(runEngine(input));
       setIsComputing(false);
     }, 250);
   }, []);
 
-  const syncUrl = useCallback(() => {
-    if (!assetRef.current) return;
+  const syncUrl = useCallback((ac: AssetClass, capital: number) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set('exposure', String(exposureRef.current));
-    params.set('asset',    assetRef.current);
+    params.set('capital', String(capital));
+    params.set('asset',   ac);
     startTransition(() => {
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     });
   }, [router, pathname, searchParams, startTransition]);
 
-  const setExposure = useCallback((v: number) => {
-    exposureRef.current = v;
-    setExposureState(v);
-    syncUrl();
-    scheduleRun();
-  }, [syncUrl, scheduleRun]);
-
   const setAssetClass = useCallback((v: AssetClass) => {
     assetRef.current = v;
     setAssetClassState(v);
-    syncUrl();
+    const capital = ACCOUNT_TO_CAPITAL[profileRef.current.account ?? ''] ?? 6_000;
+    syncUrl(v, capital);
     scheduleRun();
   }, [syncUrl, scheduleRun]);
 
   const setProfile = useCallback((p: ProfileInput) => {
     profileRef.current = p;
     setProfileState(p);
+    if (assetRef.current) {
+      const capital = ACCOUNT_TO_CAPITAL[p.account ?? ''] ?? 6_000;
+      syncUrl(assetRef.current, capital);
+    }
     scheduleRun();
-  }, [scheduleRun]);
-
-  // Nessun useEffect di mount — il motore parte solo su interazione utente
+  }, [syncUrl, scheduleRun]);
 
   return {
-    exposure,
-    setExposure,
     assetClass,
     setAssetClass,
     profile,
