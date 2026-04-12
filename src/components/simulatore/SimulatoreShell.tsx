@@ -9,7 +9,11 @@ import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 
 /* ─── ASSET TREE ──────────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
-  Forex:   { Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF'], Minors: ['EUR/GBP','EUR/JPY','GBP/JPY'], Exotic: ['USD/TRY','USD/ZAR','EUR/TRY'] },
+  Forex:   {
+    Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD'],
+    Cross:  ['EUR/GBP','EUR/JPY','GBP/JPY'],
+    Exotic: ['USD/TRY','USD/ZAR','EUR/PLN'],
+  },
   Crypto:  { 'Large Cap': ['BTC/USD','ETH/USD','BNB/USD'], 'Mid Cap': ['SOL/USD','ADA/USD','DOT/USD'], Stablecoin: ['USDT/USD','USDC/USD'] },
   Indici:  { Europa: ['DAX 40','FTSE 100','CAC 40'], USA: ['S&P 500','NASDAQ 100','DOW 30'], Asia: ['Nikkei 225','Hang Seng'] },
   Azioni:  { Tech: ['Apple','Microsoft','NVIDIA','Meta'], Finance: ['JPMorgan','Goldman Sachs','Visa'], Energy: ['ExxonMobil','Shell','TotalEnergies'] },
@@ -18,7 +22,7 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
 
 /* ─── TYPES ───────────────────────────────────────────────────────────── */
 type StyleType   = 'scalping' | 'intraday' | 'swing' | 'position';
-type FreqId     = 'low' | 'mid' | 'high';
+type FreqId      = 'low' | 'mid' | 'high';
 type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
 type LevaType    = 'nessuna' | 'bassa' | 'media' | 'alta';
 
@@ -30,7 +34,7 @@ const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'position',  label: 'Position',  hint: '1 mese+'   },
 ];
 
-/* ─── FREQUENZA CONTESTUALE ───────────────────────────────────────────────── */
+/* ─── FREQUENZA ─────────────────────────────────────────────────────────── */
 type FreqOption = { id: FreqId; label: string; hint: string };
 type FreqConfig = { unit: string; options: FreqOption[] };
 
@@ -69,7 +73,7 @@ const FREQ_BY_STYLE: Record<StyleType, FreqConfig> = {
   },
 };
 
-/* ─── ACCOUNT + LEVA OPTIONS ──────────────────────────────────────────────── */
+/* ─── ACCOUNT + LEVA ─────────────────────────────────────────────────────── */
 const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
   { id: 'demo',    label: 'Demo / Test', range: '< €500'      },
   { id: 'micro',   label: 'Micro',       range: '€500 – €2k'  },
@@ -158,35 +162,34 @@ export function SimulatoreShell() {
     results, isComputing,
   } = useSimulatorEngine();
 
-  const [subGroup,  setSubGroup]  = useState<string | null>(null);
-  const [asset,     setAsset]     = useState<string | null>(null);
-  const [style,     setStyle]     = useState<StyleType>('intraday');
-  const [freq,      setFreq]      = useState<FreqId>('mid');
-  const [account,   setAccount]   = useState<AccountType>('retail');
-  const [leva,      setLeva]      = useState<LevaType>('nessuna');
+  const [subGroup, setSubGroup] = useState<string | null>(null);
+  const [asset,    setAsset]    = useState<string | null>(null);
+  // tutto null = nessuna preselezione
+  const [style,   setStyle]   = useState<StyleType | null>(null);
+  const [freq,    setFreq]    = useState<FreqId | null>(null);
+  const [account, setAccount] = useState<AccountType | null>(null);
+  const [leva,    setLeva]    = useState<LevaType | null>(null);
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
   const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
 
   const handleGroupChange = (g: string) => { setAssetClass(g); setSubGroup(null); setAsset(null); };
-  const handleSubChange   = (s: string) => { setSubGroup(s);   setAsset(null); };
-  const handleStyleChange = (s: StyleType) => { setStyle(s); setFreq('mid'); };
+  const handleSubChange   = (s: string) => { setSubGroup(s); setAsset(null); };
+  const handleStyleChange = (s: StyleType) => { setStyle(s); setFreq(null); };
 
-  const freqConfig  = FREQ_BY_STYLE[style];
-  const freqCurrent = freqConfig.options.find(o => o.id === freq);
-  const freqLabel   = freqCurrent ? `${freqCurrent.hint} ${freqConfig.unit}` : '';
-  const levaLabel   = LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? '';
+  const freqConfig  = style ? FREQ_BY_STYLE[style] : null;
+  const freqCurrent = freqConfig && freq ? freqConfig.options.find(o => o.id === freq) : null;
+  const freqLabel   = freqCurrent && freqConfig ? `${freqCurrent.hint} ${freqConfig.unit}` : undefined;
+  const levaLabel   = leva ? (LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? undefined) : undefined;
 
-  const { snap, toggle: toggleSheet, onTouchStart, onTouchMove, onTouchEnd, sheetRef } =
-    usePanelSheet();
+  const { snap, toggle: toggleSheet, onTouchStart, onTouchEnd, sheetRef } = usePanelSheet();
 
   const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
-  const statusAccount = ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—';
+  const statusAccount = account ? (ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—') : '—';
 
   /* ── PANEL CONTENT ──────────────────────────────────────────────────── */
   const panelContent = (
     <>
-      {/* ══ BLOCCO 1 — STRUMENTO ══ */}
       <BlockDivider label="Strumento" />
 
       <Section label="Categoria" value={assetClass ?? '—'}>
@@ -209,28 +212,29 @@ export function SimulatoreShell() {
         </Section>
       )}
 
-      {/* ══ BLOCCO 2 — IL TUO PROFILO ══ */}
       <BlockDivider label="Il tuo profilo" />
 
       <Section
         label="Stile operativo"
-        value={STYLE_OPTIONS.find(o => o.id === style)?.label}
+        value={style ? STYLE_OPTIONS.find(o => o.id === style)?.label : undefined}
         hint="Orizzonte temporale di ogni operazione"
       >
         <ChipGroup options={STYLE_OPTIONS} value={style} onChange={handleStyleChange} />
       </Section>
 
-      <Section
-        label={`Operazioni ${freqConfig.unit}`}
-        value={freqLabel}
-        hint="Quante operazioni apri in media"
-      >
-        <ChipGroup options={freqConfig.options} value={freq} onChange={setFreq} />
-      </Section>
+      {style && freqConfig && (
+        <Section
+          label={`Operazioni ${freqConfig.unit}`}
+          value={freqLabel}
+          hint="Quante operazioni apri in media"
+        >
+          <ChipGroup options={freqConfig.options} value={freq} onChange={setFreq} />
+        </Section>
+      )}
 
       <Section
         label="Dimensione account"
-        value={ACCOUNT_OPTIONS.find(o => o.id === account)?.range}
+        value={account ? ACCOUNT_OPTIONS.find(o => o.id === account)?.range : undefined}
         hint="Capitale totale che gestisci"
       >
         <div className="sim-chips sim-chips--col">
@@ -306,8 +310,11 @@ export function SimulatoreShell() {
       >
         <div
           className="sim-sheet__handle-area"
-          onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
-          onClick={toggleSheet} role="button" tabIndex={0}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          onClick={toggleSheet}
+          role="button"
+          tabIndex={0}
           aria-label={snap === 'collapsed' ? 'Apri parametri' : 'Chiudi parametri'}
           onKeyDown={e => e.key === 'Enter' && toggleSheet()}
         >
@@ -316,15 +323,18 @@ export function SimulatoreShell() {
             <span className="sim-sheet__status-exposure">{statusAccount}</span>
             <span className="sim-sheet__status-dot" aria-hidden="true" />
             <span className="sim-sheet__status-asset">{statusAsset}</span>
-            <svg className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
-              width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <svg
+              className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
+              width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
+            >
               <path d="M2 8l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
         </div>
         <div
           className="sim-sheet__content"
-          onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
           {panelContent}
         </div>
