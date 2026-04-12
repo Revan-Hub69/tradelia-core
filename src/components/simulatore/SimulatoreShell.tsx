@@ -25,6 +25,15 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Materie: { Metalli: ['Oro','Argento','Rame'], Energia: ['Petrolio WTI','Gas Nat.','Brent'] },
 };
 
+/* ─── DEFAULTS ────────────────────────────────────────────────────── */
+const DEFAULT_CATEGORY  = 'Forex';
+const DEFAULT_SUBGROUP  = 'Majors';
+const DEFAULT_ASSET     = 'EUR/USD';
+const DEFAULT_STYLE     = 'intraday'  as const;
+const DEFAULT_FREQ      = 'mid'       as const;
+const DEFAULT_ACCOUNT   = 'retail'    as const;
+const DEFAULT_LEVA      = 'media'     as const;
+
 /* ─── TYPES ───────────────────────────────────────────────────────── */
 type StyleType   = 'scalping' | 'intraday' | 'swing' | 'position';
 type FreqId      = 'low' | 'mid' | 'high';
@@ -232,12 +241,18 @@ function ProgressDots({ completed, total }: { completed: number; total: number }
 export function SimulatoreShell() {
   const { assetClass, setAssetClass, results, isComputing } = useSimulatorEngine();
 
-  const [subGroup, setSubGroup] = useState<string | null>(null);
-  const [asset,    setAsset]    = useState<string | null>(null);
-  const [style,    setStyle]    = useState<StyleType | null>(null);
-  const [freq,     setFreq]     = useState<FreqId | null>(null);
-  const [account,  setAccount]  = useState<AccountType | null>(null);
-  const [leva,     setLeva]     = useState<LevaType | null>(null);
+  const [subGroup, setSubGroup] = useState<string | null>(DEFAULT_SUBGROUP);
+  const [asset,    setAsset]    = useState<string | null>(DEFAULT_ASSET);
+  const [style,    setStyle]    = useState<StyleType | null>(DEFAULT_STYLE);
+  const [freq,     setFreq]     = useState<FreqId | null>(DEFAULT_FREQ);
+  const [account,  setAccount]  = useState<AccountType | null>(DEFAULT_ACCOUNT);
+  const [leva,     setLeva]     = useState<LevaType | null>(DEFAULT_LEVA);
+
+  /* Sincronizza la categoria col motore usando il default all'avvio */
+  useEffect(() => {
+    if (!assetClass) setAssetClass(DEFAULT_CATEGORY);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
   const { visible: kbdVisible, show: showKbd }  = useKbdHint();
@@ -273,7 +288,6 @@ export function SimulatoreShell() {
   useStepAutoScroll(panelContentRef, scrollTrigger, true);
   useStepAutoScroll(sheetContentRef, scrollTrigger, snap === 'full');
 
-  /* Mostra kbd hint la prima volta che il focus entra nel panel */
   const handlePanelFocusIn = useCallback(() => showKbd(), [showKbd]);
 
   const statusAsset = asset ?? subGroup ?? assetClass ?? '—';
@@ -281,7 +295,6 @@ export function SimulatoreShell() {
   /* ── PANEL CONTENT ─────────────────────────────────────────────── */
   const panelContent = (
     <>
-      {/* Descrizione sr-only condivisa da tutti i radiogroup */}
       <span id={RADIOGROUP_DESC_ID} className="sr-only">
         Usa le frecce ← → per navigare tra le opzioni, Spazio o Invio per selezionare.
       </span>
