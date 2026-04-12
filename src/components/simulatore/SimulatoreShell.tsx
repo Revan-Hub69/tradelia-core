@@ -14,22 +14,9 @@ import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 /* ─── ASSET TREE ──────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Forex: {
-    Majors: [
-      'EUR/USD','GBP/USD','USD/JPY','USD/CHF',
-      'AUD/USD','USD/CAD','NZD/USD',
-    ],
-    Cross: [
-      'EUR/GBP','EUR/JPY','EUR/CHF','EUR/CAD','EUR/AUD',
-      'GBP/JPY','GBP/CHF',
-      'AUD/JPY','CAD/JPY',
-    ],
-    Exotic: [
-      'USD/TRY','EUR/TRY',
-      'USD/ZAR','EUR/ZAR',
-      'EUR/PLN','USD/PLN',
-      'USD/MXN',
-      'USD/SEK','USD/NOK',
-    ],
+    Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD','USD/CAD','NZD/USD'],
+    Cross:  ['EUR/GBP','EUR/JPY','EUR/CHF','EUR/CAD','EUR/AUD','GBP/JPY','GBP/CHF','AUD/JPY','CAD/JPY'],
+    Exotic: ['USD/TRY','EUR/TRY','USD/ZAR','EUR/ZAR','EUR/PLN','USD/PLN','USD/MXN','USD/SEK','USD/NOK'],
   },
   Crypto:  { 'Large Cap': ['BTC/USD','ETH/USD','BNB/USD'], 'Mid Cap': ['SOL/USD','ADA/USD','DOT/USD'], Stablecoin: ['USDT/USD','USDC/USD'] },
   Indici:  { Europa: ['DAX 40','FTSE 100','CAC 40'], USA: ['S&P 500','NASDAQ 100','DOW 30'], Asia: ['Nikkei 225','Hang Seng'] },
@@ -37,38 +24,15 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Materie: { Metalli: ['Oro','Argento','Rame'], Energia: ['Petrolio WTI','Gas Nat.','Brent'] },
 };
 
-/* ─── Categorie senza selettore leva (leva implicita nel prodotto) ── */
-const NO_LEVA_CATEGORIES = new Set(['Forex']);
-
-/* ─── Mapping account → exposure (punto medio range) ─────────────── */
 const ACCOUNT_TO_EXPOSURE: Record<string, number> = {
-  demo:    250,
-  micro:   1_250,
-  retail:  6_000,
-  semipro: 30_000,
-  pro:     100_000,
+  demo: 250, micro: 1_250, retail: 6_000, semipro: 30_000, pro: 100_000,
 };
 
-/* ─── DEFAULTS ────────────────────────────────────────────────────── */
-const DEFAULT_CATEGORY  = 'Forex';
-const DEFAULT_SUBGROUP  = 'Majors';
-const DEFAULT_ASSET     = 'EUR/USD';
-const DEFAULT_STYLE     = 'intraday'  as const;
-const DEFAULT_FREQ      = 'mid'       as const;
-const DEFAULT_ACCOUNT   = 'retail'    as const;
-const DEFAULT_LEVA      = 'media'     as const;
-
-/* ─── TYPES ───────────────────────────────────────────────────────── */
 type StyleType   = 'scalping' | 'intraday' | 'swing' | 'position';
 type FreqId      = 'low' | 'mid' | 'high';
 type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
 type LevaType    = 'nessuna' | 'bassa' | 'media' | 'alta';
 
-/* Steps: leva è inclusa solo se la categoria la richiede */
-const STEPS_WITH_LEVA    = ['categoria','sottogruppo','stile','frequenza','account','leva'] as const;
-const STEPS_WITHOUT_LEVA = ['categoria','sottogruppo','stile','frequenza','account'] as const;
-
-/* ─── OPTIONS ─────────────────────────────────────────────────────── */
 const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'scalping',  label: 'Scalping',  hint: 'sec / min' },
   { id: 'intraday',  label: 'Intraday',  hint: 'ore'       },
@@ -117,14 +81,11 @@ const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
   { id: 'alta',    label: 'Alta',    hint: '1:50 – 1:500' },
 ];
 
-/* sr-only descrizione condivisa per tutti i radiogroup */
 const RADIOGROUP_DESC_ID = 'sim-radiogroup-desc';
 
-/* ─── ANIMATED SECTION ────────────────────────────────────────────── */
 function AnimatedSection({ show, children }: { show: boolean; children: React.ReactNode }) {
   const [mounted, setMounted] = useState(show);
   const [visible, setVisible] = useState(show);
-
   useEffect(() => {
     if (show) {
       setMounted(true);
@@ -136,7 +97,6 @@ function AnimatedSection({ show, children }: { show: boolean; children: React.Re
       return () => clearTimeout(t);
     }
   }, [show]);
-
   if (!mounted) return null;
   return (
     <div style={{
@@ -149,7 +109,6 @@ function AnimatedSection({ show, children }: { show: boolean; children: React.Re
   );
 }
 
-/* ─── SECTION ─────────────────────────────────────────────────────── */
 function Section({ label, value, hint, children, done, groupId }: {
   label: string; value?: string; hint?: string;
   children: React.ReactNode; done?: boolean; groupId?: string;
@@ -175,12 +134,10 @@ function BlockDivider({ label }: { label: string }) {
   return <div className="sim-block-divider">{label}</div>;
 }
 
-/* ─── RADIO CHIP GROUP (WAI-ARIA radiogroup + roving tabindex) ────── */
 function RadioChipGroup<T extends string>({
-  id, label, options, value, onChange, mono,
+  id, options, value, onChange, mono,
 }: {
   id: string;
-  label: string;
   options: { id: T; label: string; hint?: string }[];
   value: T | null;
   onChange: (v: T) => void;
@@ -188,14 +145,8 @@ function RadioChipGroup<T extends string>({
 }) {
   const ids = options.map(o => o.id);
   const { getItemProps } = useRovingTabIndex(ids, value, onChange);
-
   return (
-    <div
-      role="radiogroup"
-      aria-labelledby={`${id}-label`}
-      aria-describedby={RADIOGROUP_DESC_ID}
-      className="sim-chips"
-    >
+    <div role="radiogroup" aria-labelledby={`${id}-label`} aria-describedby={RADIOGROUP_DESC_ID} className="sim-chips">
       {options.map(o => {
         const itemProps = getItemProps(o.id);
         return (
@@ -215,32 +166,18 @@ function RadioChipGroup<T extends string>({
   );
 }
 
-function RadioAccountGroup({
-  id, value, onChange,
-}: {
-  id: string;
-  value: AccountType | null;
-  onChange: (v: AccountType) => void;
+function RadioAccountGroup({ id, value, onChange }: {
+  id: string; value: AccountType | null; onChange: (v: AccountType) => void;
 }) {
   const ids = ACCOUNT_OPTIONS.map(o => o.id);
   const { getItemProps } = useRovingTabIndex(ids, value, onChange);
-
   return (
-    <div
-      role="radiogroup"
-      aria-labelledby={`${id}-label`}
-      aria-describedby={RADIOGROUP_DESC_ID}
-      className="sim-chips sim-chips--col"
-    >
+    <div role="radiogroup" aria-labelledby={`${id}-label`} aria-describedby={RADIOGROUP_DESC_ID} className="sim-chips sim-chips--col">
       {ACCOUNT_OPTIONS.map(o => {
         const itemProps = getItemProps(o.id);
         return (
-          <button
-            key={o.id}
-            type="button"
-            className="sim-chip sim-chip--row"
-            data-active={value === o.id ? 'true' : 'false'}
-            {...itemProps}
+          <button key={o.id} type="button" className="sim-chip sim-chip--row"
+            data-active={value === o.id ? 'true' : 'false'} {...itemProps}
           >
             <span className="sim-chip__main">{o.label}</span>
             <span className="sim-chip__hint">{o.range}</span>
@@ -251,7 +188,6 @@ function RadioAccountGroup({
   );
 }
 
-/* ─── PROGRESS DOTS ───────────────────────────────────────────────── */
 function ProgressDots({ completed, total }: { completed: number; total: number }) {
   return (
     <div className="sim-progress" aria-label={`${completed} di ${total} campi compilati`}>
@@ -267,34 +203,26 @@ function ProgressDots({ completed, total }: { completed: number; total: number }
 export function SimulatoreShell() {
   const { assetClass, setAssetClass, setExposure, setProfile, results, isComputing } = useSimulatorEngine();
 
-  const [subGroup, setSubGroup] = useState<string | null>(DEFAULT_SUBGROUP);
-  const [asset,    setAsset]    = useState<string | null>(DEFAULT_ASSET);
-  const [style,    setStyle]    = useState<StyleType | null>(DEFAULT_STYLE);
-  const [freq,     setFreq]     = useState<FreqId | null>(DEFAULT_FREQ);
-  const [account,  setAccount]  = useState<AccountType | null>(DEFAULT_ACCOUNT);
-  const [leva,     setLeva]     = useState<LevaType | null>(DEFAULT_LEVA);
+  // Tutti i filtri partono a null — nessun default preimpostato
+  const [subGroup, setSubGroup] = useState<string | null>(null);
+  const [asset,    setAsset]    = useState<string | null>(null);
+  const [style,    setStyle]    = useState<StyleType | null>(null);
+  const [freq,     setFreq]     = useState<FreqId | null>(null);
+  const [account,  setAccount]  = useState<AccountType | null>(null);
+  const [leva,     setLeva]     = useState<LevaType | null>(null);
 
-  /* Leva non applicabile per alcune categorie (es. Forex) */
-  const showLeva = !NO_LEVA_CATEGORIES.has(assetClass ?? '');
+  const showLeva = assetClass !== null && assetClass !== 'Forex';
 
-  /* Quando si cambia categoria e la nuova non ha leva, resettiamo lo stato leva */
+  // Sincronizza profilo → motore solo quando tutti i campi obbligatori sono compilati
+  const hasMinParams = !!assetClass && !!style && !!freq && !!account;
+
   useEffect(() => {
-    if (!showLeva) setLeva(null);
-  }, [showLeva]);
-
-  /* Sincronizza la categoria col motore usando il default all'avvio */
-  useEffect(() => {
-    if (!assetClass) setAssetClass(DEFAULT_CATEGORY);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  /* ── Sincronizza profilo → motore ogni volta che cambia un parametro ── */
-  useEffect(() => {
-    const exposure = account ? (ACCOUNT_TO_EXPOSURE[account] ?? 6_000) : 6_000;
+    if (!hasMinParams) return;
+    const exposure = ACCOUNT_TO_EXPOSURE[account!] ?? 6_000;
     setExposure(exposure);
     setProfile({ style, freq, account, leva: showLeva ? leva : null });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [style, freq, account, leva, showLeva]);
+  }, [style, freq, account, leva, showLeva, hasMinParams]);
 
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
   const { visible: kbdVisible, show: showKbd }  = useKbdHint();
@@ -322,14 +250,12 @@ export function SimulatoreShell() {
   const freqLabel   = freqCurrent && freqConfig ? `${freqCurrent.hint} ${freqConfig.unit}` : undefined;
   const levaLabel   = leva ? (LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? undefined) : undefined;
 
-  /* Step e completamento dinamici in base alla categoria */
-  const STEPS        = showLeva ? STEPS_WITH_LEVA : STEPS_WITHOUT_LEVA;
-  const totalSteps   = STEPS.length;
+  const STEPS        = showLeva ? 6 : 5; // categoria, sottogruppo, stile, freq, account, [leva]
   const filledValues = showLeva
     ? [assetClass, subGroup, style, freq, account, leva]
     : [assetClass, subGroup, style, freq, account];
   const completedSteps = filledValues.filter(Boolean).length;
-  const isComplete     = completedSteps === totalSteps;
+  const isComplete     = completedSteps === STEPS;
   const scrollTrigger  = filledValues.join('|');
 
   useStepAutoScroll(panelContentRef, scrollTrigger, true);
@@ -351,7 +277,6 @@ export function SimulatoreShell() {
       <Section label="Categoria" value={assetClass ?? undefined} done={!!assetClass} groupId="sim-cat">
         <RadioChipGroup
           id="sim-cat"
-          label="Categoria"
           options={Object.keys(ASSET_TREE).map(k => ({ id: k, label: k }))}
           value={assetClass}
           onChange={handleGroupChange}
@@ -362,7 +287,6 @@ export function SimulatoreShell() {
         <Section label="Sottogruppo" value={subGroup ?? undefined} done={!!subGroup} groupId="sim-sub">
           <RadioChipGroup
             id="sim-sub"
-            label="Sottogruppo"
             options={groups.map(g => ({ id: g, label: g }))}
             value={subGroup}
             onChange={handleSubChange}
@@ -380,7 +304,6 @@ export function SimulatoreShell() {
         >
           <RadioChipGroup
             id="sim-asset"
-            label="Asset specifico"
             options={assets.map(a => ({ id: a, label: a }))}
             value={asset}
             onChange={setAsset}
@@ -401,7 +324,6 @@ export function SimulatoreShell() {
         >
           <RadioChipGroup
             id="sim-style"
-            label="Stile operativo"
             options={STYLE_OPTIONS}
             value={style}
             onChange={handleStyleChange}
@@ -419,7 +341,6 @@ export function SimulatoreShell() {
             {freqConfig && (
               <RadioChipGroup
                 id="sim-freq"
-                label="Frequenza"
                 options={freqConfig.options}
                 value={freq}
                 onChange={setFreq}
@@ -440,7 +361,6 @@ export function SimulatoreShell() {
           </Section>
         </AnimatedSection>
 
-        {/* Leva: visibile solo per categorie che la supportano (non Forex) */}
         {showLeva && (
           <AnimatedSection show={!!account}>
             <Section
@@ -452,7 +372,6 @@ export function SimulatoreShell() {
             >
               <RadioChipGroup
                 id="sim-leva"
-                label="Leva finanziaria"
                 options={LEVA_OPTIONS}
                 value={leva}
                 onChange={setLeva}
@@ -508,12 +427,7 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* SIDEBAR DESKTOP */}
-      <aside
-        className="sim-panel"
-        aria-label="Parametri simulazione"
-        onFocusCapture={handlePanelFocusIn}
-      >
+      <aside className="sim-panel" aria-label="Parametri simulazione" onFocusCapture={handlePanelFocusIn}>
         <div className="sim-panel__content" ref={panelContentRef}>
           {panelContent}
         </div>
@@ -522,7 +436,6 @@ export function SimulatoreShell() {
 
       {resultsArea}
 
-      {/* BOTTOM SHEET MOBILE */}
       <div
         ref={sheetRef}
         className={`sim-sheet sim-sheet--${snap}`}
@@ -545,9 +458,8 @@ export function SimulatoreShell() {
               {account ? ACCOUNT_OPTIONS.find(o => o.id === account)?.range : 'Account'}
             </span>
             <div className="sim-sheet__handle-right">
-              <ProgressDots completed={completedSteps} total={totalSteps} />
-              <svg
-                className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
+              <ProgressDots completed={completedSteps} total={STEPS} />
+              <svg className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
                 width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
               >
                 <path d="M2 8l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
