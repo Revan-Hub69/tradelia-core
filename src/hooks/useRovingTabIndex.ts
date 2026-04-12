@@ -5,11 +5,14 @@ import { useRef, useCallback } from 'react';
  *
  * - Il chip selezionato (o il primo se nessuno) ha tabIndex=0.
  * - Gli altri hanno tabIndex=-1.
- * - ArrowRight / ArrowDown → chip successivo (wraps).
- * - ArrowLeft  / ArrowUp   → chip precedente (wraps).
- * - Home → primo chip.
- * - End  → ultimo chip.
- * - Space / Enter → seleziona il chip focalizzato.
+ * - ArrowRight / ArrowDown → sposta focus al chip successivo (wraps).
+ * - ArrowLeft  / ArrowUp   → sposta focus al chip precedente (wraps).
+ * - Home → primo chip.  End → ultimo chip.
+ * - Space / Enter → seleziona il chip focalizzato (chiama onChange).
+ *
+ * IMPORTANTE: le frecce spostano SOLO il focus, NON selezionano.
+ * Questo evita che la navigazione triggeri il motore di calcolo
+ * e faccia comparire sezioni intermedie mentre si scorre.
  *
  * Uso:
  *   const { getItemProps } = useRovingTabIndex(ids, value, onChange);
@@ -20,16 +23,18 @@ export function useRovingTabIndex<T extends string>(
   value: T | null,
   onChange: (v: T) => void,
 ) {
-  // indice del chip che ha tabIndex=0 (focus "virtuale" nel gruppo)
   const focusIdx = useRef<number>(
     value ? Math.max(0, items.indexOf(value)) : 0,
   );
 
-  // Sposta il focus reale al chip indicato dall'indice
   const focusItem = useCallback(
     (idx: number, groupEl: HTMLElement) => {
       focusIdx.current = idx;
+      // Aggiorna tabIndex manualmente: 0 sul chip destinazione, -1 sugli altri
       const chips = groupEl.querySelectorAll<HTMLElement>('[role="radio"]');
+      chips.forEach((chip, i) => {
+        chip.tabIndex = i === idx ? 0 : -1;
+      });
       chips[idx]?.focus();
     },
     [],
@@ -37,13 +42,12 @@ export function useRovingTabIndex<T extends string>(
 
   const getItemProps = useCallback(
     (id: T) => {
-      const idx     = items.indexOf(id);
-      const isValue = value === id;
-      // tabIndex=0 sul selezionato oppure sul primo se nessuno è selezionato
+      const idx      = items.indexOf(id);
+      const isValue  = value === id;
       const isTabbable = value ? isValue : idx === 0;
 
       return {
-        role:          'radio' as const,
+        role:           'radio' as const,
         'aria-checked': isValue,
         tabIndex:       isTabbable ? 0 : -1,
 
@@ -59,33 +63,30 @@ export function useRovingTabIndex<T extends string>(
             case 'ArrowDown':
               e.preventDefault();
               next = (idx + 1) % len;
+              focusItem(next, group);
               break;
             case 'ArrowLeft':
             case 'ArrowUp':
               e.preventDefault();
               next = (idx - 1 + len) % len;
+              focusItem(next, group);
               break;
             case 'Home':
               e.preventDefault();
-              next = 0;
+              focusItem(0, group);
               break;
             case 'End':
               e.preventDefault();
-              next = len - 1;
+              focusItem(len - 1, group);
               break;
             case ' ':
             case 'Enter':
               e.preventDefault();
               onChange(id);
-              return;
+              break;
             default:
-              return;
+              break;
           }
-
-          focusItem(next, group);
-          // Seleziona automaticamente mentre si naviga con le frecce
-          // (comportamento standard radiogroup ARIA)
-          onChange(items[next]);
         },
 
         onClick() {
