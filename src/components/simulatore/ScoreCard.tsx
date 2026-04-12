@@ -2,20 +2,25 @@
 
 import { ScoreGauge } from './ScoreGauge';
 import { FeasibilityBadge, type Feasibility } from './FeasibilityBadge';
-import type { SimulatorResult } from '@/hooks/useSimulatorEngine';
+import type { EnrichedResult } from '@/hooks/useSimulatorEngine';
 
 const fmt = (n: number) =>
+  n < 0.01 ? '<0.01' : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n.toFixed(0);
+
+const fmtSmall = (n: number) =>
   n < 0.01 ? '<0.01' : n.toFixed(2);
 
-export function ScoreCard({ result, rank }: { result: SimulatorResult; rank: number }) {
+export function ScoreCard({ result, rank }: { result: EnrichedResult; rank: number }) {
   const isOptimal = rank === 1;
-  const totalCost = result.spreadCost + result.commissionCost + result.overnightCost + result.slippageCost;
 
-  const segs = totalCost > 0 ? [
-    { key: 'spread',    flex: result.spreadCost / totalCost,     cls: 'sim-card__cost-segment--spread',    dot: 'var(--s-ac)',    label: 'Spread',     val: result.spreadCost },
-    { key: 'comm',      flex: result.commissionCost / totalCost, cls: 'sim-card__cost-segment--comm',      dot: 'var(--s-gold)',  label: 'Comm',       val: result.commissionCost },
-    { key: 'overnight', flex: result.overnightCost / totalCost,  cls: 'sim-card__cost-segment--overnight', dot: 'var(--s-amber)', label: 'Overnight',  val: result.overnightCost },
-    { key: 'slippage',  flex: result.slippageCost / totalCost,   cls: 'sim-card__cost-segment--slippage',  dot: 'var(--s-t3)',   label: 'Slippage',   val: result.slippageCost },
+  // Mostra costi MENSILI — per-trade in tooltip
+  const totalMonth = result.totalMonth;
+
+  const segs = totalMonth > 0 ? [
+    { key: 'spread',    flex: result.spreadMonth     / totalMonth, cls: 'sim-card__cost-segment--spread',    dot: 'var(--s-ac)',    label: 'Spread',    val: result.spreadMonth,     perTrade: result.spreadCost     },
+    { key: 'comm',      flex: result.commissionMonth / totalMonth, cls: 'sim-card__cost-segment--comm',      dot: 'var(--s-gold)',  label: 'Comm',      val: result.commissionMonth, perTrade: result.commissionCost },
+    { key: 'overnight', flex: result.overnightMonth  / totalMonth, cls: 'sim-card__cost-segment--overnight', dot: 'var(--s-amber)', label: 'Overnight', val: result.overnightMonth,  perTrade: result.overnightCost  },
+    { key: 'slippage',  flex: result.slippageMonth   / totalMonth, cls: 'sim-card__cost-segment--slippage',  dot: 'var(--s-t3)',   label: 'Slippage',  val: result.slippageMonth,   perTrade: result.slippageCost   },
   ].filter(s => s.val > 0) : [];
 
   const scoreColor =
@@ -38,6 +43,9 @@ export function ScoreCard({ result, rank }: { result: SimulatorResult; rank: num
       <div className="sim-card__body">
         <div className="sim-card__name-row">
           <span className="sim-card__name">{result.instrumentName}</span>
+          <span className="sim-card__freq-badge" aria-label={`${result.tradesPerMonth} trade/mese`}>
+            {result.tradesPerMonth}× /mese
+          </span>
         </div>
         <span className="sim-card__broker">{result.brokerName}</span>
 
@@ -48,17 +56,27 @@ export function ScoreCard({ result, rank }: { result: SimulatorResult; rank: num
           ))}
         </div>
 
-        {/* Cost legend inline */}
+        {/* Cost legend — valori mensili + per-trade in title tooltip */}
         {segs.length > 0 && (
-          <div className="sim-card__cost-detail" aria-label="Dettaglio costi">
+          <div className="sim-card__cost-detail" aria-label="Dettaglio costi mensili">
             {segs.map(s => (
-              <span key={s.key} className="sim-card__cost-item">
+              <span
+                key={s.key}
+                className="sim-card__cost-item"
+                title={`Per trade: €${fmtSmall(s.perTrade)}`}
+              >
                 <span className="sim-card__cost-dot" style={{ background: s.dot }} />
                 <span>€{fmt(s.val)}</span>
               </span>
             ))}
           </div>
         )}
+
+        {/* Totale mensile prominente */}
+        <div className="sim-card__total-row">
+          <span className="sim-card__total-label">Totale/mese</span>
+          <span className="sim-card__total-value sim-num">€{fmt(totalMonth)}</span>
+        </div>
       </div>
 
       {/* Meta */}
