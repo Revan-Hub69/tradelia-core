@@ -1,6 +1,6 @@
 /*
- * simulatore.css — Tradelia Simulatore v9
- * Fix contrasti: label leggibili, chip visibili, bordi netti, sezioni respirano
+ * simulatore.css — Tradelia Simulatore v10
+ * Sheet mobile: posizionamento 100% via CSS, nessun inline transform JS
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
@@ -9,23 +9,20 @@
 .sim-root {
   --s-bg:   #0a0a09;
   --s-s0:   #111110;
-  --s-s1:   #181817;   /* panel bg — leggermente più chiaro del bg */
+  --s-s1:   #181817;
   --s-s2:   #1f1f1e;
   --s-s3:   #272726;
   --s-s4:   #313130;
   --s-s5:   #3e3e3c;
 
-  /* Bordi — molto più visibili */
   --s-line:  rgba(255,255,255,0.09);
   --s-line2: rgba(255,255,255,0.15);
   --s-line3: rgba(255,255,255,0.26);
 
-  /* Testi — scala di contrasto chiara */
-  --s-t1: #f0efed;   /* titoli, valori importanti — quasi bianco */
-  --s-t2: #a8a7a4;   /* secondari — grigio medio leggibile */
-  --s-t3: #6e6e6b;   /* hint, label uppercase — grigio scuro */
+  --s-t1: #f0efed;
+  --s-t2: #a8a7a4;
+  --s-t3: #6e6e6b;
 
-  /* Accento teal */
   --s-ac:     #40a8b8;
   --s-ac-h:   #319aab;
   --s-ac-dim: rgba(64,168,184,0.12);
@@ -55,6 +52,9 @@
 
   --s-hh: 48px;
   --s-pw: 304px;
+
+  /* Sheet handle height — usato anche dal translateY collapsed */
+  --s-sheet-handle: 56px;
 
   font-family: var(--s-sans);
   font-size: 14px;
@@ -100,7 +100,7 @@
 /* ─── DESKTOP ≥861px ────────────────────────────────────────────────────────── */
 @media (min-width: 861px) {
   .sim-panel { display: flex; }
-  .sim-sheet { display: none; }
+  .sim-sheet { display: none !important; }
 }
 
 /* ─── HEADER ──────────────────────────────────────────────────────────── */
@@ -185,29 +185,17 @@
 
 /* ─── BLOCK DIVIDER ─────────────────────────────────────────────────── */
 .sim-block-divider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: flex; align-items: center; gap: 8px;
   padding: 14px 16px 6px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: var(--s-t2);
-  user-select: none;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--s-s1);
-  margin-top: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
+  text-transform: uppercase; color: var(--s-t2);
+  user-select: none; position: sticky; top: 0; z-index: 10;
+  background: var(--s-s1); margin-top: 4px;
 }
 .sim-block-divider:first-child { margin-top: 0; }
 .sim-block-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--s-line2);
-  border-radius: 99px;
+  content: ''; flex: 1; height: 1px;
+  background: var(--s-line2); border-radius: 99px;
 }
 
 /* ─── FLAT SECTIONS ───────────────────────────────────────────────────────── */
@@ -222,32 +210,19 @@
   display: flex; align-items: baseline;
   justify-content: space-between; gap: 8px;
 }
-
 .sim-section__label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--s-t1);
-  user-select: none;
-  line-height: 1.2;
+  font-size: 12px; font-weight: 600; color: var(--s-t1);
+  user-select: none; line-height: 1.2;
 }
-
 .sim-section__value {
   font-size: 12px; font-weight: 600;
   font-family: var(--s-mono); color: var(--s-ac);
   letter-spacing: 0.01em; flex-shrink: 0;
 }
-
 .sim-section__hint {
-  font-size: 11px;
-  color: var(--s-t2);
-  line-height: 1.4;
-  margin-top: -4px;
+  font-size: 11px; color: var(--s-t2); line-height: 1.4; margin-top: -4px;
 }
-
-.sim-section--disabled {
-  opacity: 0.40; pointer-events: none; user-select: none;
-}
-
+.sim-section--disabled { opacity: 0.40; pointer-events: none; user-select: none; }
 .sim-section__badge-soon {
   display: inline-flex; align-items: center;
   height: 17px; padding-inline: 7px; border-radius: var(--s-r1);
@@ -258,6 +233,7 @@
 
 /* ─── CHIPS ───────────────────────────────────────────────────────────── */
 .sim-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.sim-chips--col { flex-direction: column; }
 
 .sim-chip {
   display: flex; flex-direction: column; align-items: center;
@@ -265,175 +241,28 @@
   min-height: 30px; padding: 5px 11px;
   border-radius: var(--s-r1);
   border: 1px solid var(--s-line3);
-  background: var(--s-s2);
-  color: var(--s-t2);
+  background: var(--s-s2); color: var(--s-t2);
   font-family: var(--s-sans); font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: all var(--s-ease); outline: none;
-  white-space: nowrap;
+  cursor: pointer; transition: all var(--s-ease); outline: none; white-space: nowrap;
 }
 .sim-chip--mono { font-family: var(--s-mono); font-size: 11px; }
-
+.sim-chip--row {
+  flex-direction: row; justify-content: space-between;
+  width: 100%; padding: 8px 12px;
+}
+.sim-chip__main { font-size: 12px; font-weight: 500; }
 .sim-chip__hint {
   font-size: 9px; color: var(--s-t3);
   font-family: var(--s-sans); letter-spacing: 0.02em; line-height: 1;
 }
-
-.sim-chip:hover {
-  color: var(--s-t1);
-  border-color: var(--s-ac);
-  background: var(--s-s3);
-}
+.sim-chip:hover { color: var(--s-t1); border-color: var(--s-ac); background: var(--s-s3); }
 .sim-chip[data-active='true'] {
-  color: var(--s-t1);
-  border-color: var(--s-ac);
-  background: var(--s-ac-dim);
-  font-weight: 600;
+  color: var(--s-t1); border-color: var(--s-ac);
+  background: var(--s-ac-dim); font-weight: 600;
   box-shadow: 0 0 0 1px var(--s-ac);
 }
 .sim-chip[data-active='true'] .sim-chip__hint { color: var(--s-ac); opacity: 0.8; }
 .sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
-
-/* ─── HOLDING CHIPS ───────────────────────────────────────────────────── */
-.sim-holding { display: flex; gap: 5px; }
-.sim-holding__chip {
-  flex: 1; height: 32px; border-radius: var(--s-r2);
-  border: 1px solid var(--s-line3);
-  background: var(--s-s2);
-  color: var(--s-t2);
-  font-family: var(--s-sans); font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: all var(--s-ease); outline: none; text-align: center;
-}
-.sim-holding__chip:hover { color: var(--s-t1); border-color: var(--s-ac); background: var(--s-s3); }
-.sim-holding__chip[data-active='true'] {
-  color: var(--s-t1); border-color: var(--s-ac);
-  background: var(--s-ac-dim); font-weight: 600;
-  box-shadow: 0 0 0 1px var(--s-ac);
-}
-.sim-holding__chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
-
-/* ─── LEVA SLIDER ─────────────────────────────────────────────────────── */
-.sim-leva { display: flex; flex-direction: column; gap: 8px; }
-
-.sim-leva__track {
-  position: relative; height: 24px; display: flex; align-items: center;
-}
-.sim-leva__fill {
-  position: absolute; left: 0; height: 3px;
-  background: var(--s-ac); border-radius: 99px; pointer-events: none;
-  transition: width var(--s-ease);
-}
-.sim-leva__slider {
-  position: relative; z-index: 1; -webkit-appearance: none;
-  width: 100%; height: 24px; background: transparent;
-  outline: none; cursor: pointer; margin: 0;
-}
-.sim-leva__slider::-webkit-slider-runnable-track {
-  height: 3px; background: var(--s-s5); border-radius: 99px;
-}
-.sim-leva__slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 16px; height: 16px;
-  border-radius: 50%; background: var(--s-t1);
-  border: 2px solid var(--s-ac); cursor: pointer;
-  margin-top: -7px;
-  transition: transform var(--s-ease), box-shadow var(--s-ease);
-}
-.sim-leva__slider:hover::-webkit-slider-thumb {
-  transform: scale(1.15); box-shadow: 0 0 0 4px var(--s-ac-d2);
-}
-.sim-leva__slider::-moz-range-track { height: 3px; background: var(--s-s5); border-radius: 99px; }
-.sim-leva__slider::-moz-range-thumb {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--s-t1); border: 2px solid var(--s-ac);
-}
-
-.sim-leva__labels {
-  display: flex; align-items: center;
-  justify-content: space-between; gap: 4px;
-}
-.sim-leva__label { font-size: 10px; color: var(--s-t2); font-family: var(--s-mono); }
-.sim-leva__value {
-  font-size: 15px; font-weight: 700; color: var(--s-ac);
-  font-family: var(--s-mono); letter-spacing: -0.02em;
-}
-
-.sim-leva__warning {
-  font-size: 11px; color: var(--s-warn);
-  background: var(--s-warn-dim);
-  border: 1px solid rgba(212,128,34,0.25);
-  border-radius: var(--s-r1); padding: 6px 10px;
-  line-height: 1.4;
-}
-
-/* ─── EXPOSURE INPUT ───────────────────────────────────────────────────── */
-.sim-exposure { display: flex; flex-direction: column; gap: 10px; }
-
-.sim-exposure__field {
-  display: flex; align-items: center;
-  background: var(--s-s2); border: 1px solid var(--s-line3);
-  border-radius: var(--s-r2); overflow: hidden;
-  transition: border-color var(--s-ease), box-shadow var(--s-ease);
-}
-.sim-exposure__field:focus-within {
-  border-color: var(--s-ac);
-  box-shadow: 0 0 0 3px rgba(64,168,184,0.15);
-}
-
-.sim-exposure__currency {
-  padding: 0 10px 0 12px; font-size: 13px; font-weight: 600;
-  font-family: var(--s-mono); color: var(--s-t1);
-  border-right: 1px solid var(--s-line3); height: 44px;
-  display: flex; align-items: center;
-  background: var(--s-s3); flex-shrink: 0; user-select: none;
-}
-
-.sim-exposure__input {
-  flex: 1; height: 44px; padding: 0 12px;
-  background: transparent; border: none; outline: none;
-  font-size: 20px; font-weight: 700; font-family: var(--s-mono);
-  color: var(--s-t1); font-variant-numeric: tabular-nums; min-width: 0;
-}
-.sim-exposure__input::-webkit-inner-spin-button,
-.sim-exposure__input::-webkit-outer-spin-button { -webkit-appearance: none; }
-
-.sim-exposure__track { position: relative; height: 22px; display: flex; align-items: center; }
-.sim-exposure__track-bg {
-  position: absolute; left: 0; right: 0;
-  height: 3px; background: var(--s-s5); border-radius: 99px; pointer-events: none;
-}
-.sim-exposure__track-fill {
-  position: absolute; left: 0; height: 3px;
-  background: var(--s-ac); border-radius: 99px;
-  pointer-events: none; transition: width var(--s-ease);
-}
-.sim-exposure__slider {
-  position: relative; z-index: 1; -webkit-appearance: none;
-  width: 100%; height: 22px; background: transparent;
-  outline: none; cursor: pointer; margin: 0;
-}
-.sim-exposure__slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--s-t1); border: 2px solid var(--s-ac);
-  cursor: pointer; transition: transform var(--s-ease), box-shadow var(--s-ease);
-}
-.sim-exposure__slider:hover::-webkit-slider-thumb { transform: scale(1.15); box-shadow: 0 0 0 4px var(--s-ac-d2); }
-.sim-exposure__slider::-moz-range-thumb {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--s-t1); border: 2px solid var(--s-ac);
-}
-
-.sim-exposure__presets { display: flex; gap: 5px; flex-wrap: wrap; }
-.sim-exposure__preset {
-  height: 26px; padding-inline: 9px; border-radius: var(--s-r1);
-  border: 1px solid var(--s-line3); background: var(--s-s2); color: var(--s-t2);
-  font-size: 11px; font-family: var(--s-mono); font-weight: 500;
-  cursor: pointer; transition: all var(--s-ease); letter-spacing: 0.02em;
-}
-.sim-exposure__preset:hover { color: var(--s-t1); border-color: var(--s-ac); background: var(--s-s3); }
-.sim-exposure__preset[data-active='true'] {
-  color: var(--s-t1); border-color: var(--s-ac);
-  background: var(--s-ac-dim); font-weight: 600;
-  box-shadow: 0 0 0 1px var(--s-ac);
-}
 
 /* ─── RESULTS ──────────────────────────────────────────────────────────── */
 .sim-results {
@@ -527,18 +356,47 @@
 .sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
 .sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET (mobile) ─────────────────────────────────────────────── */
+/* ─── BOTTOM SHEET (mobile) ─────────────────────────────────────────── */
+/*
+ * Il sheet occupa SEMPRE 92dvh di altezza, fixed in fondo allo schermo.
+ * Il posizionamento verticale avviene tramite translateY su 3 classi snap:
+ *   --collapsed  → solo l'handle è visibile (92dvh - 56px nascosti sotto)
+ *   --half       → metà schermo visibile
+ *   --full       → quasi tutto lo schermo visibile
+ *
+ * Nessun JS imposta style.transform — solo le classi CSS qui sotto.
+ */
 .sim-sheet {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-  height: 92dvh; flex-direction: column;
-  background: var(--s-s1); border-radius: 14px 14px 0 0;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 92dvh;
+  flex-direction: column;
+  background: var(--s-s1);
+  border-radius: 14px 14px 0 0;
   border-top: 1px solid var(--s-line3);
-  will-change: transform; touch-action: none;
-  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+  touch-action: none;
+  transition: transform var(--s-spring);
+
+  /* Default: nascosto (fallback, sovrascritto dalle classi snap) */
+  transform: translateY(calc(92dvh - var(--s-sheet-handle)));
+}
+
+/* Snap classes — assegnate da React via snap state */
+.sim-sheet--collapsed {
+  transform: translateY(calc(92dvh - var(--s-sheet-handle)));
+}
+.sim-sheet--half {
+  transform: translateY(46dvh); /* 92dvh * 0.5 */
+}
+.sim-sheet--full {
+  transform: translateY(0);
 }
 
 .sim-sheet__handle-area {
-  height: 56px; display: flex; flex-direction: column;
+  height: var(--s-sheet-handle);
+  display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 7px;
   cursor: pointer; flex-shrink: 0; padding-inline: 1rem;
   user-select: none; -webkit-user-select: none; touch-action: none;
@@ -585,11 +443,7 @@
 .sim-num { font-family: var(--s-mono); font-variant-numeric: tabular-nums; transition: opacity 150ms ease; }
 .sim-num[data-updating='true'] { opacity: 0.35; }
 
-.sim-panel__section {
-  padding: 12px 16px; border-bottom: 1px solid var(--s-line2);
-  display: flex; flex-direction: column; gap: 8px;
-}
-
+.sim-panel__section { padding: 12px 16px; border-bottom: 1px solid var(--s-line2); display: flex; flex-direction: column; gap: 8px; }
 .sim-panel__collapse-btn { display: none; }
 .sim-panel__topbar { display: none; }
 .sim-panel__icon-rail { display: none; }
@@ -598,5 +452,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sim-skeleton { animation: none; }
-  .sim-sheet, .sim-card__gauge-fill, .sim-exposure__track-fill { transition: none; }
+  .sim-sheet, .sim-card__gauge-fill { transition: none; }
 }
