@@ -1,7 +1,14 @@
 // ============================================================
-// SIMULATOR ENGINE v3.1
-// Fix: ugIdsForAssetClass aligned to AssetClass type
-//   'FOREX' | 'CRYPTO' | 'INDEX' | 'EQUITY' | 'COMMODITY'
+// SIMULATOR ENGINE v3.2
+//
+// CHANGES v3.2:
+//   fix: CFD exposure = capital × ESMA_LEVERAGE[ugId]
+//        (was: exposure = capital, leva non applicata)
+//   fix: minPositionEUR check usa l'exposure post-leva
+//   add: spot_fx branch → calcSpotFxCosts
+//        - commission per lotto (per_lot_ecn)
+//        - overnight tom-next in pip + rollover triplo
+//   refactor: isCfd / isSpotFx / isFutures flag espliciti
 // ============================================================
 
 import { INSTRUMENT_OFFERS } from '@/data/simulator/market-data/instrument-offers';
@@ -17,6 +24,22 @@ const SCORE_HALF_LIFE   = 20;
 const k                 = Math.LN2 / SCORE_HALF_LIFE;
 const MAX_RISK_PCT      = 0.02;
 const FUTURES_CAPITAL_RATIO = 0.20;
+
+// ── ESMA leverage cap per underlying group ──────────────────────
+// Fonte: ESMA product intervention (2018), confermato MiFID II.
+// Usato per calcolare l'exposure CFD/Spot partendo dal capitale.
+const ESMA_LEVERAGE: Record<string, number> = {
+  ug_fx_major:            30,
+  ug_fx_minor:            20,
+  ug_fx_exotic:           20,
+  ug_crypto_major:         2,
+  ug_indices_eu:          20,
+  ug_indices_us:          20,
+  ug_equity_us:            5,
+  ug_equity_eu:            5,
+  ug_commodities_energy:  10,
+  ug_commodities_metals:  10,
+};
 
 const FUTURES_PARAMS: Record<'micro' | 'mini' | 'full', {
   nominalEUR:    number;
@@ -82,7 +105,7 @@ export type SimulatorResult = {
 export type TradeDirection = 'long' | 'short';
 
 export type EngineInput = {
-  exposure:       number;
+  exposure?:      number;  // opzionale: se assente viene derivato da capital × leva
   capital?:       number;
   assetClass:     AssetClass;
   underlyingId?:  UnderlyingId;
@@ -93,7 +116,8 @@ export type EngineInput = {
   riskPct?:       number;
 };
 
-// Allineato a AssetClass: 'FOREX' | 'CRYPTO' | 'INDEX' | 'EQUITY' | 'COMMODITY'
+// ── Helpers ─────────────────────────────────────────────────────
+
 function ugIdsForAssetClass(ac: AssetClass): string[] {
   switch (ac) {
     case 'FOREX':     return ['ug_fx_major', 'ug_fx_minor', 'ug_fx_exotic'];
@@ -105,6 +129,12 @@ function ugIdsForAssetClass(ac: AssetClass): string[] {
   }
 }
 
+/** Leva ESMA massima per un'offerta, basata sugli ugIds dell'offer. */
+function esmaLeverageForOffer(offer: InstrumentOffer): number {
+  const leverages = offer.ugIds.map(ug => ESMA_LEVERAGE[ug] ?? 1);
+  return Math.max(...leverages);
+}
+
 function pipValueEURPerLot(quoteCurrency: string): number {
   const pipSize = quoteCurrency === 'JPY' ? 0.01 : 0.0001;
   return pipSize * LOT_SIZE * USD_TO_EUR;
@@ -114,6 +144,7 @@ function toBps(eur: number, reference: number): number {
   return reference > 0 ? (eur / reference) * 10_000 : 0;
 }
 
+// ── Overnight shared (CFD + Spot FX) ────────────────────────────
 function calcOvernightEUR(
   offer:         InstrumentOffer,
   underlyingId:  UnderlyingId | undefined,
@@ -170,6 +201,7 @@ function calcFeasibility(
   stopLossPips: number,
 ): FeasibilityDetail {
   const marginRequired  = (offer.marginRequirementPct / 100) * exposure;
+  // check su exposure post-leva (non sul capital raw)
   const access          = offer.minPositionEUR <= exposure;
   const canTrade        = capital >= marginRequired;
   const riskPerTradePct = calcRiskPerTradePct(lots, capital, underlyingId, stopLossPips);
@@ -177,8 +209,8 @@ function calcFeasibility(
   void totalCostBps;
 
   let label: Feasibility;
-  if (!access || !canTrade)  label = 'INFEASIBLE';
-  else if (!sustainable)     label = 'WARNING';
+  if (!access || !canTrade)   label = 'INFEASIBLE';
+  else if (!sustainable)      label = 'WARNING';
   else if (totalCostBps < 15) label = 'OPTIMAL';
   else if (totalCostBps < 40) label = 'FEASIBLE';
   else                        label = 'WARNING';
@@ -186,6 +218,7 @@ function calcFeasibility(
   return { access, canTrade, sustainable, label, marginRequired, riskPerTradePct };
 }
 
+// ── CFD cost calculator ──────────────────────────────────────────
 function calcCFDCosts(
   offer:        InstrumentOffer,
   underlyingId: UnderlyingId | undefined,
@@ -227,6 +260,57 @@ function calcCFDCosts(
   };
 }
 
+// ── Spot FX cost calculator ──────────────────────────────────────
+// Differenze rispetto a CFD:
+//   - commission: sempre per_lot_ecn (commissionPerLotEUR/USD)
+//   - overnight:  tom-next in pip, stessa formula CFD ma swapType semanticamente diverso
+//   - exposure:   capital × ESMA_LEVERAGE (identico CFD, ma leva è del broker non fissa)
+function calcSpotFxCosts(
+  offer:        InstrumentOffer,
+  underlyingId: UnderlyingId | undefined,
+  exposure:     number,
+  direction:    TradeDirection,
+  nDaysOpen:    number,
+  nTrades:      number,
+): CostBreakdown {
+  const lots = exposure / LOT_SIZE;
+
+  // Spread (raw ECN — tipicamente near-zero su major)
+  let spreadBps = offer.spreadAvgBps;
+  if (underlyingId && offer.underlyingOverrides?.[underlyingId]?.spreadAvgBps != null) {
+    spreadBps = offer.underlyingOverrides[underlyingId]!.spreadAvgBps!;
+  }
+  const spreadEUR = (spreadBps / 10_000) * exposure * nTrades;
+
+  // Commission per lotto (round-trip: già incluso nel valore se definito RT)
+  let commissionEUR = 0;
+  if (offer.commissionPerLotEUR != null) {
+    commissionEUR = offer.commissionPerLotEUR * lots * nTrades;
+  } else if (offer.commissionPerLotUSD != null) {
+    commissionEUR = offer.commissionPerLotUSD * lots * nTrades * USD_TO_EUR;
+  }
+
+  // Overnight tom-next: identico CFD in formula, diverso in origine dei dati
+  // (i pip vengono da overnightLongPipsPerDay / overnightShortPipsPerDay dell'offer)
+  // Spot non ha "intraday exemption" — se nDaysOpen > 0 si paga sempre
+  const overnightEUR = nDaysOpen > 0
+    ? calcOvernightEUR(offer, underlyingId, direction, nDaysOpen, lots)
+    : 0;
+
+  const totalEUR = spreadEUR + commissionEUR + overnightEUR;
+
+  return {
+    spreadEUR, commissionEUR, overnightEUR,
+    exchangeFeeEUR: 0, rollEUR: 0, totalEUR,
+    spreadBps:      toBps(spreadEUR,     exposure),
+    commissionBps:  toBps(commissionEUR, exposure),
+    overnightBps:   toBps(overnightEUR,  exposure),
+    exchangeFeeBps: 0, rollBps: 0,
+    totalBps:       toBps(totalEUR,      exposure),
+  };
+}
+
+// ── Futures cost calculator ──────────────────────────────────────
 function calcFuturesCosts(
   offer:     InstrumentOffer,
   capital:   number,
@@ -297,8 +381,9 @@ function calcFuturesCosts(
   };
 }
 
+// ── Main engine ──────────────────────────────────────────────────
 export function runEngine({
-  exposure,
+  exposure:     exposureInput,
   capital,
   assetClass,
   underlyingId,
@@ -308,14 +393,15 @@ export function runEngine({
   stopLossPips = 20,
   riskPct      = 0.01,
 }: EngineInput): SimulatorResult[] {
-  if (exposure < 100 || nTrades === 0) return [];
+  if (nTrades === 0) return [];
 
-  const effectiveCapital = capital ?? exposure;
+  const effectiveCapital = capital ?? exposureInput ?? 0;
+  if (effectiveCapital <= 0) return [];
+
   const ugIds = ugIdsForAssetClass(assetClass);
 
   const compatibleOffers = INSTRUMENT_OFFERS.filter(offer =>
-    offer.ugIds.some(ug => ugIds.includes(ug)) &&
-    offer.minPositionEUR <= exposure,
+    offer.ugIds.some(ug => ugIds.includes(ug)),
   );
 
   if (compatibleOffers.length === 0) return [];
@@ -323,23 +409,48 @@ export function runEngine({
   void riskPct;
 
   const results: SimulatorResult[] = compatibleOffers.flatMap(offer => {
-    const broker    = BROKERS[offer.brokerId];
-    const isFutures = offer.instrumentTypeId === 'futures_std';
+    const broker      = BROKERS[offer.brokerId];
+    const isFutures   = offer.instrumentTypeId === 'futures_std';
+    const isSpotFx    = offer.instrumentTypeId === 'spot_fx';
+    // isCfd = tutto ciò che non è futures né spot (cfd_dd, cfd_ecn)
+    const isCfd       = !isFutures && !isSpotFx;
 
     let breakdown:    CostBreakdown;
     let contracts     = 0;
     let contractSize: 'micro' | 'mini' | 'full' | null = null;
     let lots          = 0;
+    let exposure      = 0;
 
     if (isFutures) {
-      const res  = calcFuturesCosts(offer, effectiveCapital, nDaysOpen, nTrades);
-      breakdown  = res.breakdown;
-      contracts  = res.contracts;
+      // Futures: leva implicita nel margine CME, capital non serve per exposure
+      const res    = calcFuturesCosts(offer, effectiveCapital, nDaysOpen, nTrades);
+      breakdown    = res.breakdown;
+      contracts    = res.contracts;
       contractSize = res.contractSize;
       if (contracts === 0) return [];
+      exposure = contracts * FUTURES_PARAMS[contractSize ?? 'micro'].nominalEUR;
+
+    } else if (isSpotFx || isCfd) {
+      // CFD e Spot FX: exposure = capital × leva ESMA (cap regolatorio)
+      // Se l'utente ha passato un exposureInput esplicito lo usiamo direttamente,
+      // altrimenti deriviamo dalla leva ESMA.
+      const leverage = esmaLeverageForOffer(offer);
+      exposure = exposureInput != null && exposureInput > 0
+        ? exposureInput
+        : effectiveCapital * leverage;
+
+      if (exposure < 100) return [];
+
+      // minPositionEUR check sull'exposure post-leva
+      if (offer.minPositionEUR > exposure) return [];
+
+      lots = exposure / LOT_SIZE;
+
+      breakdown = isSpotFx
+        ? calcSpotFxCosts(offer, underlyingId, exposure, direction, nDaysOpen, nTrades)
+        : calcCFDCosts(offer, underlyingId, exposure, direction, nDaysOpen, nTrades);
     } else {
-      breakdown = calcCFDCosts(offer, underlyingId, exposure, direction, nDaysOpen, nTrades);
-      lots      = exposure / LOT_SIZE;
+      return [];
     }
 
     const totalCostBps = breakdown.totalBps;
@@ -349,7 +460,7 @@ export function runEngine({
     const score = calcScore(totalCostBps);
 
     const achievableExposure = isFutures
-      ? contracts * (FUTURES_PARAMS[contractSize ?? 'micro'].nominalEUR)
+      ? contracts * FUTURES_PARAMS[contractSize ?? 'micro'].nominalEUR
       : exposure;
 
     return [{
