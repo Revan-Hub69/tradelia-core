@@ -10,18 +10,56 @@ import { KbdHintBar } from './KbdHintBar';
 import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
+import type { AssetClass } from './AssetSelector';
 
-const ASSET_TREE: Record<string, Record<string, string[]>> = {
-  Forex: {
-    Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD','USD/CAD','NZD/USD'],
-    Cross:  ['EUR/GBP','EUR/JPY','EUR/CHF','EUR/CAD','EUR/AUD','GBP/JPY','GBP/CHF','AUD/JPY','CAD/JPY'],
-    Exotic: ['USD/TRY','EUR/TRY','USD/ZAR','EUR/ZAR','EUR/PLN','USD/PLN','USD/MXN','USD/SEK','USD/NOK'],
+// Chiavi = AssetClass (uppercase, allineate al motore)
+// label = testo UI visibile
+const ASSET_TREE: Record<AssetClass, { label: string; groups: Record<string, string[]> }> = {
+  FOREX: {
+    label: 'Forex',
+    groups: {
+      Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD','USD/CAD','NZD/USD'],
+      Cross:  ['EUR/GBP','EUR/JPY','EUR/CHF','EUR/CAD','EUR/AUD','GBP/JPY','GBP/CHF','AUD/JPY','CAD/JPY'],
+      Exotic: ['USD/TRY','EUR/TRY','USD/ZAR','EUR/ZAR','EUR/PLN','USD/PLN','USD/MXN','USD/SEK','USD/NOK'],
+    },
   },
-  Crypto:  { 'Large Cap': ['BTC/USD','ETH/USD','BNB/USD'], 'Mid Cap': ['SOL/USD','ADA/USD','DOT/USD'], Stablecoin: ['USDT/USD','USDC/USD'] },
-  Indici:  { Europa: ['DAX 40','FTSE 100','CAC 40'], USA: ['S&P 500','NASDAQ 100','DOW 30'], Asia: ['Nikkei 225','Hang Seng'] },
-  Azioni:  { Tech: ['Apple','Microsoft','NVIDIA','Meta'], Finance: ['JPMorgan','Goldman Sachs','Visa'], Energy: ['ExxonMobil','Shell','TotalEnergies'] },
-  Materie: { Metalli: ['Oro','Argento','Rame'], Energia: ['Petrolio WTI','Gas Nat.','Brent'] },
+  CRYPTO: {
+    label: 'Crypto',
+    groups: {
+      'Large Cap': ['BTC/USD','ETH/USD','BNB/USD'],
+      'Mid Cap':   ['SOL/USD','ADA/USD','DOT/USD'],
+      Stablecoin:  ['USDT/USD','USDC/USD'],
+    },
+  },
+  INDEX: {
+    label: 'Indici',
+    groups: {
+      Europa: ['DAX 40','FTSE 100','CAC 40'],
+      USA:    ['S&P 500','NASDAQ 100','DOW 30'],
+      Asia:   ['Nikkei 225','Hang Seng'],
+    },
+  },
+  EQUITY: {
+    label: 'Azioni',
+    groups: {
+      Tech:    ['Apple','Microsoft','NVIDIA','Meta'],
+      Finance: ['JPMorgan','Goldman Sachs','Visa'],
+      Energy:  ['ExxonMobil','Shell','TotalEnergies'],
+    },
+  },
+  COMMODITY: {
+    label: 'Materie prime',
+    groups: {
+      Metalli: ['Oro','Argento','Rame'],
+      Energia: ['Petrolio WTI','Gas Nat.','Brent'],
+    },
+  },
 };
+
+const ASSET_OPTIONS = (Object.keys(ASSET_TREE) as AssetClass[]).map(k => ({
+  id: k,
+  label: ASSET_TREE[k].label,
+}));
 
 const ACCOUNT_TO_EXPOSURE: Record<string, number> = {
   demo: 250, micro: 1_250, retail: 6_000, semipro: 30_000, pro: 100_000,
@@ -204,8 +242,8 @@ export function SimulatoreShell() {
   const [account,  setAccount]  = useState<AccountType | null>(null);
   const [leva,     setLeva]     = useState<LevaType | null>(null);
 
-  const showLeva     = !!assetClass && assetClass !== 'Forex';
-  // Il motore parte solo quando questi quattro sono tutti selezionati
+  // FOREX non ha leva configurabile nel pannello (usa sempre spread+commission)
+  const showLeva     = !!assetClass && assetClass !== 'FOREX';
   const hasMinParams = !!assetClass && !!style && !!freq && !!account;
 
   useEffect(() => {
@@ -225,10 +263,11 @@ export function SimulatoreShell() {
   const panelContentRef = useRef<HTMLDivElement>(null);
   const sheetContentRef = useRef<HTMLDivElement>(null);
 
-  const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
-  const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
+  const groups = assetClass ? Object.keys(ASSET_TREE[assetClass]?.groups ?? {}) : [];
+  const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.groups[subGroup] ?? []) : [];
+  const assetLabel = assetClass ? ASSET_TREE[assetClass].label : undefined;
 
-  const handleGroupChange = useCallback((g: string) => {
+  const handleGroupChange = useCallback((g: AssetClass) => {
     setAssetClass(g); setSubGroup(null); setAsset(null);
   }, [setAssetClass]);
 
@@ -257,7 +296,7 @@ export function SimulatoreShell() {
   useStepAutoScroll(sheetContentRef, scrollTrigger, snap === 'full');
 
   const handlePanelFocusIn = useCallback(() => showKbd(), [showKbd]);
-  const statusAsset = asset ?? subGroup ?? assetClass ?? '—';
+  const statusAsset = asset ?? subGroup ?? assetLabel ?? '—';
 
   const panelContent = (
     <>
@@ -267,10 +306,10 @@ export function SimulatoreShell() {
 
       <BlockDivider label="Strumento" />
 
-      <Section label="Categoria" value={assetClass ?? undefined} done={!!assetClass} groupId="sim-cat">
+      <Section label="Categoria" value={assetLabel} done={!!assetClass} groupId="sim-cat">
         <RadioChipGroup
           id="sim-cat"
-          options={Object.keys(ASSET_TREE).map(k => ({ id: k, label: k }))}
+          options={ASSET_OPTIONS}
           value={assetClass}
           onChange={handleGroupChange}
         />
@@ -387,7 +426,6 @@ export function SimulatoreShell() {
     </>
   );
 
-  /* ── RESULTS: mostra empty se i parametri minimi non sono stati selezionati ── */
   const showEmpty = !hasMinParams;
 
   const resultsArea = (

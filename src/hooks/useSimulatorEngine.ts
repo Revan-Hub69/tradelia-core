@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useTransition, useRef, useEffect } from 'react';
+import { useState, useCallback, useTransition, useRef } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import type { AssetClass } from '@/components/simulatore/AssetSelector';
 import type { Feasibility } from '@/components/simulatore/FeasibilityBadge';
@@ -10,7 +10,6 @@ import type { SimulatorResult, EngineInput } from '@/lib/simulator/engine';
 export type { SimulatorResult };
 export type { Feasibility };
 
-// ── Mapping UI → EngineInput ───────────────────────────────────────────
 const ACCOUNT_TO_CAPITAL: Record<string, number> = {
   demo: 250, micro: 1_250, retail: 6_000, semipro: 30_000, pro: 100_000,
 };
@@ -49,39 +48,36 @@ export function useSimulatorEngine() {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  const initExposure = Number(searchParams.get('exposure') ?? 6_000);
-  const initAsset    = (searchParams.get('asset') as AssetClass) ?? 'FOREX';
-
-  // ── state ──────────────────────────────────────────────────────────
-  const [exposure,    setExposureState]   = useState<number>(initExposure);
-  const [assetClass,  setAssetClassState] = useState<AssetClass>(initAsset);
+  // Nessun default: il motore non parte finché l'utente non seleziona i parametri
+  const [exposure,    setExposureState]   = useState<number>(6_000);
+  const [assetClass,  setAssetClassState] = useState<AssetClass | null>(null);
   const [profile,     setProfileState]    = useState<ProfileInput>({});
   const [results,     setResults]         = useState<SimulatorResult[]>([]);
   const [isComputing, setIsComputing]     = useState(false);
 
-  // ── refs — sempre aggiornati, leggibili dai callback senza stale closure ──
-  const exposureRef   = useRef(initExposure);
-  const assetRef      = useRef(initAsset);
+  const exposureRef   = useRef<number>(6_000);
+  const assetRef      = useRef<AssetClass | null>(null);
   const profileRef    = useRef<ProfileInput>({});
   const debounceRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // ── motore ────────────────────────────────────────────────────────
   const scheduleRun = useCallback(() => {
+    // Non girare se assetClass non è ancora selezionato
+    if (!assetRef.current) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     setIsComputing(true);
     debounceRef.current = setTimeout(() => {
       const extra = profileToEngineParams(profileRef.current);
       setResults(runEngine({
         exposure:   exposureRef.current,
-        assetClass: assetRef.current,
+        assetClass: assetRef.current!,
         ...extra,
       }));
       setIsComputing(false);
     }, 250);
   }, []);
 
-  // ── URL sync ──────────────────────────────────────────────────────
   const syncUrl = useCallback(() => {
+    if (!assetRef.current) return;
     const params = new URLSearchParams(searchParams.toString());
     params.set('exposure', String(exposureRef.current));
     params.set('asset',    assetRef.current);
@@ -90,7 +86,6 @@ export function useSimulatorEngine() {
     });
   }, [router, pathname, searchParams, startTransition]);
 
-  // ── setters pubblici ──────────────────────────────────────────────
   const setExposure = useCallback((v: number) => {
     exposureRef.current = v;
     setExposureState(v);
@@ -111,11 +106,7 @@ export function useSimulatorEngine() {
     scheduleRun();
   }, [scheduleRun]);
 
-  // ── primo run al mount ─────────────────────────────────────────────
-  useEffect(() => {
-    scheduleRun();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Nessun useEffect di mount — il motore parte solo su interazione utente
 
   return {
     exposure,
