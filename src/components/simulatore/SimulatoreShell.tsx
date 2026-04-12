@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useSimulatorEngine } from '@/hooks/useSimulatorEngine';
 import { usePanelSheet } from '@/hooks/usePanelSheet';
 import { useRovingTabIndex } from '@/hooks/useRovingTabIndex';
@@ -10,7 +10,6 @@ import { KbdHintBar } from './KbdHintBar';
 import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
-import { useEffect } from 'react';
 
 /* ─── ASSET TREE ──────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
@@ -40,6 +39,15 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
 
 /* ─── Categorie senza selettore leva (leva implicita nel prodotto) ── */
 const NO_LEVA_CATEGORIES = new Set(['Forex']);
+
+/* ─── Mapping account → exposure (punto medio range) ─────────────── */
+const ACCOUNT_TO_EXPOSURE: Record<string, number> = {
+  demo:    250,
+  micro:   1_250,
+  retail:  6_000,
+  semipro: 30_000,
+  pro:     100_000,
+};
 
 /* ─── DEFAULTS ────────────────────────────────────────────────────── */
 const DEFAULT_CATEGORY  = 'Forex';
@@ -257,7 +265,7 @@ function ProgressDots({ completed, total }: { completed: number; total: number }
 
 /* ─── SHELL ───────────────────────────────────────────────────────── */
 export function SimulatoreShell() {
-  const { assetClass, setAssetClass, results, isComputing } = useSimulatorEngine();
+  const { assetClass, setAssetClass, setExposure, setProfile, results, isComputing } = useSimulatorEngine();
 
   const [subGroup, setSubGroup] = useState<string | null>(DEFAULT_SUBGROUP);
   const [asset,    setAsset]    = useState<string | null>(DEFAULT_ASSET);
@@ -279,6 +287,14 @@ export function SimulatoreShell() {
     if (!assetClass) setAssetClass(DEFAULT_CATEGORY);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /* ── Sincronizza profilo → motore ogni volta che cambia un parametro ── */
+  useEffect(() => {
+    const exposure = account ? (ACCOUNT_TO_EXPOSURE[account] ?? 6_000) : 6_000;
+    setExposure(exposure);
+    setProfile({ style, freq, account, leva: showLeva ? leva : null });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [style, freq, account, leva, showLeva]);
 
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
   const { visible: kbdVisible, show: showKbd }  = useKbdHint();
