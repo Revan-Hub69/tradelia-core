@@ -11,7 +11,6 @@ import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 
-/* ─── ASSET TREE ──────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Forex: {
     Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD','USD/CAD','NZD/USD'],
@@ -116,9 +115,7 @@ function Section({ label, value, hint, children, done, groupId }: {
   return (
     <div className={`sim-section${done ? ' sim-section--done' : ''}`}>
       <div className="sim-section__header">
-        <span className="sim-section__label" id={groupId ? `${groupId}-label` : undefined}>
-          {label}
-        </span>
+        <span className="sim-section__label" id={groupId ? `${groupId}-label` : undefined}>{label}</span>
         {value
           ? <span className="sim-section__value sim-num">{value}</span>
           : <span className="sim-section__value--empty">—</span>
@@ -150,9 +147,7 @@ function RadioChipGroup<T extends string>({
       {options.map(o => {
         const itemProps = getItemProps(o.id);
         return (
-          <button
-            key={o.id}
-            type="button"
+          <button key={o.id} type="button"
             className={mono ? 'sim-chip sim-chip--mono' : 'sim-chip'}
             data-active={value === o.id ? 'true' : 'false'}
             {...itemProps}
@@ -199,11 +194,9 @@ function ProgressDots({ completed, total }: { completed: number; total: number }
   );
 }
 
-/* ─── SHELL ───────────────────────────────────────────────────────── */
 export function SimulatoreShell() {
   const { assetClass, setAssetClass, setExposure, setProfile, results, isComputing } = useSimulatorEngine();
 
-  // Tutti i filtri partono a null — nessun default preimpostato
   const [subGroup, setSubGroup] = useState<string | null>(null);
   const [asset,    setAsset]    = useState<string | null>(null);
   const [style,    setStyle]    = useState<StyleType | null>(null);
@@ -211,10 +204,13 @@ export function SimulatoreShell() {
   const [account,  setAccount]  = useState<AccountType | null>(null);
   const [leva,     setLeva]     = useState<LevaType | null>(null);
 
-  const showLeva = assetClass !== null && assetClass !== 'Forex';
-
-  // Sincronizza profilo → motore solo quando tutti i campi obbligatori sono compilati
+  const showLeva     = !!assetClass && assetClass !== 'Forex';
+  // Il motore parte solo quando questi quattro sono tutti selezionati
   const hasMinParams = !!assetClass && !!style && !!freq && !!account;
+
+  useEffect(() => {
+    if (!showLeva) setLeva(null);
+  }, [showLeva]);
 
   useEffect(() => {
     if (!hasMinParams) return;
@@ -226,7 +222,6 @@ export function SimulatoreShell() {
 
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
   const { visible: kbdVisible, show: showKbd }  = useKbdHint();
-
   const panelContentRef = useRef<HTMLDivElement>(null);
   const sheetContentRef = useRef<HTMLDivElement>(null);
 
@@ -250,8 +245,8 @@ export function SimulatoreShell() {
   const freqLabel   = freqCurrent && freqConfig ? `${freqCurrent.hint} ${freqConfig.unit}` : undefined;
   const levaLabel   = leva ? (LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? undefined) : undefined;
 
-  const STEPS        = showLeva ? 6 : 5; // categoria, sottogruppo, stile, freq, account, [leva]
-  const filledValues = showLeva
+  const STEPS          = showLeva ? 6 : 5;
+  const filledValues   = showLeva
     ? [assetClass, subGroup, style, freq, account, leva]
     : [assetClass, subGroup, style, freq, account];
   const completedSteps = filledValues.filter(Boolean).length;
@@ -262,10 +257,8 @@ export function SimulatoreShell() {
   useStepAutoScroll(sheetContentRef, scrollTrigger, snap === 'full');
 
   const handlePanelFocusIn = useCallback(() => showKbd(), [showKbd]);
-
   const statusAsset = asset ?? subGroup ?? assetClass ?? '—';
 
-  /* ── PANEL CONTENT ─────────────────────────────────────────────── */
   const panelContent = (
     <>
       <span id={RADIOGROUP_DESC_ID} className="sr-only">
@@ -330,7 +323,7 @@ export function SimulatoreShell() {
           />
         </Section>
 
-        <AnimatedSection show={!!style && !!freqConfig}>
+        <AnimatedSection show={!!style}>
           <Section
             label={freqConfig ? `Operazioni ${freqConfig.unit}` : 'Frequenza'}
             value={freqLabel}
@@ -394,10 +387,12 @@ export function SimulatoreShell() {
     </>
   );
 
-  /* ── RESULTS AREA ──────────────────────────────────────────────── */
+  /* ── RESULTS: mostra empty se i parametri minimi non sono stati selezionati ── */
+  const showEmpty = !hasMinParams;
+
   const resultsArea = (
     <section className="sim-results" aria-label="Risultati simulazione" aria-live="polite">
-      {!isComputing && results.length > 0 && (
+      {!showEmpty && !isComputing && results.length > 0 && (
         <div className="sim-results__header">
           <span className="sim-results__count">{results.length} strumenti analizzati</span>
           <div className="sim-results__legend">
@@ -415,10 +410,10 @@ export function SimulatoreShell() {
           </div>
         </div>
       )}
-      {isComputing ? (
-        <SimulatoreSkeleton count={4} />
-      ) : results.length === 0 ? (
+      {showEmpty ? (
         <SimResultsEmpty />
+      ) : isComputing ? (
+        <SimulatoreSkeleton count={4} />
       ) : (
         <ScoreCardList results={results} />
       )}
@@ -443,10 +438,7 @@ export function SimulatoreShell() {
         aria-label="Parametri simulazione"
         onFocusCapture={handlePanelFocusIn}
       >
-        <button
-          type="button"
-          className="sim-sheet__handle-area"
-          onClick={toggleSheet}
+        <button type="button" className="sim-sheet__handle-area" onClick={toggleSheet}
           aria-expanded={snap === 'full'}
           aria-label={snap === 'collapsed' ? 'Apri parametri' : 'Chiudi parametri'}
         >
