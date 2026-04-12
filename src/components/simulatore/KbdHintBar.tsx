@@ -2,42 +2,28 @@
 
 import React from 'react';
 
-interface KbdHintBarProps {
-  visible: boolean;
-}
-
 /**
- * Barra istruzioni tastiera — appare la prima volta che l'utente
- * usa Tab nel panel, si auto-nasconde dopo 3.5s.
- * Richiamabile manualmente con il tasto '?'.
+ * Barra di suggerimento tastiera — appare una volta, poi sparisce.
+ *
+ * Stili inline per essere self-contained; le variabili CSS del
+ * design system (--s-surface-2, --s-t2, ecc.) sono già definite
+ * nel foglio globale del simulatore.
  */
-export function KbdHintBar({ visible }: KbdHintBarProps) {
+export function KbdHintBar({ visible }: { visible: boolean }) {
   return (
     <div
       role="status"
       aria-live="polite"
       aria-atomic="true"
-      className="kbd-hint"
+      className="sim-kbd-hint"
       data-visible={visible ? 'true' : 'false'}
+      aria-hidden={!visible}
     >
-      <span className="kbd-hint__row">
-        <kbd>←</kbd><kbd>→</kbd>
-        <span>naviga nel gruppo</span>
-      </span>
-      <span className="kbd-hint__sep" aria-hidden="true" />
-      <span className="kbd-hint__row">
-        <kbd>Tab</kbd>
-        <span>cambia gruppo</span>
-      </span>
-      <span className="kbd-hint__sep" aria-hidden="true" />
-      <span className="kbd-hint__row">
-        <kbd>Space</kbd>
-        <span>seleziona</span>
-      </span>
-      <span className="kbd-hint__sep" aria-hidden="true" />
-      <span className="kbd-hint__row">
-        <kbd>?</kbd>
-        <span>questo aiuto</span>
+      <span className="sim-kbd-hint__icon" aria-hidden="true">⌨</span>
+      <span className="sim-kbd-hint__text">
+        <kbd>←</kbd><kbd>→</kbd> naviga &nbsp;·&nbsp;
+        <kbd>Tab</kbd> cambia gruppo &nbsp;·&nbsp;
+        <kbd>Spazio</kbd> seleziona
       </span>
     </div>
   );

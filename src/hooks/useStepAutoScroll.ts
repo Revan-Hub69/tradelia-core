@@ -1,12 +1,16 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, RefObject } from 'react';
 
 /**
- * Quando `trigger` cambia, aspetta 300ms (AnimatedSection transition)
- * poi scrolla l'ultimo .sim-section visibile in view nel container.
- * Enabled = false disabilita senza smontare l'hook.
+ * Quando `trigger` cambia, aspetta che AnimatedSection finisca
+ * (300ms) e porta l'ultimo .sim-section / .sim-block-divider /
+ * .sim-sheet__cta in view con scrollIntoView({ block: 'nearest' }).
+ *
+ * @param containerRef  ref del div scrollabile (panel o sheet content)
+ * @param trigger       stringa che cambia ad ogni step completato
+ * @param enabled       false → no-op (es. sheet chiuso)
  */
 export function useStepAutoScroll(
-  containerRef: React.RefObject<HTMLElement | null>,
+  containerRef: RefObject<HTMLElement | null>,
   trigger: unknown,
   enabled = true,
 ) {

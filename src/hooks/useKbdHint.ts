@@ -1,36 +1,28 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 /**
- * Mostra il kbd hint bar la prima volta che l'utente usa Tab
- * dentro il panel. Si auto-nasconde dopo `duration` ms.
- * Usa aria-live="polite" nel componente KbdHintBar.
+ * Gestisce la visibilità del kbd hint bar.
+ *
+ * - La prima volta che viene chiamato show(), il hint diventa visibile.
+ * - Si nasconde automaticamente dopo `duration` ms.
+ * - Non si mostra più dopo la prima volta (una-tantum per sessione).
  */
-export function useKbdHint(duration = 3500) {
+export function useKbdHint(duration = 4000) {
   const [visible, setVisible] = useState(false);
-  const [everShown, setEverShown] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const shown    = useRef(false);
+  const timer    = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const show = useCallback(() => {
-    if (everShown) return;
-    setEverShown(true);
+    if (shown.current) return;
+    shown.current = true;
     setVisible(true);
-    timerRef.current = setTimeout(() => setVisible(false), duration);
-  }, [everShown, duration]);
+    timer.current = setTimeout(() => setVisible(false), duration);
+  }, [duration]);
 
-  // Shortcut '?' apre/chiude manualmente
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === '?' && !e.ctrlKey && !e.metaKey) {
-        setVisible(v => !v);
-        if (!everShown) setEverShown(true);
-        if (timerRef.current) clearTimeout(timerRef.current);
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [everShown]);
+  const dismiss = useCallback(() => {
+    if (timer.current) clearTimeout(timer.current);
+    setVisible(false);
+  }, []);
 
-  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
-
-  return { visible, show };
+  return { visible, show, dismiss };
 }
