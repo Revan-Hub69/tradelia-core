@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSimulatorEngine } from '@/hooks/useSimulatorEngine';
 import { usePanelSheet } from '@/hooks/usePanelSheet';
 import { ScoreCardList } from './ScoreCardList';
@@ -26,18 +26,7 @@ type FreqId      = 'low' | 'mid' | 'high';
 type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
 type LevaType    = 'nessuna' | 'bassa' | 'media' | 'alta';
 
-/* ─── STEPS ───────────────────────────────────────────────────────── */
-// Step order usato dal progress indicator.
-// Ogni step è "completato" quando il suo valore è != null.
-const STEPS = [
-  'categoria',
-  'sottogruppo',
-  'stile',
-  'frequenza',
-  'account',
-  'leva',
-] as const;
-type StepId = typeof STEPS[number];
+const STEPS = ['categoria','sottogruppo','stile','frequenza','account','leva'] as const;
 
 /* ─── OPTIONS ─────────────────────────────────────────────────────── */
 const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
@@ -88,6 +77,50 @@ const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
   { id: 'alta',    label: 'Alta',    hint: '1:50 – 1:500' },
 ];
 
+/* ─── HOOK: useStepAutoScroll ─────────────────────────────────────── */
+/**
+ * Quando `trigger` cambia (nuovo step completato), aspetta che
+ * AnimatedSection finisca di montarsi (280ms) poi scrolla smooth
+ * al bottom del container — funziona sia per panel che per sheet.
+ *
+ * Strategia: invece di scrollare al fondo assoluto (che mostrerebbe
+ * il prossimo step a metà), scrolliamo l'ultimo elemento figlio
+ * del container in view con scrollIntoView, così il nuovo campo
+ * appare sempre in cima al viewport scrollabile.
+ */
+function useStepAutoScroll(
+  containerRef: React.RefObject<HTMLElement | null>,
+  trigger: unknown,
+  enabled = true,
+) {
+  const prevTrigger = useRef(trigger);
+
+  useEffect(() => {
+    // Scolla solo se il trigger è davvero cambiato (non al mount)
+    if (!enabled || prevTrigger.current === trigger) return;
+    prevTrigger.current = trigger;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Delay = AnimatedSection transition (240ms) + margine
+    const t = setTimeout(() => {
+      // Trova l'ultimo figlio visibile e portalo in view
+      const children = container.querySelectorAll<HTMLElement>(
+        '.sim-section, .sim-block-divider, .sim-sheet__cta'
+      );
+      const last = children[children.length - 1];
+      if (last) {
+        last.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+      }
+    }, 300);
+
+    return () => clearTimeout(t);
+  }, [trigger, enabled, containerRef]);
+}
+
 /* ─── CHIP GROUP ──────────────────────────────────────────────────── */
 function ChipGroup<T extends string>({
   options, value, onChange,
@@ -135,10 +168,6 @@ function StringChipGroup({
 }
 
 /* ─── ANIMATED SECTION ────────────────────────────────────────────── */
-/**
- * Wrapper che monta il contenuto con una fade+slide-up animation
- * ogni volta che appare (grazie alla key che cambia).
- */
 function AnimatedSection({ show, children }: { show: boolean; children: React.ReactNode }) {
   const [mounted, setMounted] = useState(show);
   const [visible, setVisible] = useState(show);
@@ -146,7 +175,6 @@ function AnimatedSection({ show, children }: { show: boolean; children: React.Re
   useEffect(() => {
     if (show) {
       setMounted(true);
-      // micro-delay per triggerare la transition
       const t = requestAnimationFrame(() => setVisible(true));
       return () => cancelAnimationFrame(t);
     } else {
@@ -160,8 +188,8 @@ function AnimatedSection({ show, children }: { show: boolean; children: React.Re
   return (
     <div
       style={{
-        opacity:   visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(8px)',
+        opacity:    visible ? 1 : 0,
+        transform:  visible ? 'translateY(0)' : 'translateY(8px)',
         transition: 'opacity 240ms cubic-bezier(0.16,1,0.3,1), transform 240ms cubic-bezier(0.16,1,0.3,1)',
       }}
     >
@@ -193,16 +221,12 @@ function BlockDivider({ label }: { label: string }) {
   return <div className="sim-block-divider">{label}</div>;
 }
 
-/* ─── PROGRESS INDICATOR ──────────────────────────────────────────── */
+/* ─── PROGRESS DOTS ───────────────────────────────────────────────── */
 function ProgressDots({ completed, total }: { completed: number; total: number }) {
   return (
     <div className="sim-progress" aria-label={`${completed} di ${total} campi compilati`}>
       {Array.from({ length: total }).map((_, i) => (
-        <span
-          key={i}
-          className="sim-progress__dot"
-          data-done={i < completed ? 'true' : 'false'}
-        />
+        <span key={i} className="sim-progress__dot" data-done={i < completed ? 'true' : 'false'} />
       ))}
       <span className="sim-progress__label">{completed}/{total}</span>
     </div>
@@ -222,7 +246,9 @@ export function SimulatoreShell() {
 
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
 
-  const contentRef = useRef<HTMLDivElement>(null);
+  // Ref separati per i due container scrollabili
+  const panelContentRef = useRef<HTMLDivElement>(null); // sidebar desktop
+  const sheetContentRef = useRef<HTMLDivElement>(null); // sheet mobile
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
   const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
@@ -236,41 +262,27 @@ export function SimulatoreShell() {
   const freqLabel   = freqCurrent && freqConfig ? `${freqCurrent.hint} ${freqConfig.unit}` : undefined;
   const levaLabel   = leva ? (LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? undefined) : undefined;
 
-  // Progress: quanti step obbligatori sono compilati
-  // Step obbligatori: categoria, sottogruppo, stile, frequenza, account, leva
-  const completedSteps = [
-    assetClass,
-    subGroup,
-    style,
-    freq,
-    account,
-    leva,
-  ].filter(Boolean).length;
-  const totalSteps = STEPS.length; // 6
+  const completedSteps = [assetClass, subGroup, style, freq, account, leva].filter(Boolean).length;
+  const totalSteps     = STEPS.length;
+  const isComplete     = completedSteps === totalSteps;
 
-  // Quando un nuovo step viene completato e lo sheet è aperto,
-  // scroll automatico al fondo per rivelare il prossimo campo
-  useEffect(() => {
-    if (snap === 'full' && contentRef.current) {
-      const el = contentRef.current;
-      // Piccolo delay per aspettare che AnimatedSection sia montato
-      const t = setTimeout(() => {
-        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-      }, 280);
-      return () => clearTimeout(t);
-    }
-  }, [completedSteps, snap]);
+  // Trigger per l'auto-scroll: stringa che cambia ad ogni step completato
+  // Usare la stringa precisa evita falsi trigger su re-render
+  const scrollTrigger = [assetClass, subGroup, style, freq, account, leva].join('|');
+
+  // Auto-scroll su sidebar desktop — sempre attivo
+  useStepAutoScroll(panelContentRef, scrollTrigger, true);
+
+  // Auto-scroll su sheet mobile — solo quando aperto
+  useStepAutoScroll(sheetContentRef, scrollTrigger, snap === 'full');
 
   const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
-  const statusAccount = account ? (ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—') : '—';
-  const isComplete    = completedSteps === totalSteps;
 
-  /* ── PANEL/SHEET CONTENT (shared) ─────────────────────────────── */
+  /* ── PANEL CONTENT ─────────────────────────────────────────────── */
   const panelContent = (
     <>
       <BlockDivider label="Strumento" />
 
-      {/* Step 1 — sempre visibile */}
       <Section label="Categoria" value={assetClass ?? undefined} done={!!assetClass}>
         <StringChipGroup
           options={Object.keys(ASSET_TREE)}
@@ -279,14 +291,12 @@ export function SimulatoreShell() {
         />
       </Section>
 
-      {/* Step 2 — appare dopo categoria */}
       <AnimatedSection show={!!assetClass}>
         <Section label="Sottogruppo" value={subGroup ?? undefined} done={!!subGroup}>
           <StringChipGroup options={groups} value={subGroup} onChange={handleSubChange} />
         </Section>
       </AnimatedSection>
 
-      {/* Step 3 — asset opzionale, appare dopo sottogruppo */}
       <AnimatedSection show={!!subGroup && assets.length > 0}>
         <Section
           label="Asset specifico"
@@ -301,7 +311,6 @@ export function SimulatoreShell() {
       <AnimatedSection show={!!subGroup}>
         <BlockDivider label="Il tuo profilo" />
 
-        {/* Step 4 — stile */}
         <Section
           label="Stile operativo"
           value={style ? STYLE_OPTIONS.find(o => o.id === style)?.label : undefined}
@@ -311,7 +320,6 @@ export function SimulatoreShell() {
           <ChipGroup options={STYLE_OPTIONS} value={style} onChange={handleStyleChange} />
         </Section>
 
-        {/* Step 5 — frequenza, appare dopo stile */}
         <AnimatedSection show={!!style && !!freqConfig}>
           <Section
             label={freqConfig ? `Operazioni ${freqConfig.unit}` : 'Frequenza'}
@@ -323,7 +331,6 @@ export function SimulatoreShell() {
           </Section>
         </AnimatedSection>
 
-        {/* Step 6 — account, appare dopo frequenza */}
         <AnimatedSection show={!!freq}>
           <Section
             label="Dimensione account"
@@ -348,7 +355,6 @@ export function SimulatoreShell() {
           </Section>
         </AnimatedSection>
 
-        {/* Step 7 — leva, appare dopo account */}
         <AnimatedSection show={!!account}>
           <Section
             label="Leva finanziaria"
@@ -360,7 +366,6 @@ export function SimulatoreShell() {
           </Section>
         </AnimatedSection>
 
-        {/* CTA finale — appare solo quando tutto è compilato */}
         <AnimatedSection show={isComplete}>
           <div className="sim-sheet__cta">
             <span className="sim-sheet__cta-icon" aria-hidden="true">
@@ -408,21 +413,22 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* SIDEBAR DESKTOP */}
+      {/* SIDEBAR DESKTOP — ref proprio per l'auto-scroll */}
       <aside className="sim-panel" aria-label="Parametri simulazione">
-        <div className="sim-panel__content">{panelContent}</div>
+        <div className="sim-panel__content" ref={panelContentRef}>
+          {panelContent}
+        </div>
       </aside>
 
       {resultsArea}
 
-      {/* BOTTOM SHEET MOBILE — 2 snap: collapsed | full */}
+      {/* BOTTOM SHEET MOBILE */}
       <div
         ref={sheetRef}
         className={`sim-sheet sim-sheet--${snap}`}
         role="complementary"
         aria-label="Parametri simulazione"
       >
-        {/* ── Handle: UNICO punto di apertura/chiusura ── */}
         <button
           type="button"
           className="sim-sheet__handle-area"
@@ -431,16 +437,12 @@ export function SimulatoreShell() {
           aria-label={snap === 'collapsed' ? 'Apri parametri' : 'Chiudi parametri'}
         >
           <div className="sim-sheet__drag-bar" aria-hidden="true" />
-
           <div className="sim-sheet__status">
-            {/* Riepilogo sintetico */}
             <span className="sim-sheet__status-asset">{statusAsset}</span>
             <span className="sim-sheet__status-dot" aria-hidden="true" />
             <span className="sim-sheet__status-exposure">
               {account ? ACCOUNT_OPTIONS.find(o => o.id === account)?.range : 'Account'}
             </span>
-
-            {/* Progress dots + chevron */}
             <div className="sim-sheet__handle-right">
               <ProgressDots completed={completedSteps} total={totalSteps} />
               <svg
@@ -453,8 +455,8 @@ export function SimulatoreShell() {
           </div>
         </button>
 
-        {/* ── Content: scroll libero, nessun touch handler ── */}
-        <div className="sim-sheet__content" ref={contentRef}>
+        {/* ref separato per lo sheet */}
+        <div className="sim-sheet__content" ref={sheetContentRef}>
           {panelContent}
         </div>
       </div>
