@@ -1,11 +1,11 @@
 /*
- * simulatore.css — Tradelia Simulatore v10
- * Sheet mobile: posizionamento 100% via CSS, nessun inline transform JS
+ * simulatore.css — Tradelia Simulatore v11
+ * Sheet: 2 snap (collapsed/full) + progressive disclosure + progress dots
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
 
-/* ─── TOKENS ───────────────────────────────────────────────────────── */
+/* ─── TOKENS ──────────────────────────────────────────────────────── */
 .sim-root {
   --s-bg:   #0a0a09;
   --s-s0:   #111110;
@@ -36,8 +36,6 @@
   --s-amber-dim: rgba(187,106,52,0.12);
   --s-red:       #c45590;
   --s-red-dim:   rgba(196,85,144,0.12);
-  --s-warn:      #d48022;
-  --s-warn-dim:  rgba(212,128,34,0.14);
 
   --s-r1: 5px;
   --s-r2: 8px;
@@ -45,16 +43,14 @@
   --s-r4: 16px;
 
   --s-ease:   160ms cubic-bezier(0.16, 1, 0.3, 1);
-  --s-spring: 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  --s-spring: 320ms cubic-bezier(0.32, 0.72, 0, 1);
 
   --s-sans: var(--font-body, 'Inter', system-ui, sans-serif);
   --s-mono: 'Geist Mono', var(--font-mono, ui-monospace, monospace);
 
   --s-hh: 48px;
   --s-pw: 304px;
-
-  /* Sheet handle height — usato anche dal translateY collapsed */
-  --s-sheet-handle: 56px;
+  --s-sh: 60px; /* handle height */
 
   font-family: var(--s-sans);
   font-size: 14px;
@@ -89,21 +85,22 @@
   overflow: hidden;
 }
 
-/* ─── MOBILE ≤860px ─────────────────────────────────────────────────────── */
+/* ─── MOBILE ≤860px ───────────────────────────────────────────────── */
 @media (max-width: 860px) {
   .sim-root  { height: auto; overflow: visible; }
-  .sim-main  { grid-template-columns: 1fr; height: auto; overflow: visible; padding-bottom: 72px; }
+  .sim-main  { grid-template-columns: 1fr; height: auto; overflow: visible;
+               padding-bottom: calc(var(--s-sh) + 8px); }
   .sim-panel { display: none !important; }
   .sim-sheet { display: flex; }
 }
 
-/* ─── DESKTOP ≥861px ────────────────────────────────────────────────────────── */
+/* ─── DESKTOP ≥861px ──────────────────────────────────────────────── */
 @media (min-width: 861px) {
   .sim-panel { display: flex; }
   .sim-sheet { display: none !important; }
 }
 
-/* ─── HEADER ──────────────────────────────────────────────────────────── */
+/* ─── HEADER ──────────────────────────────────────────────────────── */
 .sim-header {
   height: var(--s-hh);
   display: flex;
@@ -128,7 +125,8 @@
 
 .sim-header__page-label { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .sim-header__page-sep  { font-size: 16px; font-weight: 300; color: var(--s-t3); line-height: 1; user-select: none; }
-.sim-header__page-name { font-size: 13px; font-weight: 500; color: var(--s-t2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sim-header__page-name { font-size: 13px; font-weight: 500; color: var(--s-t2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .sim-header__btn-share {
   display: inline-flex; align-items: center; gap: 5px;
@@ -165,7 +163,7 @@
 .sim-tooltip-wrap:focus-within .sim-tooltip { opacity: 1; }
 @media (max-width: 860px) { .sim-tooltip { display: none; } }
 
-/* ─── PANEL ──────────────────────────────────────────────────────────── */
+/* ─── PANEL ───────────────────────────────────────────────────────── */
 .sim-panel {
   background: var(--s-s1);
   border-right: 1px solid var(--s-line2);
@@ -183,7 +181,7 @@
 .sim-panel__content::-webkit-scrollbar { width: 4px; }
 .sim-panel__content::-webkit-scrollbar-thumb { background: var(--s-s5); border-radius: 99px; }
 
-/* ─── BLOCK DIVIDER ─────────────────────────────────────────────────── */
+/* ─── BLOCK DIVIDER ───────────────────────────────────────────────── */
 .sim-block-divider {
   display: flex; align-items: center; gap: 8px;
   padding: 14px 16px 6px;
@@ -198,13 +196,15 @@
   background: var(--s-line2); border-radius: 99px;
 }
 
-/* ─── FLAT SECTIONS ───────────────────────────────────────────────────────── */
+/* ─── SECTIONS ────────────────────────────────────────────────────── */
 .sim-section {
   padding: 12px 16px 16px;
   border-bottom: 1px solid var(--s-line2);
   display: flex; flex-direction: column; gap: 10px;
 }
 .sim-section:last-child { border-bottom: none; }
+
+.sim-section--done .sim-section__label { color: var(--s-t2); }
 
 .sim-section__header {
   display: flex; align-items: baseline;
@@ -213,25 +213,21 @@
 .sim-section__label {
   font-size: 12px; font-weight: 600; color: var(--s-t1);
   user-select: none; line-height: 1.2;
+  transition: color var(--s-ease);
 }
 .sim-section__value {
   font-size: 12px; font-weight: 600;
   font-family: var(--s-mono); color: var(--s-ac);
   letter-spacing: 0.01em; flex-shrink: 0;
 }
+.sim-section__value--empty {
+  font-size: 12px; font-weight: 500; color: var(--s-t3); flex-shrink: 0;
+}
 .sim-section__hint {
   font-size: 11px; color: var(--s-t2); line-height: 1.4; margin-top: -4px;
 }
-.sim-section--disabled { opacity: 0.40; pointer-events: none; user-select: none; }
-.sim-section__badge-soon {
-  display: inline-flex; align-items: center;
-  height: 17px; padding-inline: 7px; border-radius: var(--s-r1);
-  background: var(--s-s4); border: 1px solid var(--s-line3);
-  font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--s-t2); flex-shrink: 0;
-}
 
-/* ─── CHIPS ───────────────────────────────────────────────────────────── */
+/* ─── CHIPS ───────────────────────────────────────────────────────── */
 .sim-chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .sim-chips--col { flex-direction: column; }
 
@@ -251,10 +247,8 @@
   width: 100%; padding: 8px 12px;
 }
 .sim-chip__main { font-size: 12px; font-weight: 500; }
-.sim-chip__hint {
-  font-size: 9px; color: var(--s-t3);
-  font-family: var(--s-sans); letter-spacing: 0.02em; line-height: 1;
-}
+.sim-chip__hint { font-size: 9px; color: var(--s-t3); font-family: var(--s-sans); letter-spacing: 0.02em; line-height: 1; }
+
 .sim-chip:hover { color: var(--s-t1); border-color: var(--s-ac); background: var(--s-s3); }
 .sim-chip[data-active='true'] {
   color: var(--s-t1); border-color: var(--s-ac);
@@ -264,7 +258,23 @@
 .sim-chip[data-active='true'] .sim-chip__hint { color: var(--s-ac); opacity: 0.8; }
 .sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
 
-/* ─── RESULTS ──────────────────────────────────────────────────────────── */
+/* ─── CTA COMPLETO ────────────────────────────────────────────────── */
+.sim-sheet__cta {
+  display: flex; align-items: center; gap: 8px;
+  margin: 4px 16px 20px;
+  padding: 10px 14px;
+  background: var(--s-green-dim);
+  border: 1px solid rgba(101,173,62,0.25);
+  border-radius: var(--s-r2);
+  font-size: 12px; font-weight: 500; color: var(--s-green);
+}
+.sim-sheet__cta-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(101,173,62,0.20); flex-shrink: 0;
+}
+
+/* ─── RESULTS ─────────────────────────────────────────────────────── */
 .sim-results {
   background: var(--s-bg); padding: 1.25rem 1.5rem 2rem;
   display: flex; flex-direction: column; gap: 6px;
@@ -285,7 +295,7 @@
 .sim-results__legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--s-t2); }
 .sim-results__legend-dot  { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
-/* ─── SCORE CARD ─────────────────────────────────────────────────────── */
+/* ─── SCORE CARD ──────────────────────────────────────────────────── */
 .sim-card {
   background: var(--s-s1); border: 1px solid var(--s-line2);
   border-radius: var(--s-r3); padding: 1rem 1.125rem;
@@ -331,8 +341,10 @@
 .sim-card__cost-dot  { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 
 .sim-card__meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-.sim-card__score { font-size: 22px; font-weight: 700; font-family: var(--s-mono); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.02em; }
-.sim-card__score-label { font-size: 9px; color: var(--s-t2); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-top: -1px; text-align: right; }
+.sim-card__score { font-size: 22px; font-weight: 700; font-family: var(--s-mono);
+  font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.02em; }
+.sim-card__score-label { font-size: 9px; color: var(--s-t2); text-transform: uppercase;
+  letter-spacing: 0.08em; font-weight: 600; margin-top: -1px; text-align: right; }
 .sim-card__deviation { font-size: 10px; font-family: var(--s-mono); color: var(--s-t2); }
 
 @media (max-width: 480px) {
@@ -340,31 +352,24 @@
   .sim-card__cost-detail { display: none; }
 }
 
-/* ─── BADGE ───────────────────────────────────────────────────────────── */
+/* ─── BADGE ───────────────────────────────────────────────────────── */
 .sim-badge {
   display: inline-flex; align-items: center; gap: 4px;
   height: 18px; padding-inline: 6px; border-radius: var(--s-r1);
   font-size: 9px; font-weight: 700; letter-spacing: 0.07em;
   text-transform: uppercase; white-space: nowrap;
 }
-.sim-badge::before {
-  content: ''; width: 4px; height: 4px; border-radius: 50%;
-  background: currentColor; flex-shrink: 0;
-}
-.sim-badge--optimal    { color: var(--s-ac);    background: var(--s-ac-dim); }
-.sim-badge--feasible   { color: var(--s-green);  background: var(--s-green-dim); }
-.sim-badge--warning    { color: var(--s-amber);  background: var(--s-amber-dim); }
-.sim-badge--infeasible { color: var(--s-red);    background: var(--s-red-dim); }
+.sim-badge::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.sim-badge--optimal    { color: var(--s-ac);   background: var(--s-ac-dim); }
+.sim-badge--feasible   { color: var(--s-green); background: var(--s-green-dim); }
+.sim-badge--warning    { color: var(--s-amber); background: var(--s-amber-dim); }
+.sim-badge--infeasible { color: var(--s-red);   background: var(--s-red-dim); }
 
-/* ─── BOTTOM SHEET (mobile) ─────────────────────────────────────────── */
+/* ─── BOTTOM SHEET ────────────────────────────────────────────────── */
 /*
- * Il sheet occupa SEMPRE 92dvh di altezza, fixed in fondo allo schermo.
- * Il posizionamento verticale avviene tramite translateY su 3 classi snap:
- *   --collapsed  → solo l'handle è visibile (92dvh - 56px nascosti sotto)
- *   --half       → metà schermo visibile
- *   --full       → quasi tutto lo schermo visibile
- *
- * Nessun JS imposta style.transform — solo le classi CSS qui sotto.
+ * 2 soli snap via classi CSS:
+ *   .sim-sheet--collapsed  → translateY(calc(100% - var(--s-sh)))
+ *   .sim-sheet--full       → translateY(0)
  */
 .sim-sheet {
   position: fixed;
@@ -376,57 +381,88 @@
   border-radius: 14px 14px 0 0;
   border-top: 1px solid var(--s-line3);
   will-change: transform;
-  touch-action: none;
   transition: transform var(--s-spring);
-
-  /* Default: nascosto (fallback, sovrascritto dalle classi snap) */
-  transform: translateY(calc(92dvh - var(--s-sheet-handle)));
+  /* default = collapsed */
+  transform: translateY(calc(100% - var(--s-sh)));
 }
 
-/* Snap classes — assegnate da React via snap state */
-.sim-sheet--collapsed {
-  transform: translateY(calc(92dvh - var(--s-sheet-handle)));
-}
-.sim-sheet--half {
-  transform: translateY(46dvh); /* 92dvh * 0.5 */
-}
-.sim-sheet--full {
-  transform: translateY(0);
-}
+.sim-sheet--collapsed { transform: translateY(calc(100% - var(--s-sh))); }
+.sim-sheet--full      { transform: translateY(0); }
 
+/* ── Handle ─────────────────────────────────────────────────────── */
 .sim-sheet__handle-area {
-  height: var(--s-sheet-handle);
+  height: var(--s-sh);
+  width: 100%;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 7px;
   cursor: pointer; flex-shrink: 0; padding-inline: 1rem;
-  user-select: none; -webkit-user-select: none; touch-action: none;
+  user-select: none; -webkit-user-select: none;
+  background: none; border: none;
+  /* Tap highlight mobile */
+  -webkit-tap-highlight-color: rgba(64,168,184,0.08);
+  transition: background var(--s-ease);
 }
+.sim-sheet__handle-area:hover  { background: rgba(255,255,255,0.02); }
+.sim-sheet__handle-area:active { background: rgba(255,255,255,0.04); }
 .sim-sheet__handle-area:focus-visible {
-  outline: 2px solid var(--s-ac); outline-offset: -2px; border-radius: 14px 14px 0 0;
+  outline: 2px solid var(--s-ac); outline-offset: -2px;
+  border-radius: 14px 14px 0 0;
 }
+
 .sim-sheet__drag-bar {
   width: 32px; height: 4px; background: var(--s-s5); border-radius: 99px;
   transition: background var(--s-ease), width var(--s-ease);
 }
-.sim-sheet__handle-area:hover .sim-sheet__drag-bar,
-.sim-sheet__handle-area:active .sim-sheet__drag-bar { background: var(--s-line3); width: 40px; }
+.sim-sheet__handle-area:hover .sim-sheet__drag-bar  { background: var(--s-line3); width: 40px; }
+.sim-sheet__handle-area:active .sim-sheet__drag-bar { background: var(--s-ac); }
 
-.sim-sheet__status { display: flex; align-items: center; gap: 7px; width: 100%; justify-content: center; }
-.sim-sheet__status-exposure { font-family: var(--s-mono); font-size: 13px; font-weight: 700; color: var(--s-t1); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.sim-sheet__status-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--s-t3); flex-shrink: 0; }
-.sim-sheet__status-asset { font-size: 12px; font-weight: 500; color: var(--s-t2); }
-.sim-sheet__chevron { color: var(--s-t2); transition: transform var(--s-ease); margin-left: auto; flex-shrink: 0; }
+.sim-sheet__status {
+  display: flex; align-items: center; gap: 7px; width: 100%;
+}
+.sim-sheet__status-exposure {
+  font-family: var(--s-mono); font-size: 12px; font-weight: 700;
+  color: var(--s-t1); letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+}
+.sim-sheet__status-dot  { width: 3px; height: 3px; border-radius: 50%; background: var(--s-t3); flex-shrink: 0; }
+.sim-sheet__status-asset { font-size: 12px; font-weight: 500; color: var(--s-t2); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.sim-sheet__handle-right {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto;
+}
+
+.sim-sheet__chevron { color: var(--s-t2); transition: transform var(--s-spring); flex-shrink: 0; }
 .sim-sheet__chevron--collapsed { transform: rotate(0deg); }
-.sim-sheet__chevron--half,
 .sim-sheet__chevron--full      { transform: rotate(180deg); }
 
+/* ── Content ─────────────────────────────────────────────────────── */
 .sim-sheet__content {
   flex: 1; overflow-y: auto; overscroll-behavior: contain;
   scrollbar-width: thin; scrollbar-color: var(--s-s5) transparent;
-  padding-bottom: env(safe-area-inset-bottom, 16px); touch-action: pan-y;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  touch-action: pan-y;
 }
 
-/* ─── SKELETON ──────────────────────────────────────────────────────────── */
+/* ─── PROGRESS DOTS ───────────────────────────────────────────────── */
+.sim-progress {
+  display: flex; align-items: center; gap: 4px;
+}
+.sim-progress__dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--s-s5);
+  transition: background 200ms ease, transform 200ms cubic-bezier(0.16,1,0.3,1);
+  flex-shrink: 0;
+}
+.sim-progress__dot[data-done='true'] {
+  background: var(--s-ac);
+  transform: scale(1.2);
+}
+.sim-progress__label {
+  font-size: 10px; font-weight: 600; font-family: var(--s-mono);
+  color: var(--s-t2); margin-left: 2px; letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── SKELETON ────────────────────────────────────────────────────── */
 @keyframes sim-shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -439,7 +475,7 @@
 }
 .sim-skeleton--card { height: 76px; border-radius: var(--s-r3); }
 
-/* ─── UTILITY ──────────────────────────────────────────────────────────── */
+/* ─── UTILITY ─────────────────────────────────────────────────────── */
 .sim-num { font-family: var(--s-mono); font-variant-numeric: tabular-nums; transition: opacity 150ms ease; }
 .sim-num[data-updating='true'] { opacity: 0.35; }
 
@@ -453,4 +489,5 @@
 @media (prefers-reduced-motion: reduce) {
   .sim-skeleton { animation: none; }
   .sim-sheet, .sim-card__gauge-fill { transition: none; }
+  .sim-progress__dot { transition: none; }
 }
