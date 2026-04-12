@@ -7,7 +7,7 @@ import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 
-/* ─── ASSET TREE ──────────────────────────────────────────────────────── */
+/* ─── ASSET TREE ──────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Forex:   {
     Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD'],
@@ -20,13 +20,13 @@ const ASSET_TREE: Record<string, Record<string, string[]>> = {
   Materie: { Metalli: ['Oro','Argento','Rame'], Energia: ['Petrolio WTI','Gas Nat.','Brent'] },
 };
 
-/* ─── TYPES ───────────────────────────────────────────────────────────── */
+/* ─── TYPES ───────────────────────────────────────────────────────── */
 type StyleType   = 'scalping' | 'intraday' | 'swing' | 'position';
 type FreqId      = 'low' | 'mid' | 'high';
 type AccountType = 'demo' | 'micro' | 'retail' | 'semipro' | 'pro';
 type LevaType    = 'nessuna' | 'bassa' | 'media' | 'alta';
 
-/* ─── STILE OPTIONS ───────────────────────────────────────────────────── */
+/* ─── STILE OPTIONS ───────────────────────────────────────────────── */
 const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'scalping',  label: 'Scalping',  hint: 'sec / min' },
   { id: 'intraday',  label: 'Intraday',  hint: 'ore'       },
@@ -34,46 +34,34 @@ const STYLE_OPTIONS: { id: StyleType; label: string; hint: string }[] = [
   { id: 'position',  label: 'Position',  hint: '1 mese+'   },
 ];
 
-/* ─── FREQUENZA ─────────────────────────────────────────────────────────── */
+/* ─── FREQUENZA ───────────────────────────────────────────────────── */
 type FreqOption = { id: FreqId; label: string; hint: string };
 type FreqConfig = { unit: string; options: FreqOption[] };
 
 const FREQ_BY_STYLE: Record<StyleType, FreqConfig> = {
-  scalping: {
-    unit: 'al giorno',
-    options: [
-      { id: 'low',  label: 'Bassa',   hint: '5–10 trade'  },
-      { id: 'mid',  label: 'Media',   hint: '20–50 trade' },
-      { id: 'high', label: 'Intensa', hint: '100+ trade'  },
-    ],
-  },
-  intraday: {
-    unit: 'al giorno',
-    options: [
-      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
-      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
-      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
-    ],
-  },
-  swing: {
-    unit: 'a settimana',
-    options: [
-      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
-      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
-      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
-    ],
-  },
-  position: {
-    unit: 'al mese',
-    options: [
-      { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
-      { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
-      { id: 'high', label: 'Intensa', hint: '10+ trade'   },
-    ],
-  },
+  scalping: { unit: 'al giorno', options: [
+    { id: 'low',  label: 'Bassa',   hint: '5–10 trade'  },
+    { id: 'mid',  label: 'Media',   hint: '20–50 trade' },
+    { id: 'high', label: 'Intensa', hint: '100+ trade'  },
+  ]},
+  intraday: { unit: 'al giorno', options: [
+    { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+    { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+    { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+  ]},
+  swing: { unit: 'a settimana', options: [
+    { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+    { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+    { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+  ]},
+  position: { unit: 'al mese', options: [
+    { id: 'low',  label: 'Bassa',   hint: '1–2 trade' },
+    { id: 'mid',  label: 'Media',   hint: '3–5 trade'  },
+    { id: 'high', label: 'Intensa', hint: '10+ trade'   },
+  ]},
 };
 
-/* ─── ACCOUNT + LEVA ─────────────────────────────────────────────────────── */
+/* ─── ACCOUNT + LEVA ──────────────────────────────────────────────── */
 const ACCOUNT_OPTIONS: { id: AccountType; label: string; range: string }[] = [
   { id: 'demo',    label: 'Demo / Test', range: '< €500'      },
   { id: 'micro',   label: 'Micro',       range: '€500 – €2k'  },
@@ -89,7 +77,7 @@ const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
   { id: 'alta',    label: 'Alta',    hint: '1:50 – 1:500' },
 ];
 
-/* ─── CHIP GROUP ──────────────────────────────────────────────────────── */
+/* ─── CHIP GROUP ──────────────────────────────────────────────────── */
 function ChipGroup<T extends string>({
   options, value, onChange,
 }: {
@@ -135,7 +123,7 @@ function StringChipGroup({
   );
 }
 
-/* ─── SECTION + BLOCK DIVIDER ─────────────────────────────────────────── */
+/* ─── SECTION + BLOCK DIVIDER ─────────────────────────────────────── */
 function Section({ label, value, hint, children }: {
   label: string; value?: string; hint?: string; children: React.ReactNode;
 }) {
@@ -155,20 +143,16 @@ function BlockDivider({ label }: { label: string }) {
   return <div className="sim-block-divider">{label}</div>;
 }
 
-/* ─── SHELL ───────────────────────────────────────────────────────────── */
+/* ─── SHELL ───────────────────────────────────────────────────────── */
 export function SimulatoreShell() {
-  const {
-    assetClass, setAssetClass,
-    results, isComputing,
-  } = useSimulatorEngine();
+  const { assetClass, setAssetClass, results, isComputing } = useSimulatorEngine();
 
   const [subGroup, setSubGroup] = useState<string | null>(null);
   const [asset,    setAsset]    = useState<string | null>(null);
-  // tutto null = nessuna preselezione
-  const [style,   setStyle]   = useState<StyleType | null>(null);
-  const [freq,    setFreq]    = useState<FreqId | null>(null);
-  const [account, setAccount] = useState<AccountType | null>(null);
-  const [leva,    setLeva]    = useState<LevaType | null>(null);
+  const [style,    setStyle]    = useState<StyleType | null>(null);
+  const [freq,     setFreq]     = useState<FreqId | null>(null);
+  const [account,  setAccount]  = useState<AccountType | null>(null);
+  const [leva,     setLeva]     = useState<LevaType | null>(null);
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
   const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
@@ -182,12 +166,13 @@ export function SimulatoreShell() {
   const freqLabel   = freqCurrent && freqConfig ? `${freqCurrent.hint} ${freqConfig.unit}` : undefined;
   const levaLabel   = leva ? (LEVA_OPTIONS.find(o => o.id === leva)?.hint ?? undefined) : undefined;
 
+  // Solo snap e toggle — nessun touch handler passato al content
   const { snap, toggle: toggleSheet, onTouchStart, onTouchEnd, sheetRef } = usePanelSheet();
 
   const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
   const statusAccount = account ? (ACCOUNT_OPTIONS.find(o => o.id === account)?.label ?? '—') : '—';
 
-  /* ── PANEL CONTENT ──────────────────────────────────────────────────── */
+  /* ── PANEL CONTENT ─────────────────────────────────────────────── */
   const panelContent = (
     <>
       <BlockDivider label="Strumento" />
@@ -263,7 +248,7 @@ export function SimulatoreShell() {
     </>
   );
 
-  /* ── RESULTS AREA ───────────────────────────────────────────────────── */
+  /* ── RESULTS AREA ──────────────────────────────────────────────── */
   const resultsArea = (
     <section className="sim-results" aria-label="Risultati simulazione" aria-live="polite">
       {!isComputing && results.length > 0 && (
@@ -302,12 +287,14 @@ export function SimulatoreShell() {
 
       {resultsArea}
 
+      {/* BOTTOM SHEET — drag SOLO sull'handle, content scroll libero */}
       <div
         ref={sheetRef}
         className={`sim-sheet sim-sheet--${snap}`}
         aria-label="Parametri simulazione"
         role="complementary"
       >
+        {/* Handle: unico punto di interazione per aprire/chiudere */}
         <div
           className="sim-sheet__handle-area"
           onTouchStart={onTouchStart}
@@ -331,11 +318,9 @@ export function SimulatoreShell() {
             </svg>
           </div>
         </div>
-        <div
-          className="sim-sheet__content"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
+
+        {/* Content: nessun touch handler — scroll nativo libero */}
+        <div className="sim-sheet__content">
           {panelContent}
         </div>
       </div>
