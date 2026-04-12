@@ -14,10 +14,23 @@ import { useEffect } from 'react';
 
 /* ─── ASSET TREE ──────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
-  Forex:   {
-    Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD'],
-    Cross:  ['EUR/GBP','EUR/JPY','GBP/JPY'],
-    Exotic: ['USD/TRY','USD/ZAR','EUR/PLN'],
+  Forex: {
+    Majors: [
+      'EUR/USD','GBP/USD','USD/JPY','USD/CHF',
+      'AUD/USD','USD/CAD','NZD/USD',
+    ],
+    Cross: [
+      'EUR/GBP','EUR/JPY','EUR/CHF','EUR/CAD','EUR/AUD',
+      'GBP/JPY','GBP/CHF',
+      'AUD/JPY','CAD/JPY',
+    ],
+    Exotic: [
+      'USD/TRY','EUR/TRY',
+      'USD/ZAR','EUR/ZAR',
+      'EUR/PLN','USD/PLN',
+      'USD/MXN',
+      'USD/SEK','USD/NOK',
+    ],
   },
   Crypto:  { 'Large Cap': ['BTC/USD','ETH/USD','BNB/USD'], 'Mid Cap': ['SOL/USD','ADA/USD','DOT/USD'], Stablecoin: ['USDT/USD','USDC/USD'] },
   Indici:  { Europa: ['DAX 40','FTSE 100','CAC 40'], USA: ['S&P 500','NASDAQ 100','DOW 30'], Asia: ['Nikkei 225','Hang Seng'] },
