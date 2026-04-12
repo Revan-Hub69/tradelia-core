@@ -170,6 +170,7 @@
   display: flex; flex-direction: column;
   height: 100%; overflow: hidden;
   width: var(--s-pw); flex-shrink: 0; min-width: 0;
+  position: relative; /* per posizionare KbdHintBar */
 }
 
 .sim-panel__content {
@@ -256,7 +257,21 @@
   box-shadow: 0 0 0 1px var(--s-ac);
 }
 .sim-chip[data-active='true'] .sim-chip__hint { color: var(--s-ac); opacity: 0.8; }
-.sim-chip:focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; }
+
+/*
+ * Focus ring ARIA — chip con role="radio".
+ * tabIndex=0 → chip riceve il focus; usiamo :focus-visible
+ * (non :focus) per non mostrare il ring al click mouse.
+ */
+.sim-chip[role='radio']:focus-visible {
+  outline: 2px solid var(--s-ac);
+  outline-offset: 2px;
+  border-color: var(--s-ac);
+  background: var(--s-s3);
+  color: var(--s-t1);
+  /* ring distinto dallo stato selected */
+  box-shadow: 0 0 0 4px rgba(64,168,184,0.18);
+}
 
 /* ─── CTA COMPLETO ────────────────────────────────────────────────── */
 .sim-sheet__cta {
@@ -366,11 +381,6 @@
 .sim-badge--infeasible { color: var(--s-red);   background: var(--s-red-dim); }
 
 /* ─── BOTTOM SHEET ────────────────────────────────────────────────── */
-/*
- * 2 soli snap via classi CSS:
- *   .sim-sheet--collapsed  → translateY(calc(100% - var(--s-sh)))
- *   .sim-sheet--full       → translateY(0)
- */
 .sim-sheet {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -382,7 +392,6 @@
   border-top: 1px solid var(--s-line3);
   will-change: transform;
   transition: transform var(--s-spring);
-  /* default = collapsed */
   transform: translateY(calc(100% - var(--s-sh)));
 }
 
@@ -398,7 +407,6 @@
   cursor: pointer; flex-shrink: 0; padding-inline: 1rem;
   user-select: none; -webkit-user-select: none;
   background: none; border: none;
-  /* Tap highlight mobile */
   -webkit-tap-highlight-color: rgba(64,168,184,0.08);
   transition: background var(--s-ease);
 }
@@ -462,6 +470,82 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ─── KBD HINT BAR ────────────────────────────────────────────────── */
+/*
+ * Barra suggerimento tastiera — appare una sola volta quando
+ * il focus entra nel panel, si dissolve dopo 4s.
+ * Posizionata sticky al fondo del panel/sheet con z-index sopra il content.
+ */
+.sim-kbd-hint {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: color-mix(in srgb, var(--s-s2) 95%, var(--s-ac));
+  border-top: 1px solid var(--s-line2);
+  font-size: 11px;
+  color: var(--s-t2);
+  /* Entrata/uscita con fade + slide-up */
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 220ms cubic-bezier(0.16,1,0.3,1),
+    transform 220ms cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
+  user-select: none;
+  /* nascosto di default — lo screen reader lo ignora */
+  visibility: hidden;
+}
+
+.sim-kbd-hint[data-visible='true'] {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.sim-kbd-hint__icon {
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.sim-kbd-hint__text {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+  line-height: 1.3;
+}
+
+/* Tasto <kbd> stile pill */
+.sim-kbd-hint kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  padding-inline: 5px;
+  border-radius: var(--s-r1);
+  border: 1px solid var(--s-line3);
+  background: var(--s-s4);
+  color: var(--s-t1);
+  font-family: var(--s-mono);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 1px 0 var(--s-s5);
+}
+
+/* Su mobile la hint bar non ha senso — nascondiamola */
+@media (max-width: 860px) {
+  .sim-kbd-hint { display: none; }
+}
+
 /* ─── SKELETON ────────────────────────────────────────────────────── */
 @keyframes sim-shimmer {
   0%   { background-position: -200% 0; }
@@ -486,8 +570,16 @@
 
 .sim-root :focus-visible { outline: 2px solid var(--s-ac); outline-offset: 2px; border-radius: var(--s-r1); }
 
+/* sr-only utility (usata da SimulatoreShell per le descrizioni ARIA) */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sim-skeleton { animation: none; }
   .sim-sheet, .sim-card__gauge-fill { transition: none; }
   .sim-progress__dot { transition: none; }
+  .sim-kbd-hint { transition: none; }
 }
