@@ -1,10 +1,15 @@
 // ============================================================
 // LEVERAGE PROFILES — immutabile
 // Leva desiderata dall'utente — input step 4.
+//
+// NOTA: per asset class 'forex' il selettore leva NON viene mostrato
+// nel frontend. La leva su FX è implicita (ESMA cap) o implicita
+// nel contratto (futures). Usare excludedAssetClasses per il controllo UI.
 // ============================================================
 
 import type { UnderlyingGroupId } from './underlying-groups';
 import { UNDERLYING_GROUPS }      from './underlying-groups';
+import type { AssetClassId }      from './underlying-groups';
 
 export type LeverageProfileId =
   | 'none'    // nessuna leva
@@ -22,6 +27,15 @@ export type LeverageProfile = {
   leverageMaxRetailEU: number | null;
   icon: string;
   note: string;
+  /**
+   * Asset class per cui questo profilo NON deve essere mostrato nel frontend.
+   * Il frontend nasconde l'intero selettore leva quando
+   * l'asset class selezionata è in questo array.
+   *
+   * 'forex' → leva implicita nel cap ESMA (CFD/Spot) o nel margine CME (Futures).
+   *           L'utente non sceglie la leva — la sceglie il motore.
+   */
+  excludedAssetClasses: AssetClassId[];
 };
 
 export const LEVERAGE_PROFILES: Record<LeverageProfileId, LeverageProfile> = {
@@ -35,6 +49,7 @@ export const LEVERAGE_PROFILES: Record<LeverageProfileId, LeverageProfile> = {
     leverageMaxRetailEU: 1,
     icon: 'ShieldCheck',
     note: 'Esposizione 1:1 sul sottostante. Nessun rischio liquidazione.',
+    excludedAssetClasses: ['forex'],
   },
   low: {
     id: 'low',
@@ -46,6 +61,7 @@ export const LEVERAGE_PROFILES: Record<LeverageProfileId, LeverageProfile> = {
     leverageMaxRetailEU: 5,
     icon: 'TrendingUp',
     note: 'Leva contenuta. Amplifica i movimenti senza rischio di liquidazione immediata.',
+    excludedAssetClasses: ['forex'],
   },
   medium: {
     id: 'medium',
@@ -57,6 +73,7 @@ export const LEVERAGE_PROFILES: Record<LeverageProfileId, LeverageProfile> = {
     leverageMaxRetailEU: 20,
     icon: 'Zap',
     note: 'Leva significativa. I costi di finanziamento diventano rilevanti nel tempo.',
+    excludedAssetClasses: ['forex'],
   },
   high: {
     id: 'high',
@@ -68,14 +85,25 @@ export const LEVERAGE_PROFILES: Record<LeverageProfileId, LeverageProfile> = {
     leverageMaxRetailEU: 30,
     icon: 'Flame',
     note: 'Leva elevata. Disponibile solo su alcuni mercati regolamentati EU. Rischio liquidazione dominante.',
+    excludedAssetClasses: ['forex'],
   },
 } as const;
 
 export const LEVERAGE_PROFILE_IDS: LeverageProfileId[] = ['none', 'low', 'medium', 'high'];
 
 // ============================================================
+// HELPER: il selettore leva va mostrato per questa asset class?
+// Usato dal frontend per nascondere l'intero step leva.
+// ============================================================
+export function isLeverageSelectorVisible(assetClass: AssetClassId): boolean {
+  // Se tutti i profili escludono questa asset class → nascondi il selettore
+  return LEVERAGE_PROFILE_IDS.some(
+    id => !LEVERAGE_PROFILES[id].excludedAssetClasses.includes(assetClass),
+  );
+}
+
+// ============================================================
 // HELPER: leva effettiva clampata
-// effectiveLeverage = min(profile.leverageMid, ug.esmaLeverageCap, instrumentCap)
 // ============================================================
 export function getEffectiveLeverage(
   profileId: LeverageProfileId,
@@ -97,7 +125,6 @@ export function getEffectiveLeverage(
 
 // ============================================================
 // HELPER: profili disponibili per un dato gruppo (filtro UI)
-// Un profilo è disponibile se la sua leverageMin è ≤ esmaLeverageCap del gruppo.
 // ============================================================
 export function getAvailableLeverageProfiles(
   ugId: UnderlyingGroupId,
@@ -113,7 +140,6 @@ export function getAvailableLeverageProfiles(
   );
 }
 
-// Helper legacy — backward compat
 export function isLeverageCompatible(
   profileId: LeverageProfileId,
   maxLeverageESMA: number | null,
