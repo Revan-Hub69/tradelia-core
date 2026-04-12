@@ -1,0 +1,157 @@
+/* ============================================================
+   SimResultsEmpty — SOTA 2026 Educational Empty State
+   ============================================================ */
+
+.sim-empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-sp6);
+  padding: var(--s-sp6);
+  position: relative;
+}
+
+/* ── Intro ──────────────────────────────────────────────────── */
+.sim-empty__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-sp2);
+}
+
+.sim-empty__intro-label {
+  font-size: var(--s-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--s-text-muted);
+}
+
+.sim-empty__intro-desc {
+  font-size: var(--s-text-sm);
+  color: var(--s-text-faint);
+  max-width: 36ch;
+}
+
+/* ── Demo cards ─────────────────────────────────────────────── */
+.sim-empty__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-sp3);
+  pointer-events: none;
+  user-select: none;
+}
+
+.sim-empty__card {
+  display: flex;
+  align-items: center;
+  gap: var(--s-sp4);
+  padding: var(--s-sp4) var(--s-sp5);
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  border-radius: 10px;
+  filter: blur(0.3px);
+}
+
+.sim-empty__card-left {
+  display: flex;
+  align-items: center;
+  gap: var(--s-sp3);
+  flex-shrink: 0;
+}
+
+.sim-empty__card-broker {
+  font-size: var(--s-text-sm);
+  font-weight: 600;
+  color: var(--s-text);
+  line-height: 1.2;
+}
+
+.sim-empty__card-account {
+  font-size: var(--s-text-xs);
+  color: var(--s-text-muted);
+  margin-top: 1px;
+}
+
+.sim-empty__card-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-sp2);
+  align-items: flex-end;
+}
+
+.sim-empty__card-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: var(--s-radius-full);
+}
+
+.sim-empty__card-badge[data-feasibility="optimal"] {
+  background: color-mix(in oklch, var(--s-ac) 12%, transparent);
+  color: var(--s-ac);
+}
+
+.sim-empty__card-badge[data-feasibility="feasible"] {
+  background: color-mix(in oklch, var(--s-gold) 14%, transparent);
+  color: var(--s-gold);
+}
+
+/* ── Cost bar ───────────────────────────────────────────────── */
+.sim-empty__bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--s-sp3);
+  width: 100%;
+}
+
+.sim-empty__bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--s-surface-offset);
+  display: flex;
+  overflow: hidden;
+}
+
+.sim-empty__bar-seg[data-type="spread"]    { background: var(--s-ac);    }
+.sim-empty__bar-seg[data-type="comm"]      { background: var(--s-gold);  }
+.sim-empty__bar-seg[data-type="overnight"] { background: var(--s-amber); }
+
+.sim-empty__bar-total {
+  font-size: var(--s-text-xs);
+  font-weight: 500;
+  color: var(--s-text-muted);
+  white-space: nowrap;
+  min-width: 44px;
+  text-align: right;
+}
+
+.sim-empty__card-legend {
+  display: flex;
+  gap: var(--s-sp3);
+}
+
+.sim-empty__card-legend span {
+  font-size: 10px;
+  color: var(--s-text-faint);
+  letter-spacing: 0.03em;
+}
+
+.sim-empty__card-legend span[data-type="spread"]::before    { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--s-ac);    margin-right: 3px; vertical-align: middle; }
+.sim-empty__card-legend span[data-type="comm"]::before      { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--s-gold);  margin-right: 3px; vertical-align: middle; }
+.sim-empty__card-legend span[data-type="overnight"]::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--s-amber); margin-right: 3px; vertical-align: middle; }
+
+/* ── Lock overlay ───────────────────────────────────────────── */
+.sim-empty__overlay {
+  display: flex;
+  align-items: center;
+  gap: var(--s-sp2);
+  padding: var(--s-sp3) var(--s-sp4);
+  border: 1px solid var(--s-border);
+  border-radius: 8px;
+  background: var(--s-surface-offset);
+  font-size: var(--s-text-xs);
+  color: var(--s-text-muted);
+}
