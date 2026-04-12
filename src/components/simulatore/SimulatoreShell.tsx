@@ -1,11 +1,16 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useSimulatorEngine } from '@/hooks/useSimulatorEngine';
 import { usePanelSheet } from '@/hooks/usePanelSheet';
+import { useRovingTabIndex } from '@/hooks/useRovingTabIndex';
+import { useKbdHint } from '@/hooks/useKbdHint';
+import { useStepAutoScroll } from '@/hooks/useStepAutoScroll';
+import { KbdHintBar } from './KbdHintBar';
 import { ScoreCardList } from './ScoreCardList';
 import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
+import { useEffect } from 'react';
 
 /* ─── ASSET TREE ──────────────────────────────────────────────────── */
 const ASSET_TREE: Record<string, Record<string, string[]>> = {
@@ -77,95 +82,8 @@ const LEVA_OPTIONS: { id: LevaType; label: string; hint: string }[] = [
   { id: 'alta',    label: 'Alta',    hint: '1:50 – 1:500' },
 ];
 
-/* ─── HOOK: useStepAutoScroll ─────────────────────────────────────── */
-/**
- * Quando `trigger` cambia (nuovo step completato), aspetta che
- * AnimatedSection finisca di montarsi (280ms) poi scrolla smooth
- * al bottom del container — funziona sia per panel che per sheet.
- *
- * Strategia: invece di scrollare al fondo assoluto (che mostrerebbe
- * il prossimo step a metà), scrolliamo l'ultimo elemento figlio
- * del container in view con scrollIntoView, così il nuovo campo
- * appare sempre in cima al viewport scrollabile.
- */
-function useStepAutoScroll(
-  containerRef: React.RefObject<HTMLElement | null>,
-  trigger: unknown,
-  enabled = true,
-) {
-  const prevTrigger = useRef(trigger);
-
-  useEffect(() => {
-    // Scolla solo se il trigger è davvero cambiato (non al mount)
-    if (!enabled || prevTrigger.current === trigger) return;
-    prevTrigger.current = trigger;
-
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Delay = AnimatedSection transition (240ms) + margine
-    const t = setTimeout(() => {
-      // Trova l'ultimo figlio visibile e portalo in view
-      const children = container.querySelectorAll<HTMLElement>(
-        '.sim-section, .sim-block-divider, .sim-sheet__cta'
-      );
-      const last = children[children.length - 1];
-      if (last) {
-        last.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-      }
-    }, 300);
-
-    return () => clearTimeout(t);
-  }, [trigger, enabled, containerRef]);
-}
-
-/* ─── CHIP GROUP ──────────────────────────────────────────────────── */
-function ChipGroup<T extends string>({
-  options, value, onChange,
-}: {
-  options: { id: T; label: string; hint?: string }[];
-  value: T | null;
-  onChange: (v: T) => void;
-}) {
-  return (
-    <div className="sim-chips">
-      {options.map(o => (
-        <button
-          key={o.id} type="button"
-          className="sim-chip"
-          data-active={value === o.id ? 'true' : 'false'}
-          aria-pressed={value === o.id}
-          onClick={() => onChange(o.id)}
-        >
-          <span>{o.label}</span>
-          {o.hint && <span className="sim-chip__hint">{o.hint}</span>}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function StringChipGroup({
-  options, value, onChange, mono,
-}: {
-  options: string[]; value: string | null; onChange: (v: string) => void; mono?: boolean;
-}) {
-  return (
-    <div className="sim-chips">
-      {options.map(o => (
-        <button
-          key={o} type="button"
-          className={mono ? 'sim-chip sim-chip--mono' : 'sim-chip'}
-          data-active={value === o ? 'true' : 'false'}
-          aria-pressed={value === o}
-          onClick={() => onChange(o)}
-        >{o}</button>
-      ))}
-    </div>
-  );
-}
+/* sr-only descrizione condivisa per tutti i radiogroup */
+const RADIOGROUP_DESC_ID = 'sim-radiogroup-desc';
 
 /* ─── ANIMATED SECTION ────────────────────────────────────────────── */
 function AnimatedSection({ show, children }: { show: boolean; children: React.ReactNode }) {
@@ -186,26 +104,27 @@ function AnimatedSection({ show, children }: { show: boolean; children: React.Re
 
   if (!mounted) return null;
   return (
-    <div
-      style={{
-        opacity:    visible ? 1 : 0,
-        transform:  visible ? 'translateY(0)' : 'translateY(8px)',
-        transition: 'opacity 240ms cubic-bezier(0.16,1,0.3,1), transform 240ms cubic-bezier(0.16,1,0.3,1)',
-      }}
-    >
+    <div style={{
+      opacity:    visible ? 1 : 0,
+      transform:  visible ? 'translateY(0)' : 'translateY(8px)',
+      transition: 'opacity 240ms cubic-bezier(0.16,1,0.3,1), transform 240ms cubic-bezier(0.16,1,0.3,1)',
+    }}>
       {children}
     </div>
   );
 }
 
 /* ─── SECTION ─────────────────────────────────────────────────────── */
-function Section({ label, value, hint, children, done }: {
-  label: string; value?: string; hint?: string; children: React.ReactNode; done?: boolean;
+function Section({ label, value, hint, children, done, groupId }: {
+  label: string; value?: string; hint?: string;
+  children: React.ReactNode; done?: boolean; groupId?: string;
 }) {
   return (
     <div className={`sim-section${done ? ' sim-section--done' : ''}`}>
       <div className="sim-section__header">
-        <span className="sim-section__label">{label}</span>
+        <span className="sim-section__label" id={groupId ? `${groupId}-label` : undefined}>
+          {label}
+        </span>
         {value
           ? <span className="sim-section__value sim-num">{value}</span>
           : <span className="sim-section__value--empty">—</span>
@@ -219,6 +138,82 @@ function Section({ label, value, hint, children, done }: {
 
 function BlockDivider({ label }: { label: string }) {
   return <div className="sim-block-divider">{label}</div>;
+}
+
+/* ─── RADIO CHIP GROUP (WAI-ARIA radiogroup + roving tabindex) ────── */
+function RadioChipGroup<T extends string>({
+  id, label, options, value, onChange, mono,
+}: {
+  id: string;
+  label: string;
+  options: { id: T; label: string; hint?: string }[];
+  value: T | null;
+  onChange: (v: T) => void;
+  mono?: boolean;
+}) {
+  const ids = options.map(o => o.id);
+  const { getItemProps } = useRovingTabIndex(ids, value, onChange);
+
+  return (
+    <div
+      role="radiogroup"
+      aria-labelledby={`${id}-label`}
+      aria-describedby={RADIOGROUP_DESC_ID}
+      className="sim-chips"
+    >
+      {options.map(o => {
+        const itemProps = getItemProps(o.id);
+        return (
+          <button
+            key={o.id}
+            type="button"
+            className={mono ? 'sim-chip sim-chip--mono' : 'sim-chip'}
+            data-active={value === o.id ? 'true' : 'false'}
+            {...itemProps}
+          >
+            <span>{o.label}</span>
+            {o.hint && <span className="sim-chip__hint">{o.hint}</span>}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function RadioAccountGroup({
+  id, value, onChange,
+}: {
+  id: string;
+  value: AccountType | null;
+  onChange: (v: AccountType) => void;
+}) {
+  const ids = ACCOUNT_OPTIONS.map(o => o.id);
+  const { getItemProps } = useRovingTabIndex(ids, value, onChange);
+
+  return (
+    <div
+      role="radiogroup"
+      aria-labelledby={`${id}-label`}
+      aria-describedby={RADIOGROUP_DESC_ID}
+      className="sim-chips sim-chips--col"
+    >
+      {ACCOUNT_OPTIONS.map(o => {
+        const itemProps = getItemProps(o.id);
+        return (
+          <button
+            key={o.id}
+            type="button"
+            className="sim-chip sim-chip--row"
+            data-active={value === o.id ? 'true' : 'false'}
+            {...itemProps}
+          >
+            <span className="sim-chip__main">{o.label}</span>
+            <span className="sim-chip__hint">{o.range}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 /* ─── PROGRESS DOTS ───────────────────────────────────────────────── */
@@ -245,17 +240,25 @@ export function SimulatoreShell() {
   const [leva,     setLeva]     = useState<LevaType | null>(null);
 
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
+  const { visible: kbdVisible, show: showKbd }  = useKbdHint();
 
-  // Ref separati per i due container scrollabili
-  const panelContentRef = useRef<HTMLDivElement>(null); // sidebar desktop
-  const sheetContentRef = useRef<HTMLDivElement>(null); // sheet mobile
+  const panelContentRef = useRef<HTMLDivElement>(null);
+  const sheetContentRef = useRef<HTMLDivElement>(null);
 
   const groups = assetClass ? Object.keys(ASSET_TREE[assetClass] ?? {}) : [];
   const assets = assetClass && subGroup ? (ASSET_TREE[assetClass]?.[subGroup] ?? []) : [];
 
-  const handleGroupChange = (g: string) => { setAssetClass(g); setSubGroup(null); setAsset(null); };
-  const handleSubChange   = (s: string) => { setSubGroup(s); setAsset(null); };
-  const handleStyleChange = (s: StyleType) => { setStyle(s); setFreq(null); };
+  const handleGroupChange = useCallback((g: string) => {
+    setAssetClass(g); setSubGroup(null); setAsset(null);
+  }, [setAssetClass]);
+
+  const handleSubChange = useCallback((s: string) => {
+    setSubGroup(s); setAsset(null);
+  }, []);
+
+  const handleStyleChange = useCallback((s: StyleType) => {
+    setStyle(s); setFreq(null);
+  }, []);
 
   const freqConfig  = style ? FREQ_BY_STYLE[style] : null;
   const freqCurrent = freqConfig && freq ? freqConfig.options.find(o => o.id === freq) : null;
@@ -265,35 +268,45 @@ export function SimulatoreShell() {
   const completedSteps = [assetClass, subGroup, style, freq, account, leva].filter(Boolean).length;
   const totalSteps     = STEPS.length;
   const isComplete     = completedSteps === totalSteps;
+  const scrollTrigger  = [assetClass, subGroup, style, freq, account, leva].join('|');
 
-  // Trigger per l'auto-scroll: stringa che cambia ad ogni step completato
-  // Usare la stringa precisa evita falsi trigger su re-render
-  const scrollTrigger = [assetClass, subGroup, style, freq, account, leva].join('|');
-
-  // Auto-scroll su sidebar desktop — sempre attivo
   useStepAutoScroll(panelContentRef, scrollTrigger, true);
-
-  // Auto-scroll su sheet mobile — solo quando aperto
   useStepAutoScroll(sheetContentRef, scrollTrigger, snap === 'full');
 
-  const statusAsset   = asset ?? subGroup ?? assetClass ?? '—';
+  /* Mostra kbd hint la prima volta che il focus entra nel panel */
+  const handlePanelFocusIn = useCallback(() => showKbd(), [showKbd]);
+
+  const statusAsset = asset ?? subGroup ?? assetClass ?? '—';
 
   /* ── PANEL CONTENT ─────────────────────────────────────────────── */
   const panelContent = (
     <>
+      {/* Descrizione sr-only condivisa da tutti i radiogroup */}
+      <span id={RADIOGROUP_DESC_ID} className="sr-only">
+        Usa le frecce ← → per navigare tra le opzioni, Spazio o Invio per selezionare.
+      </span>
+
       <BlockDivider label="Strumento" />
 
-      <Section label="Categoria" value={assetClass ?? undefined} done={!!assetClass}>
-        <StringChipGroup
-          options={Object.keys(ASSET_TREE)}
+      <Section label="Categoria" value={assetClass ?? undefined} done={!!assetClass} groupId="sim-cat">
+        <RadioChipGroup
+          id="sim-cat"
+          label="Categoria"
+          options={Object.keys(ASSET_TREE).map(k => ({ id: k, label: k }))}
           value={assetClass}
           onChange={handleGroupChange}
         />
       </Section>
 
       <AnimatedSection show={!!assetClass}>
-        <Section label="Sottogruppo" value={subGroup ?? undefined} done={!!subGroup}>
-          <StringChipGroup options={groups} value={subGroup} onChange={handleSubChange} />
+        <Section label="Sottogruppo" value={subGroup ?? undefined} done={!!subGroup} groupId="sim-sub">
+          <RadioChipGroup
+            id="sim-sub"
+            label="Sottogruppo"
+            options={groups.map(g => ({ id: g, label: g }))}
+            value={subGroup}
+            onChange={handleSubChange}
+          />
         </Section>
       </AnimatedSection>
 
@@ -303,8 +316,16 @@ export function SimulatoreShell() {
           value={asset ?? undefined}
           hint="Opzionale — lascia vuoto per confrontare tutto il gruppo"
           done={!!asset}
+          groupId="sim-asset"
         >
-          <StringChipGroup options={assets} value={asset} onChange={setAsset} mono />
+          <RadioChipGroup
+            id="sim-asset"
+            label="Asset specifico"
+            options={assets.map(a => ({ id: a, label: a }))}
+            value={asset}
+            onChange={setAsset}
+            mono
+          />
         </Section>
       </AnimatedSection>
 
@@ -316,8 +337,15 @@ export function SimulatoreShell() {
           value={style ? STYLE_OPTIONS.find(o => o.id === style)?.label : undefined}
           hint="Orizzonte temporale di ogni operazione"
           done={!!style}
+          groupId="sim-style"
         >
-          <ChipGroup options={STYLE_OPTIONS} value={style} onChange={handleStyleChange} />
+          <RadioChipGroup
+            id="sim-style"
+            label="Stile operativo"
+            options={STYLE_OPTIONS}
+            value={style}
+            onChange={handleStyleChange}
+          />
         </Section>
 
         <AnimatedSection show={!!style && !!freqConfig}>
@@ -326,8 +354,17 @@ export function SimulatoreShell() {
             value={freqLabel}
             hint="Quante operazioni apri in media"
             done={!!freq}
+            groupId="sim-freq"
           >
-            {freqConfig && <ChipGroup options={freqConfig.options} value={freq} onChange={setFreq} />}
+            {freqConfig && (
+              <RadioChipGroup
+                id="sim-freq"
+                label="Frequenza"
+                options={freqConfig.options}
+                value={freq}
+                onChange={setFreq}
+              />
+            )}
           </Section>
         </AnimatedSection>
 
@@ -337,21 +374,9 @@ export function SimulatoreShell() {
             value={account ? ACCOUNT_OPTIONS.find(o => o.id === account)?.range : undefined}
             hint="Capitale totale che gestisci"
             done={!!account}
+            groupId="sim-account"
           >
-            <div className="sim-chips sim-chips--col">
-              {ACCOUNT_OPTIONS.map(o => (
-                <button
-                  key={o.id} type="button"
-                  className="sim-chip sim-chip--row"
-                  data-active={account === o.id ? 'true' : 'false'}
-                  aria-pressed={account === o.id}
-                  onClick={() => setAccount(o.id)}
-                >
-                  <span className="sim-chip__main">{o.label}</span>
-                  <span className="sim-chip__hint">{o.range}</span>
-                </button>
-              ))}
-            </div>
+            <RadioAccountGroup id="sim-account" value={account} onChange={setAccount} />
           </Section>
         </AnimatedSection>
 
@@ -361,8 +386,15 @@ export function SimulatoreShell() {
             value={levaLabel}
             hint="Moltiplicatore di esposizione"
             done={!!leva}
+            groupId="sim-leva"
           >
-            <ChipGroup options={LEVA_OPTIONS} value={leva} onChange={setLeva} />
+            <RadioChipGroup
+              id="sim-leva"
+              label="Leva finanziaria"
+              options={LEVA_OPTIONS}
+              value={leva}
+              onChange={setLeva}
+            />
           </Section>
         </AnimatedSection>
 
@@ -413,11 +445,16 @@ export function SimulatoreShell() {
 
   return (
     <>
-      {/* SIDEBAR DESKTOP — ref proprio per l'auto-scroll */}
-      <aside className="sim-panel" aria-label="Parametri simulazione">
+      {/* SIDEBAR DESKTOP */}
+      <aside
+        className="sim-panel"
+        aria-label="Parametri simulazione"
+        onFocusCapture={handlePanelFocusIn}
+      >
         <div className="sim-panel__content" ref={panelContentRef}>
           {panelContent}
         </div>
+        <KbdHintBar visible={kbdVisible} />
       </aside>
 
       {resultsArea}
@@ -428,6 +465,7 @@ export function SimulatoreShell() {
         className={`sim-sheet sim-sheet--${snap}`}
         role="complementary"
         aria-label="Parametri simulazione"
+        onFocusCapture={handlePanelFocusIn}
       >
         <button
           type="button"
@@ -454,11 +492,10 @@ export function SimulatoreShell() {
             </div>
           </div>
         </button>
-
-        {/* ref separato per lo sheet */}
         <div className="sim-sheet__content" ref={sheetContentRef}>
           {panelContent}
         </div>
+        <KbdHintBar visible={kbdVisible} />
       </div>
     </>
   );
