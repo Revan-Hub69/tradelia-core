@@ -1,14 +1,13 @@
 // ============================================================
-// SIMULATOR ENGINE v3.2
+// SIMULATOR ENGINE v3.3
 //
-// CHANGES v3.2:
-//   fix: CFD exposure = capital × ESMA_LEVERAGE[ugId]
-//        (was: exposure = capital, leva non applicata)
-//   fix: minPositionEUR check usa l'exposure post-leva
-//   add: spot_fx branch → calcSpotFxCosts
-//        - commission per lotto (per_lot_ecn)
-//        - overnight tom-next in pip + rollover triplo
-//   refactor: isCfd / isSpotFx / isFutures flag espliciti
+// CHANGES v3.3:
+//   fix: position sizing professionale
+//        lots = (riskPct × capital) / (stopLossPips × pipValueEUR)
+//        (era: exposure = capital × maxLeverage — MAX ESMA, non sizing reale)
+//   add: lotizzazione clampata tra minLots e maxLots (ESMA cap + margine)
+//   add: achievableExposure = lots × LOT_SIZE (reale, non teorico)
+//   keep: ESMA leverage usato solo come CAP, non come moltiplicatore
 // ============================================================
 
 import { INSTRUMENT_OFFERS } from '@/data/simulator/market-data/instrument-offers';
@@ -22,12 +21,11 @@ const USD_TO_EUR        = 0.92;
 const LOT_SIZE          = 100_000;
 const SCORE_HALF_LIFE   = 20;
 const k                 = Math.LN2 / SCORE_HALF_LIFE;
-const MAX_RISK_PCT      = 0.02;
+const DEFAULT_RISK_PCT  = 0.01;  // 1% capitale rischiato per trade (default professionale)
 const FUTURES_CAPITAL_RATIO = 0.20;
 
 // ── ESMA leverage cap per underlying group ──────────────────────
-// Fonte: ESMA product intervention (2018), confermato MiFID II.
-// Usato per calcolare l'exposure CFD/Spot partendo dal capitale.
+// Usato SOLO come CAP massimo per la leva, non come moltiplicatore di exposure.
 const ESMA_LEVERAGE: Record<string, number> = {
   ug_fx_major:            30,
   ug_fx_minor:            20,
@@ -105,7 +103,6 @@ export type SimulatorResult = {
 export type TradeDirection = 'long' | 'short';
 
 export type EngineInput = {
-  exposure?:      number;  // opzionale: se assente viene derivato da capital × leva
   capital?:       number;
   assetClass:     AssetClass;
   underlyingId?:  UnderlyingId;
@@ -129,7 +126,6 @@ function ugIdsForAssetClass(ac: AssetClass): string[] {
   }
 }
 
-/** Leva ESMA massima per un'offerta, basata sugli ugIds dell'offer. */
 function esmaLeverageForOffer(offer: InstrumentOffer): number {
   const leverages = offer.ugIds.map(ug => ESMA_LEVERAGE[ug] ?? 1);
   return Math.max(...leverages);
@@ -142,6 +138,62 @@ function pipValueEURPerLot(quoteCurrency: string): number {
 
 function toBps(eur: number, reference: number): number {
   return reference > 0 ? (eur / reference) * 10_000 : 0;
+}
+
+/**
+ * Lotizzazione professionale basata sul rischio.
+ *
+ * Formula:
+ *   riskEUR  = capital × riskPct
+ *   lots     = riskEUR / (stopLossPips × pipValueEURPerLot)
+ *
+ * Il risultato viene poi:
+ *   - arrotondato al minLots disponibile per l'offer
+ *   - clampato al massimo consentito dalla leva ESMA (capital × esmaLev / LOT_SIZE)
+ *   - verificato che il margine richiesto non superi il capitale disponibile
+ *
+ * Se l'exposure minima dell'offer non è raggiungibile → 0 (INFEASIBLE).
+ */
+function calcProfessionalLots(params: {
+  capital:      number;
+  riskPct:      number;
+  stopLossPips: number;
+  quoteCurrency: string;
+  offer:        InstrumentOffer;
+}): number {
+  const { capital, riskPct, stopLossPips, quoteCurrency, offer } = params;
+
+  const riskEUR    = capital * riskPct;
+  const pipValEUR  = pipValueEURPerLot(quoteCurrency);
+
+  if (pipValEUR <= 0 || stopLossPips <= 0) return 0;
+
+  // Lots raw da risk management
+  const lotsRaw = riskEUR / (stopLossPips * pipValEUR);
+
+  // Lot step minimo (default 0.01 = micro lot)
+  const minLots  = offer.minLotSize ?? 0.01;
+  // Arrotonda al minLots inferiore
+  const lotsStep = Math.floor(lotsRaw / minLots) * minLots;
+  if (lotsStep < minLots) return 0;
+
+  // CAP ESMA: mai superare capital × esmaLeverage (in termini di exposure)
+  const esmaLev  = esmaLeverageForOffer(offer);
+  const maxLots  = (capital * esmaLev) / LOT_SIZE;
+  const lots     = Math.min(lotsStep, maxLots);
+
+  // Verifica margine: marginRequirementPct applicato sull'exposure
+  const exposure      = lots * LOT_SIZE;
+  const marginNeeded  = (offer.marginRequirementPct / 100) * exposure;
+  if (marginNeeded > capital) {
+    // Riduce i lots al massimo coperto dal capitale disponibile
+    const adjustedExposure = capital / (offer.marginRequirementPct / 100);
+    const adjustedLots     = Math.floor((adjustedExposure / LOT_SIZE) / minLots) * minLots;
+    if (adjustedLots < minLots) return 0;
+    return adjustedLots;
+  }
+
+  return lots;
 }
 
 // ── Overnight shared (CFD + Spot FX) ────────────────────────────
@@ -175,45 +227,32 @@ function calcOvernightEUR(
   return pipsPerDay < 0 ? costEUR : 0;
 }
 
-function calcRiskPerTradePct(
-  lots:         number,
-  capital:      number,
-  underlyingId: UnderlyingId | undefined,
-  stopLossPips: number,
-): number {
-  if (capital <= 0 || lots <= 0) return 1;
-  const quoteCcy  = underlyingId ? (UNDERLYINGS[underlyingId]?.quoteCurrency ?? 'USD') : 'USD';
-  const pipValEUR = pipValueEURPerLot(quoteCcy);
-  return (stopLossPips * pipValEUR * lots) / capital;
-}
-
 function calcScore(totalCostBps: number): number {
   return Math.max(1, Math.round(100 * Math.exp(-k * totalCostBps)));
 }
 
 function calcFeasibility(
-  offer:        InstrumentOffer,
-  exposure:     number,
-  capital:      number,
-  lots:         number,
-  underlyingId: UnderlyingId | undefined,
-  totalCostBps: number,
-  stopLossPips: number,
+  offer:           InstrumentOffer,
+  exposure:        number,
+  capital:         number,
+  lots:            number,
+  underlyingId:    UnderlyingId | undefined,
+  totalCostBps:    number,
+  stopLossPips:    number,
+  riskPerTradePct: number,
 ): FeasibilityDetail {
-  const marginRequired  = (offer.marginRequirementPct / 100) * exposure;
-  // check su exposure post-leva (non sul capital raw)
-  const access          = offer.minPositionEUR <= exposure;
-  const canTrade        = capital >= marginRequired;
-  const riskPerTradePct = calcRiskPerTradePct(lots, capital, underlyingId, stopLossPips);
-  const sustainable     = riskPerTradePct < MAX_RISK_PCT;
-  void totalCostBps;
+  const marginRequired = (offer.marginRequirementPct / 100) * exposure;
+  const access         = offer.minPositionEUR <= exposure;
+  const canTrade       = capital >= marginRequired;
+  const sustainable    = riskPerTradePct < 0.02;
+  void lots; void underlyingId; void stopLossPips; void totalCostBps;
 
   let label: Feasibility;
-  if (!access || !canTrade)   label = 'INFEASIBLE';
-  else if (!sustainable)      label = 'WARNING';
-  else if (totalCostBps < 15) label = 'OPTIMAL';
-  else if (totalCostBps < 40) label = 'FEASIBLE';
-  else                        label = 'WARNING';
+  if (!access || !canTrade || lots <= 0) label = 'INFEASIBLE';
+  else if (!sustainable)                  label = 'WARNING';
+  else if (totalCostBps < 15)             label = 'OPTIMAL';
+  else if (totalCostBps < 40)             label = 'FEASIBLE';
+  else                                    label = 'WARNING';
 
   return { access, canTrade, sustainable, label, marginRequired, riskPerTradePct };
 }
@@ -261,10 +300,6 @@ function calcCFDCosts(
 }
 
 // ── Spot FX cost calculator ──────────────────────────────────────
-// Differenze rispetto a CFD:
-//   - commission: sempre per_lot_ecn (commissionPerLotEUR/USD)
-//   - overnight:  tom-next in pip, stessa formula CFD ma swapType semanticamente diverso
-//   - exposure:   capital × ESMA_LEVERAGE (identico CFD, ma leva è del broker non fissa)
 function calcSpotFxCosts(
   offer:        InstrumentOffer,
   underlyingId: UnderlyingId | undefined,
@@ -275,14 +310,12 @@ function calcSpotFxCosts(
 ): CostBreakdown {
   const lots = exposure / LOT_SIZE;
 
-  // Spread (raw ECN — tipicamente near-zero su major)
   let spreadBps = offer.spreadAvgBps;
   if (underlyingId && offer.underlyingOverrides?.[underlyingId]?.spreadAvgBps != null) {
     spreadBps = offer.underlyingOverrides[underlyingId]!.spreadAvgBps!;
   }
   const spreadEUR = (spreadBps / 10_000) * exposure * nTrades;
 
-  // Commission per lotto (round-trip: già incluso nel valore se definito RT)
   let commissionEUR = 0;
   if (offer.commissionPerLotEUR != null) {
     commissionEUR = offer.commissionPerLotEUR * lots * nTrades;
@@ -290,9 +323,6 @@ function calcSpotFxCosts(
     commissionEUR = offer.commissionPerLotUSD * lots * nTrades * USD_TO_EUR;
   }
 
-  // Overnight tom-next: identico CFD in formula, diverso in origine dei dati
-  // (i pip vengono da overnightLongPipsPerDay / overnightShortPipsPerDay dell'offer)
-  // Spot non ha "intraday exemption" — se nDaysOpen > 0 si paga sempre
   const overnightEUR = nDaysOpen > 0
     ? calcOvernightEUR(offer, underlyingId, direction, nDaysOpen, lots)
     : 0;
@@ -383,7 +413,6 @@ function calcFuturesCosts(
 
 // ── Main engine ──────────────────────────────────────────────────
 export function runEngine({
-  exposure:     exposureInput,
   capital,
   assetClass,
   underlyingId,
@@ -391,28 +420,25 @@ export function runEngine({
   nDaysOpen    = 1,
   nTrades      = 1,
   stopLossPips = 20,
-  riskPct      = 0.01,
+  riskPct,
 }: EngineInput): SimulatorResult[] {
   if (nTrades === 0) return [];
 
-  const effectiveCapital = capital ?? exposureInput ?? 0;
+  const effectiveCapital = capital ?? 0;
   if (effectiveCapital <= 0) return [];
 
-  const ugIds = ugIdsForAssetClass(assetClass);
+  const effectiveRisk = riskPct ?? DEFAULT_RISK_PCT;  // 1% default professionale
 
+  const ugIds = ugIdsForAssetClass(assetClass);
   const compatibleOffers = INSTRUMENT_OFFERS.filter(offer =>
     offer.ugIds.some(ug => ugIds.includes(ug)),
   );
-
   if (compatibleOffers.length === 0) return [];
-
-  void riskPct;
 
   const results: SimulatorResult[] = compatibleOffers.flatMap(offer => {
     const broker      = BROKERS[offer.brokerId];
     const isFutures   = offer.instrumentTypeId === 'futures_std';
     const isSpotFx    = offer.instrumentTypeId === 'spot_fx';
-    // isCfd = tutto ciò che non è futures né spot (cfd_dd, cfd_ecn)
     const isCfd       = !isFutures && !isSpotFx;
 
     let breakdown:    CostBreakdown;
@@ -422,7 +448,6 @@ export function runEngine({
     let exposure      = 0;
 
     if (isFutures) {
-      // Futures: leva implicita nel margine CME, capital non serve per exposure
       const res    = calcFuturesCosts(offer, effectiveCapital, nDaysOpen, nTrades);
       breakdown    = res.breakdown;
       contracts    = res.contracts;
@@ -431,31 +456,45 @@ export function runEngine({
       exposure = contracts * FUTURES_PARAMS[contractSize ?? 'micro'].nominalEUR;
 
     } else if (isSpotFx || isCfd) {
-      // CFD e Spot FX: exposure = capital × leva ESMA (cap regolatorio)
-      // Se l'utente ha passato un exposureInput esplicito lo usiamo direttamente,
-      // altrimenti deriviamo dalla leva ESMA.
-      const leverage = esmaLeverageForOffer(offer);
-      exposure = exposureInput != null && exposureInput > 0
-        ? exposureInput
-        : effectiveCapital * leverage;
+      // ── Lotizzazione professionale ──────────────────────────
+      // Il motore NON usa capital × maxLeverage.
+      // Calcola quanti lot aprire in base al rischio per trade.
+      const underlying  = underlyingId ? UNDERLYINGS[underlyingId] : undefined;
+      const quoteCcy    = underlying?.quoteCurrency ?? 'USD';
 
-      if (exposure < 100) return [];
+      lots = calcProfessionalLots({
+        capital:       effectiveCapital,
+        riskPct:       effectiveRisk,
+        stopLossPips,
+        quoteCurrency: quoteCcy,
+        offer,
+      });
 
-      // minPositionEUR check sull'exposure post-leva
+      if (lots <= 0) return [];
+
+      exposure = lots * LOT_SIZE;
+
+      // Verifica minPositionEUR sull'exposure reale (non teorica)
       if (offer.minPositionEUR > exposure) return [];
-
-      lots = exposure / LOT_SIZE;
 
       breakdown = isSpotFx
         ? calcSpotFxCosts(offer, underlyingId, exposure, direction, nDaysOpen, nTrades)
         : calcCFDCosts(offer, underlyingId, exposure, direction, nDaysOpen, nTrades);
+
     } else {
       return [];
     }
 
+    const riskPerTradePct = lots > 0
+      ? (stopLossPips * pipValueEURPerLot(
+          underlyingId ? (UNDERLYINGS[underlyingId]?.quoteCurrency ?? 'USD') : 'USD'
+        ) * lots) / effectiveCapital
+      : 0;
+
     const totalCostBps = breakdown.totalBps;
     const feasDetail   = calcFeasibility(
-      offer, exposure, effectiveCapital, lots, underlyingId, totalCostBps, stopLossPips,
+      offer, exposure, effectiveCapital, lots,
+      underlyingId, totalCostBps, stopLossPips, riskPerTradePct,
     );
     const score = calcScore(totalCostBps);
 
