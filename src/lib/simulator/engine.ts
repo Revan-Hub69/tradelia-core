@@ -1,38 +1,32 @@
 // ============================================================
-// SIMULATOR ENGINE v4
+// SIMULATOR ENGINE v4.2
 //
-// CHANGES v4 (vs v3.4):
+// CHANGES v4.2 (SOTA fixes):
 //
-//   fix(🔴): monthlyCostEUR rimosso dall'engine — responsabilità del caller
-//            engine è ora SEMPRE per-singolo-trade (nTrades=1)
-//            monthlyCostEUR = costPerTradeEUR × tradesPerMonth in recommend()
+//   fix(🔴): calcSpreadEUR — rimosso spreadPips (campo inesistente sul tipo).
+//            Spread ora calcolato correttamente da:
+//              1. underlyingOverride.spreadAvgBps (valore broker per-pair)
+//              2. offer.spreadAvgBps (fallback root)
+//            Formula: (spreadBps / 10_000) × exposure (round-trip già incluso)
+//            Per FX normalizzato via pipValue per coerenza con overnight/slippage.
 //
-//   fix(🔴): calcProfessionalLots — ripristinato return 0 se lotsRaw < minLots
-//            NON si bara sul risk model (minLots forzato = rischio 40% su 500€)
+//   fix(🔴): isIntraday — ora derivato da nDaysOpen <= 1 (profilo utente),
+//            NON da offer.compatibleHorizons.includes('intraday').
+//            Prima: ogni offer Tickmill aveva compatibleHorizons=['intraday',...]
+//            → overnight sempre 0 anche per swing/position.
 //
-//   fix(🔴): monthlyCostRatio corretto — ora per-trade (non × nTrades di nuovo)
+//   fix(🟠): estMonthlyNotional — ora passato esplicitamente dal caller
+//            via monthlyVolumeEUR. Fallback: exposure × 22 (scalping default)
+//            invece di exposure × 10 (fisso e non realistico).
 //
-//   add(🟢): Range type { best, expected, worst } su tutti i costi
-//            spread ×0.7/1/2, overnight ×0.5/1/1.8, slippage basato su liquidità
+//   fix(🟡): minLotSize — letto da offer.minLotSize (ora nel tipo InstrumentOffer).
+//            Prima: ?? 0.01 hardcoded. Ora: offer.minLotSize con fallback 0.01.
 //
-//   add(🟢): slippage model reale (non slippageCost: 0)
-//            slippagePips = f(liquidityTier, volatilityRegime, lots)
-//
-//   add(🟢): accountCurrency in EngineInput (default 'EUR')
-//            pipValue() ora converte quoteCcy → accountCurrency (non EUR hardcoded)
-//            fxRate(from, to) pipeline corretta (via EUR come pivot)
-//
-//   add(🟢): VolatilityRegime 'LOW' | 'NORMAL' | 'HIGH' in EngineInput
-//            influenza slippage e spread worst-case
-//
-//   add(🟢): commission tiering volume-based (monthlyVolumeEUR threshold)
-//
-//   fix(🟠): sort per costBreakdown.range.total.expected ASC
-//
-// PATCH v4.1:
+// CHANGES v4.1 (precedente):
 //   fix(🔴): optional chaining su underlying?.overnightLongPipsPerDay
-//            e underlying?.overnightShortPipsPerDay in calcOvernightEUR
-//            ?? 0 fallback finale — previene crash se underlying è undefined
+// CHANGES v4.0 (precedente):
+//   fix: nTrades rimosso, engine sempre per-singolo-trade
+//   add: Range {best,expected,worst}, slippage model, commission tiering
 // ============================================================
 
 import { INSTRUMENT_OFFERS } from '@/data/simulator/market-data/instrument-offers';
@@ -49,7 +43,7 @@ const k                 = Math.LN2 / SCORE_HALF_LIFE;
 const DEFAULT_RISK_PCT  = 0.01;
 const FUTURES_CAPITAL_RATIO = 0.20;
 
-// ── FX rates → EUR (static, v4 — pivot via EUR) ───────────────────────────
+// ── FX rates → EUR (static v4.2 — snapshot aprile 2026, pivot via EUR) ────
 // 1 unit of currency = X EUR
 const FX_RATE_TO_EUR: Record<string, number> = {
   EUR: 1.00,
@@ -67,10 +61,6 @@ const FX_RATE_TO_EUR: Record<string, number> = {
   HKD: 0.118,
 };
 
-/**
- * Converti 1 unità di `from` in `to`, usando EUR come pivot.
- * USD→GBP: (USD→EUR) / (GBP→EUR) = 0.92 / 1.17 ≈ 0.786
- */
 function fxRate(from: string, to: string): number {
   if (from === to) return 1;
   const fromEUR = FX_RATE_TO_EUR[from] ?? 1;
@@ -79,15 +69,12 @@ function fxRate(from: string, to: string): number {
 }
 
 /**
- * Valore di 1 pip per 1 lot standard (100k unità base)
- * nella valuta del conto (accountCurrency).
- *
+ * Valore di 1 pip per 1 lot standard (100k unità base) in accountCurrency.
  * Formula: pipSize × LOT_SIZE × fxRate(quoteCcy → accountCurrency)
  *
- * Esempi (conto EUR):
- *   EUR/USD → 0.0001 × 100k × fxRate(USD,EUR) = 0.0001×100k×0.92 = 9.20€/pip/lot
- *   GBP/JPY → 0.01   × 100k × fxRate(JPY,EUR) = 0.01×100k×0.0062 = 6.20€/pip/lot
- *   EUR/GBP → 0.0001 × 100k × fxRate(GBP,EUR) = 0.0001×100k×1.17 = 11.70€/pip/lot
+ * EUR/USD (conto EUR): 0.0001 × 100k × fxRate(USD,EUR) = 9.20 €/pip/lot
+ * GBP/JPY (conto EUR): 0.01   × 100k × fxRate(JPY,EUR) = 6.20 €/pip/lot
+ * EUR/GBP (conto EUR): 0.0001 × 100k × fxRate(GBP,EUR) = 11.70 €/pip/lot
  */
 function pipValue(quoteCurrency: string, accountCurrency = 'EUR'): number {
   const pipSize = quoteCurrency === 'JPY' ? 0.01 : 0.0001;
@@ -120,12 +107,10 @@ const FUTURES_PARAMS: Record<'micro' | 'mini' | 'full', {
 };
 
 // ── Range type ─────────────────────────────────────────────────────────────
-
-/** Distribuzione triplice per ogni costo: scenario ottimistico, atteso, peggiore. */
 export type Range = {
-  best:     number;   // condizioni ottimali (basso vol, alta liquidità)
-  expected: number;   // stima centrale (baseline)
-  worst:    number;   // condizioni avverse (alta vol, news, spread widening)
+  best:     number;
+  expected: number;
+  worst:    number;
 };
 
 function toRange(v: number): Range {
@@ -134,87 +119,53 @@ function toRange(v: number): Range {
 
 function sumRange(ranges: Range[]): Range {
   return ranges.reduce(
-    (acc, r) => ({
-      best:     acc.best     + r.best,
-      expected: acc.expected + r.expected,
-      worst:    acc.worst    + r.worst,
-    }),
+    (acc, r) => ({ best: acc.best + r.best, expected: acc.expected + r.expected, worst: acc.worst + r.worst }),
     { best: 0, expected: 0, worst: 0 },
   );
 }
 
 function spreadToRange(v: number, regime: VolatilityRegime): Range {
   const worstMult = regime === 'HIGH' ? 3.5 : regime === 'NORMAL' ? 2.0 : 1.4;
-  return {
-    best:     v * 0.7,
-    expected: v,
-    worst:    v * worstMult,
-  };
+  return { best: v * 0.7, expected: v, worst: v * worstMult };
 }
 
 function overnightToRange(v: number): Range {
-  // carry positivo (v > 0): varia meno, worst = meno carry
-  // costo negativo (v < 0): worst = costo più alto
-  if (v >= 0) {
-    return { best: v * 1.2, expected: v, worst: v * 0.4 };
-  }
+  if (v >= 0) return { best: v * 1.2, expected: v, worst: v * 0.4 };
   return { best: v * 0.5, expected: v, worst: v * 1.8 };
 }
 
 // ── Volatility & slippage ──────────────────────────────────────────────────
-
 export type VolatilityRegime = 'LOW' | 'NORMAL' | 'HIGH';
 
-/** Slippage in pips per side, per tier liquidità × regime. */
 const SLIPPAGE_BASE_PIPS: Record<string, Record<VolatilityRegime, number>> = {
-  // liquidityTier → regime → pips
   tier1:   { LOW: 0.05, NORMAL: 0.15, HIGH: 0.50 },
   tier2:   { LOW: 0.15, NORMAL: 0.35, HIGH: 1.20 },
   tier3:   { LOW: 0.40, NORMAL: 0.80, HIGH: 2.50 },
   default: { LOW: 0.20, NORMAL: 0.40, HIGH: 1.40 },
 };
 
-/**
- * Slippage range in accountCurrency.
- * - best:     metà dello slippage atteso (limit order, execution favorevole)
- * - expected: slippage standard per tier + regime
- * - worst:    2× expected (news spike, gap, illiquidità momentanea)
- *
- * Lo slippage è già per-side; round-trip = ×2 (open + close).
- */
 function calcSlippageRange(
-  lots:            number,
-  pipVal:          number,
-  liquidityTier:   string,
-  regime:          VolatilityRegime,
+  lots:          number,
+  pipVal:        number,
+  liquidityTier: string,
+  regime:        VolatilityRegime,
 ): Range {
-  const tierKey   = (SLIPPAGE_BASE_PIPS[liquidityTier] ? liquidityTier : 'default');
-  const basePips  = SLIPPAGE_BASE_PIPS[tierKey]![regime]!;
-  // round-trip (×2) + volume factor (lotti > 5 → +20%)
+  const tierKey     = SLIPPAGE_BASE_PIPS[liquidityTier] ? liquidityTier : 'default';
+  const basePips    = SLIPPAGE_BASE_PIPS[tierKey]![regime]!;
   const volumeFactor = lots > 5 ? 1.2 : 1.0;
-  const expected  = basePips * 2 * pipVal * lots * volumeFactor;
-  return {
-    best:     expected * 0.4,
-    expected,
-    worst:    expected * 2.2,
-  };
+  const expected    = basePips * 2 * pipVal * lots * volumeFactor;
+  return { best: expected * 0.4, expected, worst: expected * 2.2 };
 }
 
 // ── Commission tiering ─────────────────────────────────────────────────────
-
-/**
- * Sconto commission in base al volume mensile stimato (nozionale in EUR).
- * Tier progressivi — stessa struttura di IB/IC Markets/Saxo.
- */
 function commissionTierMultiplier(monthlyNotionalEUR: number): number {
-  if (monthlyNotionalEUR >= 200_000_000) return 0.50;  // -50%
-  if (monthlyNotionalEUR >=  50_000_000) return 0.70;  // -30%
-  if (monthlyNotionalEUR >=  10_000_000) return 0.85;  // -15%
-  return 1.00;  // no discount (retail)
+  if (monthlyNotionalEUR >= 200_000_000) return 0.50;
+  if (monthlyNotionalEUR >=  50_000_000) return 0.70;
+  if (monthlyNotionalEUR >=  10_000_000) return 0.85;
+  return 1.00;
 }
 
 // ── ESMA leverage helpers ──────────────────────────────────────────────────
-
 function esmaLeverageForOffer(offer: InstrumentOffer): number {
   const leverages = offer.ugIds.map(ug => ESMA_LEVERAGE[ug] ?? 1);
   return Math.max(...leverages);
@@ -225,18 +176,6 @@ function toBps(eur: number, reference: number): number {
 }
 
 // ── Position sizing ────────────────────────────────────────────────────────
-
-/**
- * Lotizzazione professionale:
- *   lots = (capital × riskPct) / (SL_pips × pipValue)
- *
- * Regole:
- *   - Se lotsRaw < minLots → return 0 (INFEASIBLE)
- *     NON si forzano lots a minLots: viola il risk model
- *     (500€ cap, 20 pip SL, 0.01 lot = rischio ~40% invece di 1%)
- *   - Clampato al CAP ESMA
- *   - Ridotto se margine richiesto > capitale
- */
 function calcProfessionalLots(params: {
   capital:         number;
   riskPct:         number;
@@ -247,25 +186,23 @@ function calcProfessionalLots(params: {
 }): number {
   const { capital, riskPct, stopLossPips, quoteCurrency, accountCurrency, offer } = params;
 
-  const riskEUR  = capital * riskPct;
-  const pipVal   = pipValue(quoteCurrency, accountCurrency);
+  const riskEUR = capital * riskPct;
+  const pipVal  = pipValue(quoteCurrency, accountCurrency);
 
   if (pipVal <= 0 || stopLossPips <= 0) return 0;
 
   const lotsRaw = riskEUR / (stopLossPips * pipVal);
+  // fix(v4.2): usa offer.minLotSize (ora nel tipo) con fallback 0.01
   const minLots = offer.minLotSize ?? 0.01;
 
-  // INFEASIBLE se non si raggiunge il lotto minimo con il rischio target
   if (lotsRaw < minLots) return 0;
 
   const lotsStep = Math.floor(lotsRaw / minLots) * minLots;
 
-  // CAP ESMA
   const esmaLev = esmaLeverageForOffer(offer);
   const maxLots = (capital * esmaLev) / LOT_SIZE;
   let lots      = Math.min(lotsStep, maxLots);
 
-  // Aggiustamento margine
   const exposure     = lots * LOT_SIZE;
   const marginNeeded = (offer.marginRequirementPct / 100) * exposure;
   if (marginNeeded > capital) {
@@ -279,14 +216,6 @@ function calcProfessionalLots(params: {
 }
 
 // ── Overnight ─────────────────────────────────────────────────────────────
-
-/**
- * Costo overnight netto (per notte effettiva).
- * Segno preservato: negativo = costo, positivo = carry.
- *
- * Rollover triplo mercoledì: ogni 7gg → +2 notti extra.
- * Formula: pipsPerDay × totalNights × pipValue × lots
- */
 function calcOvernightEUR(
   offer:           InstrumentOffer,
   underlying:      Underlying | undefined,
@@ -301,8 +230,8 @@ function calcOvernightEUR(
   const overrides = offer.underlyingOverrides?.[underlying.id];
 
   const pipsPerDay = direction === 'long'
-    ? (overrides?.overnightLongPipsPerDay  ?? offer.overnightLongPipsPerDay  ?? underlying?.overnightLongPipsPerDay  ?? 0)
-    : (overrides?.overnightShortPipsPerDay ?? offer.overnightShortPipsPerDay ?? underlying?.overnightShortPipsPerDay ?? 0);
+    ? (overrides?.overnightLongPipsPerDay  ?? offer.overnightLongPipsPerDay  ?? underlying.overnightLongPipsPerDay  ?? 0)
+    : (overrides?.overnightShortPipsPerDay ?? offer.overnightShortPipsPerDay ?? underlying.overnightShortPipsPerDay ?? 0);
 
   if (pipsPerDay === 0) return 0;
 
@@ -317,49 +246,40 @@ function calcOvernightEUR(
 }
 
 // ── Spread → EUR ──────────────────────────────────────────────────────────
-
 /**
- * Per FX: spreadPips × pipValue (corretto per quoteCcy + accountCurrency).
- * Per non-FX (indici, equity, commodity): fallback su spreadAvgBps × exposure.
- * I bps vengono derivati DOPO come metrica secondaria.
+ * fix(v4.2): rimosso spreadPips (campo inesistente).
+ * Calcolo corretto:
+ *   1. Legge spreadAvgBps da underlyingOverride (valore broker per-pair) se presente
+ *   2. Fallback a offer.spreadAvgBps (root)
+ *   Formula: (spreadBps / 10_000) × exposure
+ *   Round-trip già incluso (spread è sempre per round-trip in market convention)
  */
 function calcSpreadEUR(
   offer:           InstrumentOffer,
   underlyingId:    UnderlyingId | undefined,
   exposure:        number,
-  lots:            number,
-  quoteCurrency:   string,
-  accountCurrency: string,
 ): number {
   const overrides  = underlyingId ? offer.underlyingOverrides?.[underlyingId] : undefined;
-  const spreadPips = overrides?.spreadPips ?? offer.spreadPips;
-
-  if (spreadPips != null) {
-    return spreadPips * pipValue(quoteCurrency, accountCurrency) * lots;
-  }
-  return (offer.spreadAvgBps / 10_000) * exposure;
+  const spreadBps  = overrides?.spreadAvgBps ?? offer.spreadAvgBps;
+  return (spreadBps / 10_000) * exposure;
 }
 
-// ── CostBreakdown (esteso con Range) ───────────────────────────────────────
-
+// ── CostBreakdown ─────────────────────────────────────────────────────────
 export type CostBreakdown = {
-  // Valori attesi (backward compat)
   spreadEUR:       number;
   commissionEUR:   number;
   overnightEUR:    number;
-  slippageEUR:     number;     // NEW — non più 0
+  slippageEUR:     number;
   exchangeFeeEUR:  number;
   rollEUR:         number;
   totalEUR:        number;
-  // bps su exposure (derivati da expected)
   spreadBps:       number;
   commissionBps:   number;
   overnightBps:    number;
-  slippageBps:     number;     // NEW
+  slippageBps:     number;
   exchangeFeeBps:  number;
   rollBps:         number;
   totalBps:        number;
-  // Range distribuzioni
   range: {
     spread:     Range;
     commission: Range;
@@ -370,7 +290,6 @@ export type CostBreakdown = {
 };
 
 // ── Feasibility ───────────────────────────────────────────────────────────
-
 export type Feasibility = 'OPTIMAL' | 'FEASIBLE' | 'WARNING' | 'INFEASIBLE';
 
 export type FeasibilityDetail = {
@@ -393,9 +312,8 @@ function calcFeasibility(
   const marginRequired = (offer.marginRequirementPct / 100) * exposure;
   const access         = offer.minPositionEUR <= exposure;
   const canTrade       = capital >= marginRequired;
-  // costRatio per-trade (non × nTrades — scaling è in recommend())
-  const costRatio  = totalCostBps / 10_000;
-  const sustainable = riskPerTradePct < 0.02 && costRatio < 0.005;
+  const costRatio      = totalCostBps / 10_000;
+  const sustainable    = riskPerTradePct < 0.02 && costRatio < 0.005;
   void lots;
 
   let label: Feasibility;
@@ -413,7 +331,6 @@ function calcScore(totalCostBps: number): number {
 }
 
 // ── CFD / Spot FX cost calculator ─────────────────────────────────────────
-
 function calcFxCosts(params: {
   offer:            InstrumentOffer;
   underlying:       Underlying | undefined;
@@ -421,11 +338,12 @@ function calcFxCosts(params: {
   lots:             number;
   direction:        TradeDirection;
   holdingDays:      number;
-  monthlyNotional:  number;    // per commission tiering
+  monthlyNotional:  number;
   quoteCurrency:    string;
   accountCurrency:  string;
   regime:           VolatilityRegime;
-  isIntraday:       boolean;   // CFD intraday exemption
+  // fix(v4.2): isIntraday ora da nDaysOpen <= 1 (caller), NON da compatibleHorizons
+  isIntraday:       boolean;
 }): CostBreakdown {
   const {
     offer, underlying, exposure, lots, direction,
@@ -433,11 +351,11 @@ function calcFxCosts(params: {
     regime, isIntraday,
   } = params;
 
-  const pipVal = pipValue(quoteCurrency, accountCurrency);
+  const pipVal      = pipValue(quoteCurrency, accountCurrency);
   const liquidityTier = underlying?.liquidityTier ?? 'tier2';
 
-  // Spread (per-trade, 1 round-trip)
-  const spreadBase = calcSpreadEUR(offer, underlying?.id, exposure, lots, quoteCurrency, accountCurrency);
+  // Spread
+  const spreadBase = calcSpreadEUR(offer, underlying?.id, exposure);
   const spreadR    = spreadToRange(spreadBase, regime);
 
   // Commission (tiered)
@@ -448,18 +366,18 @@ function calcFxCosts(params: {
   } else if (offer.commissionPerLotUSD != null) {
     commBase = offer.commissionPerLotUSD * fxRate('USD', accountCurrency) * lots * tierMult;
   }
-  const commissionR = toRange(commBase);  // commissione è deterministica
+  const commissionR = toRange(commBase);
 
-  // Overnight (intraday CFD exempt)
-  const effectiveDays = (isIntraday && holdingDays <= 1) ? 0 : holdingDays;
+  // Overnight
+  // fix(v4.2): effectiveDays basato su isIntraday (nDaysOpen <= 1), non sull'offer
+  const effectiveDays = isIntraday ? 0 : holdingDays;
   const overnightBase = calcOvernightEUR(offer, underlying, direction, effectiveDays, lots, quoteCurrency, accountCurrency);
   const overnightR    = overnightToRange(overnightBase);
 
-  // Slippage (NEW — non più 0)
+  // Slippage
   const slippageR = calcSlippageRange(lots, pipVal, liquidityTier, regime);
 
-  const totalR = sumRange([spreadR, commissionR, overnightR, slippageR]);
-
+  const totalR   = sumRange([spreadR, commissionR, overnightR, slippageR]);
   const totalEUR = totalR.expected;
 
   return {
@@ -482,7 +400,6 @@ function calcFxCosts(params: {
 }
 
 // ── Futures cost calculator ───────────────────────────────────────────────
-
 function calcFuturesCosts(
   offer:           InstrumentOffer,
   capital:         number,
@@ -502,10 +419,7 @@ function calcFuturesCosts(
     exchangeFeeEUR: 0, rollEUR: 0, totalEUR: 0,
     spreadBps: 0, commissionBps: 0, overnightBps: 0, slippageBps: 0,
     exchangeFeeBps: 0, rollBps: 0, totalBps: 0,
-    range: {
-      spread:     toRange(0), commission: toRange(0),
-      overnight:  toRange(0), slippage:   toRange(0), total: toRange(0),
-    },
+    range: { spread: toRange(0), commission: toRange(0), overnight: toRange(0), slippage: toRange(0), total: toRange(0) },
   });
 
   if (sizes.length === 0) return { contracts: 0, contractSize: null, breakdown: empty() };
@@ -515,9 +429,9 @@ function calcFuturesCosts(
   const contracts    = Math.max(1, Math.floor(usableCapital / params.marginEUR));
   const nominalEUR   = contracts * params.nominalEUR;
 
-  const fxUSD        = fxRate('USD', accountCurrency);
-  const spreadBase   = contracts * params.tickValueUSD * params.ticksInSpread * fxUSD;
-  const spreadR      = spreadToRange(spreadBase, regime);
+  const fxUSD    = fxRate('USD', accountCurrency);
+  const spreadBase = contracts * params.tickValueUSD * params.ticksInSpread * fxUSD;
+  const spreadR  = spreadToRange(spreadBase, regime);
 
   let commBase = 0;
   if (offer.commissionPerContractEUR != null) {
@@ -540,7 +454,6 @@ function calcFuturesCosts(
     rollBase    = (offer.rollSpreadBps / 10_000) * nominalEUR * rolls;
   }
 
-  // Futures slippage: tick-based (diverso da FX)
   const futuresSlippagePips = regime === 'HIGH' ? 2 : regime === 'NORMAL' ? 1 : 0.5;
   const slippageBase = futuresSlippagePips * params.tickValueUSD * fxUSD * contracts;
   const slippageR    = { best: slippageBase * 0.4, expected: slippageBase, worst: slippageBase * 2.5 };
@@ -565,19 +478,12 @@ function calcFuturesCosts(
       exchangeFeeBps: toBps(exchangeFeeBase,       nominalEUR),
       rollBps:        toBps(rollBase,              nominalEUR),
       totalBps:       toBps(totalR.expected,       nominalEUR),
-      range: {
-        spread:     spreadR,
-        commission: commissionR,
-        overnight:  toRange(0),
-        slippage:   slippageR,
-        total:      totalR,
-      },
+      range: { spread: spreadR, commission: commissionR, overnight: toRange(0), slippage: slippageR, total: totalR },
     },
   };
 }
 
 // ── Public types ──────────────────────────────────────────────────────────
-
 export type TradeDirection = 'long' | 'short';
 
 export type EngineInput = {
@@ -585,13 +491,16 @@ export type EngineInput = {
   assetClass:        AssetClass;
   underlyingId?:     UnderlyingId;
   direction?:        TradeDirection;
-  /** Giorni di holding per singolo trade */
   nDaysOpen?:        number;
   stopLossPips?:     number;
   riskPct?:          number;
-  accountCurrency?:  string;          // default 'EUR'
-  volatilityRegime?: VolatilityRegime; // default 'NORMAL'
-  /** Nozionale mensile stimato in EUR (per commission tiering) */
+  accountCurrency?:  string;
+  volatilityRegime?: VolatilityRegime;
+  /**
+   * Nozionale mensile stimato EUR per commission tiering.
+   * Se non fornito: fallback a exposure × 22 (scalping default — 22 trading days).
+   * fix(v4.2): era exposure × 10 (fisso, non realistico).
+   */
   monthlyVolumeEUR?: number;
 };
 
@@ -607,7 +516,6 @@ export type SimulatorResult = {
   lots:               number;
   contracts:          number;
   contractSize:       'micro' | 'mini' | 'full' | null;
-  // Costi per singolo trade (expected)
   costPerTradeEUR:    number;
   spreadCostBps:      number;
   commissionCostBps:  number;
@@ -617,17 +525,14 @@ export type SimulatorResult = {
   spreadCost:         number;
   commissionCost:     number;
   overnightCost:      number;
-  slippageCost:       number;        // non più 0
-  // Exposure reale
+  slippageCost:       number;
   achievableExposure: number;
-  // Range distribuzioni per trade (scaling a mensile nel recommend)
   costRange: {
     perTrade: Range;
   };
 };
 
 // ── UG → AssetClass mapping ───────────────────────────────────────────────
-
 function ugIdsForAssetClass(ac: AssetClass): string[] {
   switch (ac) {
     case 'FOREX':     return ['ug_fx_major', 'ug_fx_minor', 'ug_fx_exotic'];
@@ -640,32 +545,27 @@ function ugIdsForAssetClass(ac: AssetClass): string[] {
 }
 
 // ── Main engine ───────────────────────────────────────────────────────────
-
-/**
- * Core engine — per SINGOLO trade.
- * NON scala a mensile. Scaling = responsabilità di recommend().
- *
- * Input nTrades rimosso: l'engine è per-trade.
- * Per aggregazioni mensili usare recommend({ tradesPerMonth }).
- */
 export function runEngine({
   capital,
   assetClass,
   underlyingId,
-  direction       = 'long',
-  nDaysOpen       = 1,
-  stopLossPips    = 20,
+  direction        = 'long',
+  nDaysOpen        = 1,
+  stopLossPips     = 20,
   riskPct,
-  accountCurrency = 'EUR',
+  accountCurrency  = 'EUR',
   volatilityRegime = 'NORMAL',
   monthlyVolumeEUR,
 }: EngineInput): SimulatorResult[] {
   const effectiveCapital = capital ?? 0;
   if (effectiveCapital <= 0) return [];
 
-  const effectiveRisk     = riskPct ?? DEFAULT_RISK_PCT;
-  const underlying        = underlyingId ? UNDERLYINGS[underlyingId] : undefined;
-  const quoteCcy          = underlying?.quoteCurrency ?? 'USD';
+  const effectiveRisk = riskPct ?? DEFAULT_RISK_PCT;
+  const underlying    = underlyingId ? UNDERLYINGS[underlyingId] : undefined;
+  const quoteCcy      = underlying?.quoteCurrency ?? 'USD';
+
+  // fix(v4.2): isIntraday da nDaysOpen (profilo utente), NON da compatibleHorizons
+  const isIntraday = nDaysOpen <= 1;
 
   const ugIds = ugIdsForAssetClass(assetClass);
   const compatibleOffers = INSTRUMENT_OFFERS.filter(offer =>
@@ -676,7 +576,6 @@ export function runEngine({
   const results: SimulatorResult[] = compatibleOffers.flatMap(offer => {
     const broker    = BROKERS[offer.brokerId];
     const isFutures = offer.instrumentTypeId === 'futures_std';
-    const isSpotFx  = offer.instrumentTypeId === 'spot_fx';
 
     let breakdown:    CostBreakdown;
     let contracts     = 0;
@@ -693,7 +592,6 @@ export function runEngine({
       exposure = contracts * FUTURES_PARAMS[contractSize ?? 'micro'].nominalEUR;
 
     } else {
-      // CFD o Spot FX
       lots = calcProfessionalLots({
         capital:         effectiveCapital,
         riskPct:         effectiveRisk,
@@ -707,10 +605,11 @@ export function runEngine({
       exposure = lots * LOT_SIZE;
       if (offer.minPositionEUR > exposure) return [];
 
-      // Stima nozionale mensile per tiering (se non fornito esplicitamente)
-      const estMonthlyNotional = monthlyVolumeEUR ?? (exposure * 10);
-
-      const isIntraday = offer.compatibleHorizons.includes('intraday');
+      // fix(v4.2): monthlyNotional corretto
+      // - se caller passa monthlyVolumeEUR (dal hook con tradesPerMonth) → usa quello
+      // - fallback: exposure × 22 (scalping default, 22 gg lavorativi)
+      //   era exposure × 10 → tiering mai attivo per scalping high volume
+      const estMonthlyNotional = monthlyVolumeEUR ?? (exposure * 22);
 
       breakdown = calcFxCosts({
         offer, underlying, exposure, lots, direction,
@@ -723,7 +622,7 @@ export function runEngine({
       });
     }
 
-    const pipVal         = pipValue(quoteCcy, accountCurrency);
+    const pipVal          = pipValue(quoteCcy, accountCurrency);
     const riskPerTradePct = lots > 0
       ? (stopLossPips * pipVal * lots) / effectiveCapital
       : 0;
@@ -733,7 +632,6 @@ export function runEngine({
       offer, exposure, effectiveCapital, lots, totalCostBps, riskPerTradePct,
     );
     const score = calcScore(totalCostBps);
-
     const costPerTradeEUR = breakdown.totalEUR;
 
     return [{
@@ -759,12 +657,9 @@ export function runEngine({
       overnightCost:     breakdown.overnightEUR,
       slippageCost:      breakdown.slippageEUR,
       achievableExposure: exposure,
-      costRange: {
-        perTrade: breakdown.range.total,
-      },
+      costRange: { perTrade: breakdown.range.total },
     }] satisfies SimulatorResult[];
   });
 
-  // Sort per costo atteso per trade ASC
   return results.sort((a, b) => a.costRange.perTrade.expected - b.costRange.perTrade.expected);
 }
