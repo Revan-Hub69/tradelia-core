@@ -8,7 +8,13 @@
 //
 // AGGIORNAMENTO v1.1 (fix SOTA):
 //   + minLotSize              — lotto minimo per questo offer (default 0.01)
-//     Necessario per calcProfessionalLots — prima hardcoded a 0.01
+//
+// AGGIORNAMENTO v1.2 (refactor overnight):
+//   RIMOSSO overnight dal motore di calcolo.
+//   Gli swap cambiano ogni giorno (tassi banca centrale + markup broker)
+//   → falsa precisione includerli nel ranking.
+//   I dati swap restano come campo informativo (swapInfo) sul result,
+//   NON entrano in totalCostEUR né influenzano il ranking.
 // ============================================================
 
 import type { InstrumentTypeId } from '../instruments';
@@ -21,13 +27,25 @@ import type { FuturesContractSize } from '../instruments';
 export type ExecutionType = 'instant' | 'market';
 
 export type UnderlyingOfferOverride = {
-  spreadAvgBps:             number | null;
-  spreadMinBps:             number | null;
-  spreadMaxBps:             number | null;
-  overnightLongPipsPerDay:  number | null;
-  overnightShortPipsPerDay: number | null;
-  marginRequirementPct:     number | null;
-  slippageAvgBps:           number | null;
+  spreadAvgBps:         number | null;
+  spreadMinBps:         number | null;
+  spreadMaxBps:         number | null;
+  // swap: dato informativo — non entra nel calcolo motore
+  swapLongPipsPerDay:   number | null;
+  swapShortPipsPerDay:  number | null;
+  marginRequirementPct: number | null;
+  slippageAvgBps:       number | null;
+};
+
+/**
+ * Dato informativo sugli swap di un offer per un underlying specifico.
+ * NON entra nel calcolo del motore — esposto come SwapInfo sul SimulatorResult.
+ * Long e short mostrati separatamente perché dipendono dal differenziale tassi.
+ */
+export type SwapInfo = {
+  longPipsPerDay:  number | null;  // negativo = costo, positivo = credito
+  shortPipsPerDay: number | null;
+  lastUpdated:     string | null;  // ISO date "YYYY-MM-DD" — per trasparenza
 };
 
 export type InstrumentOffer = {
@@ -79,17 +97,23 @@ export type InstrumentOffer = {
   spreadMaxBps: number;
   spreadNotes:  string;
 
-  // ── Overnight / Swap ───────────────────────────────────────
-  overnightLongPipsPerDay:   number | null;
-  overnightShortPipsPerDay:  number | null;
-  overnightTripleDay:        'wednesday' | 'friday' | 'none' | null;
-  overnightTripleMultiplier: number | null;
-  overnightNotes:            string;
+  // ── Swap / Overnight — DATO INFORMATIVO (non entra nel motore) ─
+  /**
+   * Valori indicativi swap. Cambiano ogni giorno in base a:
+   *   - Differenziale tassi banche centrali (Fed, BCE, BoE...)
+   *   - Markup broker sul tasso interbancario
+   * Non includere nel calcolo totalCostEUR.
+   * Esporre come SwapInfo sul SimulatorResult con lastUpdated visibile.
+   */
+  swapLongPipsPerDay:  number | null;
+  swapShortPipsPerDay: number | null;
+  swapLastUpdated:     string | null;  // "YYYY-MM-DD"
+  swapNotes:           string;
 
   // ── Roll (futures) ─────────────────────────────────────────
-  rollSpreadBps:    number | null;
+  rollSpreadBps:     number | null;
   rollFrequencyDays: number | null;
-  rollNotes:        string;
+  rollNotes:         string;
 
   // ── FX Conversion ────────────────────────────────────────
   fxConversionBps: number | null;
@@ -118,14 +142,16 @@ export type RankedResult = {
   selectedContractSize: NonNullable<FuturesContractSize> | null;
   totalCostBps: number;
   costBreakdown: {
-    spreadBps:     number;
-    commissionBps: number;
+    spreadBps:      number;
+    commissionBps:  number;
     exchangeFeeBps: number;
-    overnightBps:  number;
-    rollBps:       number;
-    fxBps:         number;
-    otherBps:      number;
+    // overnight/swap NON incluso — vedi swapInfo
+    rollBps:        number;
+    fxBps:          number;
+    otherBps:       number;
   };
+  // Dato informativo swap — NON influenza il ranking
+  swapInfo: SwapInfo | null;
   warnings:    string[];
   compatibilityFlags: {
     leverageOk:      boolean;
