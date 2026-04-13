@@ -373,7 +373,7 @@ export function SimulatoreShell() {
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
   const { visible: kbdVisible, show: showKbd }  = useKbdHint();
   const panelContentRef = useRef<HTMLDivElement>(null);
-  const sheetContentRef = useRef<HTMLDivider>(null);
+  const sheetContentRef = useRef<HTMLDivElement>(null);
 
   const scrollTrigger = [assetClass, subGroup, underlying, sizingMode, freqMode].join('|');
   useStepAutoScroll(panelContentRef, scrollTrigger, true);
