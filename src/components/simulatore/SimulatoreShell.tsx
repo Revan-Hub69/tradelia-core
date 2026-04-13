@@ -10,7 +10,7 @@ import { KbdHintBar }         from './KbdHintBar';
 import { ScoreCardList }      from './ScoreCardList';
 import { SimResultsEmpty }    from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
-import type { AssetClass }    from './AssetSelector';
+import { SmartAssetCombobox } from './SmartAssetCombobox';
 import {
   deriveEngineInput,
   toTradesPerMonth,
@@ -21,34 +21,6 @@ import {
   type UserInput,
 } from '@/lib/simulator/sizing';
 import type { UnderlyingId } from '@/data/simulator/underlyings';
-
-// ── Asset tree (solo FOREX per ora — altri gruppi avranno input set separati) ──
-const FOREX_GROUPS: Record<string, string[]> = {
-  Majors: ['EUR/USD','GBP/USD','USD/JPY','USD/CHF','AUD/USD','USD/CAD','NZD/USD'],
-  Cross:  ['EUR/GBP','EUR/JPY','EUR/CHF','EUR/CAD','EUR/AUD','GBP/JPY','GBP/CHF','AUD/JPY','CAD/JPY'],
-  Exotic: ['USD/TRY','EUR/TRY','USD/ZAR','EUR/ZAR','EUR/PLN','USD/PLN','USD/MXN','USD/SEK','USD/NOK'],
-};
-
-const ASSET_OPTIONS: { id: AssetClass; label: string }[] = [
-  { id: 'FOREX',     label: 'Forex'         },
-  { id: 'CRYPTO',    label: 'Crypto'        },
-  { id: 'INDEX',     label: 'Indici'        },
-  { id: 'EQUITY',    label: 'Azioni'        },
-  { id: 'COMMODITY', label: 'Materie prime' },
-];
-
-// ── Sizing mode options ────────────────────────────────────────────────────
-const SIZING_MODES: { id: SizingMode; label: string }[] = [
-  { id: 'pct_capital',  label: '% capitale' },
-  { id: 'lots',         label: 'Lotti'      },
-  { id: 'exposure_eur', label: 'Espos. €'   },
-];
-
-const FREQ_MODES: { id: FreqMode; label: string }[] = [
-  { id: 'per_day',   label: '/ giorno'    },
-  { id: 'per_week',  label: '/ settimana' },
-  { id: 'per_month', label: '/ mese'      },
-];
 
 // ── Profili preset ────────────────────────────────────────────────────────
 const PROFILES: { id: TradingProfile; label: string }[] = [
@@ -285,15 +257,18 @@ export function SimulatoreShell() {
   const { setEngineInput, results, isComputing } = useSimulatorEngine();
 
   // ── Stato form ────────────────────────────────────────────────────────
-  const [assetClass,   setAssetClass]   = useState<AssetClass | null>(null);
-  const [subGroup,     setSubGroup]     = useState<string | null>(null);
-  const [underlying,   setUnderlying]   = useState<string | null>(null);
-  const [capital,      setCapital]      = useState<number>(2_000);
-  const [sizingMode,   setSizingMode]   = useState<SizingMode>('pct_capital');
-  const [sizingValue,  setSizingValue]  = useState<number>(1.0);
-  const [freqMode,     setFreqMode]     = useState<FreqMode>('per_day');
-  const [freqValue,    setFreqValue]    = useState<number>(1);
+  const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
+  const [capital,       setCapital]       = useState<number>(2_000);
+  const [sizingMode,    setSizingMode]    = useState<SizingMode>('pct_capital');
+  const [sizingValue,   setSizingValue]   = useState<number>(1.0);
+  const [freqMode,      setFreqMode]      = useState<FreqMode>('per_day');
+  const [freqValue,     setFreqValue]     = useState<number>(1);
   const [activeProfile, setActiveProfile] = useState<TradingProfile | null>(null);
+
+  // Derived values for backward compatibility
+  const assetClass = selectedAsset ? getAssetClassFromId(selectedAsset) : null;
+  const subGroup   = selectedAsset ? getSubGroupFromId(selectedAsset) : null;
+  const underlying = selectedAsset ? selectedAsset : null;
 
   // ── Preset handler ────────────────────────────────────────────────────
   const applyPreset = useCallback((profile: TradingProfile) => {
@@ -354,20 +329,14 @@ export function SimulatoreShell() {
     setEngineInput(cleanInput);
   }, [assetClass, underlying, capital, sizingMode, sizingValue, freqMode, freqValue, activeProfile, hasMinParams, setEngineInput]);
 
-  // ── Handlers con reset a cascata ──────────────────────────────────────
-  const handleAssetClassChange = useCallback((ac: AssetClass) => {
-    setAssetClass(ac);
-    setSubGroup(null);
-    setUnderlying(null);
+  // ── Handler per selezione asset ────────────────────────────────────────
+  const handleAssetSelect = useCallback((assetId: string | null) => {
+    setSelectedAsset(assetId);
   }, []);
 
-  const handleSubGroupChange = useCallback((sg: string) => {
-    setSubGroup(sg);
-    setUnderlying(null);
-  }, []);
-
-  const groups  = isForex ? Object.keys(FOREX_GROUPS) : [];
-  const assets  = isForex && subGroup ? (FOREX_GROUPS[subGroup] ?? []) : [];
+  // ── Propagazione al motore ────────────────────────────────────────────
+  const isForex      = assetClass === 'FOREX';
+  const hasMinParams = !!assetClass && !!underlying && capital > 0 && sizingValue > 0 && freqValue > 0;
 
   // ── Sheet / panel ─────────────────────────────────────────────────────
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
@@ -386,7 +355,9 @@ export function SimulatoreShell() {
   const completedSteps = filledValues.filter(Boolean).length;
   const STEPS          = 6;
 
-  const statusLabel = underlying ?? subGroup ?? (assetClass ? ASSET_OPTIONS.find(a => a.id === assetClass)?.label : undefined) ?? '—';
+   const statusLabel = selectedAsset 
+     ? getAssetById(selectedAsset)?.label 
+     : '—';
 
   // ── Panel content (condiviso tra sidebar desktop e bottom sheet mobile)
   const panelContent = (
@@ -395,45 +366,17 @@ export function SimulatoreShell() {
         Usa le frecce ← → per navigare tra le opzioni, Spazio o Invio per selezionare.
       </span>
 
-      {/* ── Blocco 1: Strumento ── */}
-      <BlockDivider label="Strumento" />
-
-      <Section label="Categoria" value={assetClass ?? undefined} done={!!assetClass} groupId="sim-cat">
-        <RadioChipGroup
-          id="sim-cat"
-          options={ASSET_OPTIONS}
-          value={assetClass}
-          onChange={handleAssetClassChange}
-        />
-      </Section>
-
-      <AnimatedSection show={isForex}>
-        <Section label="Gruppo" value={subGroup ?? undefined} done={!!subGroup} groupId="sim-sub">
-          <RadioChipGroup
-            id="sim-sub"
-            options={groups.map(g => ({ id: g, label: g }))}
-            value={subGroup}
-            onChange={handleSubGroupChange}
-          />
+        {/* ── Blocco 1: Strumento ── */}
+        <Section label="Strumento finanziario" value={selectedAsset ?? undefined} done={!!selectedAsset} groupId="sim-asset">
+<SmartAssetCombobox
+  value={selectedAsset}
+  onChange={handleAssetSelect}
+  placeholder="Cerca asset, azioni, crypto, forex..."
+  showPopular={true}
+  loading={false}
+  error={null}
+/>
         </Section>
-      </AnimatedSection>
-
-      <AnimatedSection show={isForex && !!subGroup && assets.length > 0}>
-        <Section
-          label="Coppia"
-          value={underlying ?? undefined}
-          done={!!underlying}
-          groupId="sim-asset"
-        >
-          <RadioChipGroup
-            id="sim-asset"
-            options={assets.map(a => ({ id: a, label: a }))}
-            value={underlying}
-            onChange={setUnderlying}
-            mono
-          />
-        </Section>
-      </AnimatedSection>
 
       {/* ── Blocco 2: Il tuo profilo ── */}
       <AnimatedSection show={!!underlying}>
