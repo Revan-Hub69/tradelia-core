@@ -1,20 +1,10 @@
 // ============================================================
-// RECOMMEND ENGINE v3
+// RECOMMEND ENGINE v4
 //
-// CHANGES v3 (vs v2):
-//
-//   fix(🔴): eliminato double-scaling
-//            engine ora è per-trade → recommend moltiplica × tradesPerMonth
-//            PRIMA: engine riceveva nTrades e recommend moltiplicava ancora
-//
-//   add(🟢): BrokerRow.monthlyCost: CostRange (best/expected/worst)
-//            BrokerRow.singleTradeCost: CostRange
-//
-//   fix(🟠): monthlyCostEUR mantenuto come backward-compat (= expected)
-//
-//   fix(🟠): sort per monthlyCost.expected ASC (non score)
-//
-//   fix(🟠): breakdown monthly ora include slippageEUR scalato
+// CHANGES v4 (vs v3):
+//   Allineato a EngineInput v6 — rimossi stopLossPips/riskPct/avgHoldingDays
+//   RecommendInput ora estende direttamente EngineInput
+//   (tradesPerMonth già presente su EngineInput)
 // ============================================================
 
 import { runEngine }         from './engine';
@@ -40,26 +30,21 @@ export type InstrumentCategory =
   | 'FUTURES'
   | 'OTHER';
 
-/** Riga singola nella tabella broker per uno strumento. UI-ready. */
 export type BrokerRow = {
-  rank:             number;
-  brokerId:         string;
-  brokerName:       string;
-  accountTypeName:  string;
-  // Costo per singolo trade
+  rank:               number;
+  brokerId:           string;
+  brokerName:         string;
+  accountTypeName:    string;
   singleTradeCostBps: number;
-  singleTradeCostEUR: number;        // backward compat (= expected)
-  singleTradeCost:    CostRange;     // NEW — distribuzione per trade
-  // Costo mensile (= singleTrade × tradesPerMonth)
-  monthlyCostEUR:   number;          // backward compat (= expected)
-  monthlyCostBps:   number;
-  monthlyCost:      CostRange;       // NEW — distribuzione mensile
-  // Breakdown mensile (ogni voce scalata × tradesPerMonth, valore expected)
+  singleTradeCostEUR: number;
+  singleTradeCost:    CostRange;
+  monthlyCostEUR:     number;
+  monthlyCostBps:     number;
+  monthlyCost:        CostRange;
   breakdown: {
     spreadEUR:      number;
     commissionEUR:  number;
-    overnightEUR:   number;
-    slippageEUR:    number;          // NEW — non più assente
+    slippageEUR:    number;
     exchangeFeeEUR: number;
     rollEUR:        number;
   };
@@ -92,36 +77,29 @@ export type RecommendOutput = {
   inputSummary: {
     capital:        number;
     tradesPerMonth: number;
-    avgHoldingDays: number;
+    lotSize:        number;
     assetClass:     string;
-    underlyingId:   string | undefined;
+    underlyingId:   string;
   };
 };
 
-export type RecommendInput = Omit<EngineInput, 'nDaysOpen'> & {
-  /** Numero operazioni al mese — default 10 */
-  tradesPerMonth: number;
-  /** Giorni medi di holding per trade — default 1 (intraday) */
-  avgHoldingDays: number;
-};
+/**
+ * RecommendInput v4 — identico a EngineInput.
+ * Nessun campo aggiuntivo: tradesPerMonth è già su EngineInput v6.
+ */
+export type RecommendInput = EngineInput;
 
 // ── Costanti ──────────────────────────────────────────────────────────────
 
 const CATEGORY_LABELS: Record<InstrumentCategory, string> = {
-  CFD_ECN:  'CFD ECN / STP',
-  CFD_DD:   'CFD Market Maker',
-  SPOT_FX:  'Spot FX',
-  FUTURES:  'FX Futures',
-  OTHER:    'Altro',
+  CFD_ECN: 'CFD ECN / STP',
+  CFD_DD:  'CFD Market Maker',
+  SPOT_FX: 'Spot FX',
+  FUTURES: 'FX Futures',
+  OTHER:   'Altro',
 };
 
-const CATEGORY_ORDER: InstrumentCategory[] = [
-  'CFD_ECN',
-  'CFD_DD',
-  'SPOT_FX',
-  'FUTURES',
-  'OTHER',
-];
+const CATEGORY_ORDER: InstrumentCategory[] = ['CFD_ECN', 'CFD_DD', 'SPOT_FX', 'FUTURES', 'OTHER'];
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -133,16 +111,7 @@ function categorize(instrumentTypeId: string): InstrumentCategory {
   return 'OTHER';
 }
 
-/**
- * Converte SimulatorResult (per-trade) → BrokerRow (mensile).
- * SCALING: singleTrade × tradesPerMonth.
- * Nessun double-scaling: engine è per singolo trade.
- */
-function toBrokerRow(
-  raw:            SimulatorResult,
-  tradesPerMonth: number,
-  rank:           number,
-): BrokerRow {
+function toBrokerRow(raw: SimulatorResult, tradesPerMonth: number, rank: number): BrokerRow {
   const perTrade = raw.costRange.perTrade;
 
   const singleTradeCost: CostRange = {
@@ -159,16 +128,15 @@ function toBrokerRow(
     brokerName:         raw.brokerName,
     accountTypeName:    raw.accountTypeName,
     singleTradeCostBps: raw.totalCostBps,
-    singleTradeCostEUR: singleTradeCost.expected,   // backward compat
+    singleTradeCostEUR: singleTradeCost.expected,
     singleTradeCost,
-    monthlyCostEUR:     monthlyCost.expected,        // backward compat
+    monthlyCostEUR:     monthlyCost.expected,
     monthlyCostBps:     raw.totalCostBps * tradesPerMonth,
     monthlyCost,
     breakdown: {
       spreadEUR:      raw.costBreakdown.spreadEUR      * tradesPerMonth,
       commissionEUR:  raw.costBreakdown.commissionEUR  * tradesPerMonth,
-      overnightEUR:   raw.costBreakdown.overnightEUR   * tradesPerMonth,
-      slippageEUR:    raw.costBreakdown.slippageEUR    * tradesPerMonth,  // NEW
+      slippageEUR:    raw.costBreakdown.slippageEUR    * tradesPerMonth,
       exchangeFeeEUR: raw.costBreakdown.exchangeFeeEUR * tradesPerMonth,
       rollEUR:        raw.costBreakdown.rollEUR        * tradesPerMonth,
     },
@@ -194,29 +162,15 @@ export function toRankingTable(
 
 // ── Funzione principale ───────────────────────────────────────────────────
 
-export function recommend({
-  tradesPerMonth = 10,
-  avgHoldingDays = 1,
-  capital,
-  ...engineParams
-}: RecommendInput): RecommendOutput {
-  const effectiveCapital = capital ?? 0;
+export function recommend(input: RecommendInput): RecommendOutput {
+  const rawResults = runEngine(input);
 
-  // Engine per singolo trade — nessun nTrades passato
-  const rawResults = runEngine({
-    ...engineParams,
-    capital:   effectiveCapital,
-    nDaysOpen: avgHoldingDays,
-  });
-
-  // ── Raggruppa per categoria ────────────────────────────────────────────
   const byCategory = Object.fromEntries(
     CATEGORY_ORDER.map(cat => {
       const rows = rawResults
         .filter(r => r.feasibility !== 'INFEASIBLE' && categorize(r.instrumentName) === cat)
-        // sort per costo atteso per trade ASC (engine ha già ordinato, ma ri-sort per sicurezza)
         .sort((a, b) => a.costRange.perTrade.expected - b.costRange.perTrade.expected)
-        .map((r, i) => toBrokerRow(r, tradesPerMonth, i + 1));
+        .map((r, i) => toBrokerRow(r, input.tradesPerMonth, i + 1));
 
       const ranking: InstrumentRanking = {
         category:      cat,
@@ -229,20 +183,17 @@ export function recommend({
     }),
   ) as Record<InstrumentCategory, InstrumentRanking>;
 
-  // ── Rejected ───────────────────────────────────────────────────────────
   const rejected: RankedEntry[] = rawResults
     .filter(r => r.feasibility === 'INFEASIBLE')
-    .map((r, i) => toRankedEntry(toBrokerRow(r, tradesPerMonth, i + 1), categorize(r.instrumentName)));
+    .map((r, i) => toRankedEntry(toBrokerRow(r, input.tradesPerMonth, i + 1), categorize(r.instrumentName)));
 
-  // ── Global ranking ─────────────────────────────────────────────────────
   const globalRanking: RankedEntry[] = CATEGORY_ORDER
     .flatMap(cat => byCategory[cat].brokers.map(row => toRankedEntry(row, cat)))
     .sort((a, b) => a.monthlyCost.expected - b.monthlyCost.expected)
     .map((e, i) => ({ ...e, rank: i + 1 }));
 
-  const bestOverall = globalRanking[0] ?? null;
-
-  const anySustainable    = globalRanking.some(e => e.feasibilityDetail.sustainable);
+  const bestOverall        = globalRanking[0] ?? null;
+  const anySustainable     = globalRanking.some(e => e.feasibilityDetail.sustainable);
   const suggestCurrencyETF = globalRanking.length > 0 && !anySustainable;
 
   return {
@@ -253,11 +204,11 @@ export function recommend({
     rejected,
     suggestCurrencyETF,
     inputSummary: {
-      capital:        effectiveCapital,
-      tradesPerMonth,
-      avgHoldingDays,
-      assetClass:     engineParams.assetClass,
-      underlyingId:   engineParams.underlyingId,
+      capital:        input.capital,
+      tradesPerMonth: input.tradesPerMonth,
+      lotSize:        input.lotSize,
+      assetClass:     input.assetClass,
+      underlyingId:   input.underlyingId,
     },
   };
 }
