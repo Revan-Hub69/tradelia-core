@@ -10,7 +10,7 @@ import type { SimulatorResult, EngineInput } from '@/lib/simulator/engine';
 export type { SimulatorResult };
 export type { Feasibility };
 
-// Capitale reale (EUR) per fascia account.
+// ── Capital per fascia account ─────────────────────────────────────────
 const ACCOUNT_TO_CAPITAL: Record<string, number> = {
   demo:    250,
   micro:   1_250,
@@ -19,30 +19,33 @@ const ACCOUNT_TO_CAPITAL: Record<string, number> = {
   pro:     100_000,
 };
 
+// ── Holding days per stile ─────────────────────────────────────────────
 const STYLE_TO_DAYS: Record<string, number> = {
   scalping: 0, intraday: 1, swing: 7, position: 30,
 };
 
-// Trades al MESE per stile × frequenza
+// ── Trades al MESE per stile × frequenza ──────────────────────────────
 // scalping/intraday: × 22 giorni lavorativi
-// swing: × 4 settimane
-// position: diretto
+// swing:            × 4 settimane
+// position:         diretto (nr trades al mese)
 const FREQ_TRADES_MONTHLY: Record<string, Record<string, number>> = {
-  scalping:  { low: 7 * 22,   mid: 30 * 22,  high: 100 * 22 },  // /giorno × 22gg
-  intraday:  { low: 1 * 22,   mid: 4 * 22,   high: 10 * 22  },  // /giorno × 22gg
-  swing:     { low: 1 * 4,    mid: 4 * 4,    high: 10 * 4   },  // /settimana × 4
-  position:  { low: 1,        mid: 3,        high: 6        },  // /mese
+  scalping:  { low: 7 * 22,   mid: 30 * 22,  high: 100 * 22 },
+  intraday:  { low: 1 * 22,   mid: 4  * 22,  high: 10  * 22 },
+  swing:     { low: 1 * 4,    mid: 4  * 4,   high: 10  * 4  },
+  position:  { low: 1,        mid: 3,        high: 6        },
 };
 
+// ── Stop loss in pips per livello leva ────────────────────────────────
 const LEVA_TO_SL_PIPS: Record<string, number> = {
   nessuna: 200, bassa: 100, media: 30, alta: 15,
 };
 
 export type ProfileInput = {
-  style?:   string | null;
-  freq?:    string | null;
-  account?: string | null;
-  leva?:    string | null;
+  style?:         string | null;
+  freq?:          string | null;
+  account?:       string | null;
+  leva?:          string | null;
+  underlyingId?:  string | null;   // coppia specifica (es. 'eurusd')
 };
 
 export type EnrichedResult = SimulatorResult & {
@@ -54,26 +57,14 @@ export type EnrichedResult = SimulatorResult & {
   totalMonth:       number;
 };
 
-function profileToEngineParams(p: ProfileInput): Partial<EngineInput> {
-  const capital = p.account ? (ACCOUNT_TO_CAPITAL[p.account] ?? 6_000) : 6_000;
-  const nDaysOpen = p.style ? (STYLE_TO_DAYS[p.style] ?? 1) : 1;
-  const stopLossPips = p.leva ? (LEVA_TO_SL_PIPS[p.leva] ?? 20) : 20;
-  const tradesPerMonth = (p.style && p.freq)
-    ? (FREQ_TRADES_MONTHLY[p.style]?.[p.freq] ?? 1)
-    : 1;
-  // monthlyVolumeEUR stimato per commission tiering (non usato per scaling UI)
-  // viene calcolato dopo runEngine quando abbiamo i lots reali
-  return { capital, nDaysOpen, stopLossPips, _tradesPerMonth: tradesPerMonth } as Partial<EngineInput> & { _tradesPerMonth: number };
-}
-
 function enrichResults(results: SimulatorResult[], tradesPerMonth: number): EnrichedResult[] {
   return results.map(r => ({
     ...r,
     tradesPerMonth,
-    spreadMonth:     r.spreadCost     * tradesPerMonth,
-    commissionMonth: r.commissionCost * tradesPerMonth,
-    overnightMonth:  r.overnightCost  * tradesPerMonth,
-    slippageMonth:   r.slippageCost   * tradesPerMonth,
+    spreadMonth:     r.spreadCost      * tradesPerMonth,
+    commissionMonth: r.commissionCost  * tradesPerMonth,
+    overnightMonth:  r.overnightCost   * tradesPerMonth,
+    slippageMonth:   r.slippageCost    * tradesPerMonth,
     totalMonth:      r.costPerTradeEUR * tradesPerMonth,
   }));
 }
@@ -97,20 +88,46 @@ export function useSimulatorEngine() {
     if (!assetRef.current) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     setIsComputing(true);
+
     debounceRef.current = setTimeout(() => {
       const p = profileRef.current;
-      const capital = p.account ? (ACCOUNT_TO_CAPITAL[p.account] ?? 6_000) : 6_000;
-      const nDaysOpen = p.style ? (STYLE_TO_DAYS[p.style] ?? 1) : 1;
-      const stopLossPips = p.leva ? (LEVA_TO_SL_PIPS[p.leva] ?? 20) : 20;
+
+      const capital      = ACCOUNT_TO_CAPITAL[p.account ?? ''] ?? 6_000;
+      const nDaysOpen    = STYLE_TO_DAYS[p.style ?? ''] ?? 1;
+      const stopLossPips = LEVA_TO_SL_PIPS[p.leva ?? ''] ?? 20;
       const tradesPerMonth = (p.style && p.freq)
         ? (FREQ_TRADES_MONTHLY[p.style]?.[p.freq] ?? 1)
         : 1;
 
-      const input: EngineInput = {
-        assetClass: assetRef.current!,
+      // ── fix: primo runEngine per ottenere l'exposure reale ─────────
+      // monthlyVolumeEUR richiede i lots → servono prima i lots.
+      // Step 1: dry run senza monthlyVolumeEUR per ottenere l'exposure.
+      // Step 2: runEngine reale con monthlyVolumeEUR = exposure × tradesPerMonth.
+      //
+      // In V1 con 1-2 broker il doppio run è ~0.1ms → nessun problema.
+      // In V2 con N broker da ottimizzare: calcola exposure una volta sola per ugId.
+
+      const dryInput: EngineInput = {
+        assetClass:  assetRef.current!,
         capital,
         nDaysOpen,
         stopLossPips,
+        underlyingId: (p.underlyingId ?? undefined) as EngineInput['underlyingId'],
+      };
+      const dryResults = runEngine(dryInput);
+
+      // Prendi l'exposure media dal dry run (tutti gli offer condividono stesso
+      // lot size per lo stesso capitale + ugId → stessa exposure in pratica)
+      const avgExposure = dryResults.length > 0
+        ? dryResults.reduce((s, r) => s + r.achievableExposure, 0) / dryResults.length
+        : capital * 10; // fallback conservativo
+
+      const monthlyVolumeEUR = avgExposure * tradesPerMonth;
+
+      // ── Step 2: run reale con monthlyVolumeEUR ─────────────────────
+      const input: EngineInput = {
+        ...dryInput,
+        monthlyVolumeEUR,
       };
 
       const raw = runEngine(input);
