@@ -63,12 +63,43 @@ export type Broker = {
   id:               BrokerId;
   name:             string;
   logoSlug:         string;
+  /**
+   * URL istituzionale del broker (no UTM).
+   * Usato come fallback se affiliateUrl è null.
+   */
   website:          string;
   regulationZones:  RegulationZone[];
   accessibleFromIT: boolean;
   minDepositEUR:    number;
   platformTypes:    PlatformType[];
   notes:            string;
+
+  // ── Affiliate ────────────────────────────────────────────────
+  /**
+   * URL affiliato con UTM/tracking. Se presente, la CTA card usa questo.
+   * null = nessun accordo affiliazione → usa website.
+   */
+  affiliateUrl:     string | null;
+  /**
+   * true = mostrare disclaimer "Potremmo ricevere commissioni se apri un conto."
+   * Impostare sempre coerentemente con affiliateUrl != null.
+   */
+  isAffiliate:      boolean;
+
+  // ── ESMA Risk Disclaimer ────────────────────────────────────
+  /**
+   * Percentuale di conti retail che perde denaro, comunicata dal broker
+   * nel disclaimer ESMA obbligatorio.
+   * Es: 74 → "Il 74% dei conti degli investitori retail..."
+   * null = dato non disponibile (mostrare disclaimer generico).
+   */
+  esmaRiskPct:      number | null;
+  /**
+   * Denominazione legale esatta del broker usata nel disclaimer ESMA.
+   * Es: "Tickmill Europe Ltd"
+   * null = usare name come fallback.
+   */
+  esmaLegalName:    string | null;
 };
 
 export type AccountTypeId = string;
