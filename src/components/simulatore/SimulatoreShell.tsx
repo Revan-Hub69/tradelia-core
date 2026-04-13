@@ -12,8 +12,6 @@ import { SimResultsEmpty } from './SimResultsEmpty';
 import { SimulatoreSkeleton } from './SimulatoreSkeleton';
 import type { AssetClass } from './AssetSelector';
 
-// Chiavi = AssetClass (uppercase, allineate al motore)
-// label = testo UI visibile
 const ASSET_TREE: Record<AssetClass, { label: string; groups: Record<string, string[]> }> = {
   FOREX: {
     label: 'Forex',
@@ -242,7 +240,6 @@ export function SimulatoreShell() {
   const [account,  setAccount]  = useState<AccountType | null>(null);
   const [leva,     setLeva]     = useState<LevaType | null>(null);
 
-  // FOREX non ha leva configurabile nel pannello (usa sempre spread+commission)
   const showLeva     = !!assetClass && assetClass !== 'FOREX';
   const hasMinParams = !!assetClass && !!style && !!freq && !!account;
 
@@ -250,13 +247,20 @@ export function SimulatoreShell() {
     if (!showLeva) setLeva(null);
   }, [showLeva]);
 
+  // Propaga il profilo completo al motore — incluso underlyingId (coppia specifica)
   useEffect(() => {
     if (!hasMinParams) return;
     const exposure = ACCOUNT_TO_EXPOSURE[account!] ?? 6_000;
     setExposure(exposure);
-    setProfile({ style, freq, account, leva: showLeva ? leva : null });
+    setProfile({
+      style,
+      freq,
+      account,
+      leva: showLeva ? leva : null,
+      underlyingId: asset ?? null,   // propagato all'engine per parametri coppia-specifici
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [style, freq, account, leva, showLeva, hasMinParams]);
+  }, [style, freq, account, leva, asset, showLeva, hasMinParams]);
 
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
   const { visible: kbdVisible, show: showKbd }  = useKbdHint();

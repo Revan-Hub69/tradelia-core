@@ -57,16 +57,32 @@ export type EnrichedResult = SimulatorResult & {
   totalMonth:       number;
 };
 
-function enrichResults(results: SimulatorResult[], tradesPerMonth: number): EnrichedResult[] {
-  return results.map(r => ({
-    ...r,
-    tradesPerMonth,
-    spreadMonth:     r.spreadCost      * tradesPerMonth,
-    commissionMonth: r.commissionCost  * tradesPerMonth,
-    overnightMonth:  r.overnightCost   * tradesPerMonth,
-    slippageMonth:   r.slippageCost    * tradesPerMonth,
-    totalMonth:      r.costPerTradeEUR * tradesPerMonth,
-  }));
+// nDaysOpen = 0 → scalping, overnight sempre zero.
+// overnight non si moltiplica come spread/comm: l'engine lo calcola già su nDaysOpen;
+// moltiplicare per tradesPerMonth è corretto solo assumendo 1 trade aperto alla volta
+// (ipotesi valida per V1 con trader retail).
+// totalMonth è la somma esplicita dei componenti — non costPerTradeEUR × trades —
+// così rimane coerente anche quando overnightCost diverge dal modello per-trade.
+function enrichResults(
+  results: SimulatorResult[],
+  tradesPerMonth: number,
+  nDaysOpen: number,
+): EnrichedResult[] {
+  return results.map(r => {
+    const spreadM     = r.spreadCost     * tradesPerMonth;
+    const commM       = r.commissionCost * tradesPerMonth;
+    const slippageM   = r.slippageCost   * tradesPerMonth;
+    const overnightM  = nDaysOpen === 0 ? 0 : r.overnightCost * tradesPerMonth;
+    return {
+      ...r,
+      tradesPerMonth,
+      spreadMonth:     spreadM,
+      commissionMonth: commM,
+      overnightMonth:  overnightM,
+      slippageMonth:   slippageM,
+      totalMonth:      spreadM + commM + overnightM + slippageM,
+    };
+  });
 }
 
 export function useSimulatorEngine() {
@@ -92,23 +108,19 @@ export function useSimulatorEngine() {
     debounceRef.current = setTimeout(() => {
       const p = profileRef.current;
 
-      const capital      = ACCOUNT_TO_CAPITAL[p.account ?? ''] ?? 6_000;
-      const nDaysOpen    = STYLE_TO_DAYS[p.style ?? ''] ?? 1;
-      const stopLossPips = LEVA_TO_SL_PIPS[p.leva ?? ''] ?? 20;
+      const capital        = ACCOUNT_TO_CAPITAL[p.account ?? ''] ?? 6_000;
+      const nDaysOpen      = STYLE_TO_DAYS[p.style ?? ''] ?? 1;
+      const stopLossPips   = LEVA_TO_SL_PIPS[p.leva ?? ''] ?? 20;
       const tradesPerMonth = (p.style && p.freq)
         ? (FREQ_TRADES_MONTHLY[p.style]?.[p.freq] ?? 1)
         : 1;
 
-      // ── fix: primo runEngine per ottenere l'exposure reale ─────────
+      // ── Step 1: dry run per ottenere exposure reale ────────────────
       // monthlyVolumeEUR richiede i lots → servono prima i lots.
-      // Step 1: dry run senza monthlyVolumeEUR per ottenere l'exposure.
-      // Step 2: runEngine reale con monthlyVolumeEUR = exposure × tradesPerMonth.
-      //
       // In V1 con 1-2 broker il doppio run è ~0.1ms → nessun problema.
-      // In V2 con N broker da ottimizzare: calcola exposure una volta sola per ugId.
-
+      // In V2 con N broker: ottimizzare calcolando exposure una volta per ugId.
       const dryInput: EngineInput = {
-        assetClass:  assetRef.current!,
+        assetClass:   assetRef.current!,
         capital,
         nDaysOpen,
         stopLossPips,
@@ -116,22 +128,17 @@ export function useSimulatorEngine() {
       };
       const dryResults = runEngine(dryInput);
 
-      // Prendi l'exposure media dal dry run (tutti gli offer condividono stesso
-      // lot size per lo stesso capitale + ugId → stessa exposure in pratica)
       const avgExposure = dryResults.length > 0
         ? dryResults.reduce((s, r) => s + r.achievableExposure, 0) / dryResults.length
-        : capital * 10; // fallback conservativo
+        : capital * 10;
 
       const monthlyVolumeEUR = avgExposure * tradesPerMonth;
 
       // ── Step 2: run reale con monthlyVolumeEUR ─────────────────────
-      const input: EngineInput = {
-        ...dryInput,
-        monthlyVolumeEUR,
-      };
-
+      const input: EngineInput = { ...dryInput, monthlyVolumeEUR };
       const raw = runEngine(input);
-      setResults(enrichResults(raw, tradesPerMonth));
+
+      setResults(enrichResults(raw, tradesPerMonth, nDaysOpen));
       setIsComputing(false);
     }, 250);
   }, []);
