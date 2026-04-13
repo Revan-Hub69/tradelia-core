@@ -302,14 +302,13 @@ export function SimulatoreShell() {
   const freqEquiv = useMemo(() => {
     const monthly = toTradesPerMonth(freqValue, freqMode);
     if (freqMode === 'per_month') return '';
-    return `≈ ${monthly} trade/mese`;
-  }, [freqValue, freqMode]);
+     return `≈ ${monthly} trade/mese`;
+   }, [freqValue, freqMode]);
 
-  // ── Propagazione al motore ────────────────────────────────────────────
-  const isForex      = assetClass === 'FOREX';
-  const hasMinParams = !!assetClass && !!underlying && capital > 0 && sizingValue > 0 && freqValue > 0;
+   // ── Propagazione al motore ────────────────────────────────────────────
+   const hasMinParams = !!assetClass && !!underlying && capital > 0 && sizingValue > 0 && freqValue > 0;
 
-  useEffect(() => {
+   useEffect(() => {
     if (!hasMinParams || !assetClass || !underlying) return;
 
     const userInput: UserInput = {
@@ -329,14 +328,10 @@ export function SimulatoreShell() {
     setEngineInput(cleanInput);
   }, [assetClass, underlying, capital, sizingMode, sizingValue, freqMode, freqValue, activeProfile, hasMinParams, setEngineInput]);
 
-  // ── Handler per selezione asset ────────────────────────────────────────
-  const handleAssetSelect = useCallback((assetId: string | null) => {
-    setSelectedAsset(assetId);
-  }, []);
-
-  // ── Propagazione al motore ────────────────────────────────────────────
-  const isForex      = assetClass === 'FOREX';
-  const hasMinParams = !!assetClass && !!underlying && capital > 0 && sizingValue > 0 && freqValue > 0;
+    // ── Handler per selezione asset ────────────────────────────────────────
+    const handleAssetSelect = useCallback((assetId: string | null) => {
+      setSelectedAsset(assetId);
+    }, []);
 
   // ── Sheet / panel ─────────────────────────────────────────────────────
   const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
