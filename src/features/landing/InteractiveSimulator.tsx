@@ -890,18 +890,41 @@ function StepContent(p: StepContentProps) {
                       </button>
                     ))}
                   </div>
-                </motion.div>
-              )}
-
-              {/* Show exposure result */}
+                {/* Show exposure result */}
               {((p.sel.sizeMode === 'amount' && p.sel.riskPercent) || (p.sel.sizeMode === 'lots' && p.sel.positionSize) || p.sel.sizeMode === 'auto') && p.sel.ugId && (
                 <motion.div key="notionale" variants={slideUp} initial="initial" animate="animate" exit="exit"
-                          fontWeight: 700,
-                          color: 'hsl(var(--primary))',
-                        }}>
-                          {formatAccountSize(deriveNotional(p.sel.accountSize ?? p.accountValue, p.sel.riskPercent, p.sel.ugId))}
-                        </span>
-                      </div>
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    marginTop: '4px',
+                    padding: '12px',
+                    borderRadius: '12px',
+                    background: 'hsl(var(--muted) / 0.08)',
+                    border: '1px solid hsl(var(--border) / 0.3)',
+                  }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}>
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      color: 'hsl(var(--foreground))',
+                      letterSpacing: '0.02em',
+                    }}>
+                      Esposizione per trade
+                    </span>
+                    <span style={{
+                      fontFamily: 'var(--font-mono, monospace)',
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: 'hsl(var(--primary))',
+                    }}>
+                      {formatAccountSize(p.sel.accountSize ? Math.round(p.sel.accountSize * (p.sel.riskPercent ?? 2) / 100) : 0)}
+                    </span>
+                  </div>
                       {/* Suggestion box - subtle, non-prescriptive */}
                       {(() => {
                         const suggestions = getPositionSuggestions(p.sel.accountSize ?? p.accountValue);
@@ -919,6 +942,8 @@ function StepContent(p: StepContentProps) {
                           </div>
                         );
                       })()}
+                </motion.div>
+              )}
                     </motion.div>
                   )}
                 </AnimatePresence>
