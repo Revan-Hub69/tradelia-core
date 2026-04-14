@@ -942,11 +942,9 @@ function StepContent(p: StepContentProps) {
                           </div>
                         );
                       })()}
-                </motion.div>
-              )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               </div>
 
               {!p.isMobile && p.step3Ready && (
