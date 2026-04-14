@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Globe,
@@ -379,7 +379,7 @@ const RATING_CONFIG: Record<RatingKey, {
 type SimulatorState = {
   category?:     CategoryId;
   ugId?:         UnderlyingGroupId;
-  assetId?:      string;          // solo per forex: coppia selezionata (es. 'eurusd')
+  assetId?:      string;
   horizon?:      HorizonId;
   style?:        StyleId;
   accountSize?:  AccountSizeId;
@@ -437,6 +437,17 @@ export function InteractiveSimulator() {
   const [selections, setSelections] = useState<SimulatorState>({});
   const [forexSubgroup, setForexSubgroup] = useState<ForexSubgroup>('major');
 
+  // Autoscroll: keeps the simulator card in view on every step transition
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!rootRef.current) return;
+    // Small delay to let framer-motion start the transition first
+    const id = setTimeout(() => {
+      rootRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+    return () => clearTimeout(id);
+  }, [step]);
+
   const filteredUGs = selections.category
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
     : [];
@@ -449,14 +460,12 @@ export function InteractiveSimulator() {
     setStep(1);
   };
 
-  // Forex: selezione diretta dell'asset → ugId derivato dalla mappa
   const handleSelectForexAsset = (asset: ForexAsset) => {
     const ugId = ASSET_TO_UG[asset.id];
     setSelections(prev => ({ ...prev, ugId, assetId: asset.id }));
     setStep(2);
   };
 
-  // Non-forex: selezione del gruppo come prima
   const handleSelectUG = (id: UnderlyingGroupId) => {
     setSelections(prev => ({ ...prev, ugId: id, assetId: undefined }));
     setStep(2);
@@ -487,7 +496,6 @@ export function InteractiveSimulator() {
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
-  // Label da mostrare nel breadcrumb per lo step 1
   const step1BreadcrumbLabel = selections.category === 'forex' && selections.assetId
     ? FOREX_ASSETS.find(a => a.id === selections.assetId)?.label ?? ''
     : UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label ?? '';
@@ -503,7 +511,7 @@ export function InteractiveSimulator() {
   const TOTAL_STEPS = 4;
 
   return (
-    <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
+    <div ref={rootRef} className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
 
       {/* Progress dots */}
       <div className="mb-6 flex items-center gap-2">
@@ -556,10 +564,10 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 1 — forex: asset selector | altri: UGCard list */}
+          {/* STEP 1 — forex: asset selector */}
           {step === 1 && selections.category === 'forex' && (
             <motion.div key="step-1-forex" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-3 w-full">
+              className="flex flex-col gap-5 w-full">
 
               {/* Pill filter subgroup */}
               <div className="flex gap-1.5">
@@ -579,7 +587,7 @@ export function InteractiveSimulator() {
                 ))}
               </div>
 
-              {/* Asset grid */}
+              {/* Asset grid — gap-5 from pills above gives breathing room */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={forexSubgroup}
@@ -755,7 +763,6 @@ function ResultView({
   const cfg = RATING_CONFIG[result.rating];
   const Icon = cfg.icon;
 
-  // Label asset nel risultato
   const assetLabel = selections.assetId
     ? FOREX_ASSETS.find(a => a.id === selections.assetId)?.label
     : UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label;
