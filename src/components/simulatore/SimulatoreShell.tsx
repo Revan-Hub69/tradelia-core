@@ -31,6 +31,12 @@ const PROFILES: { id: TradingProfile; label: string }[] = [
 
 const RADIOGROUP_DESC_ID = 'sim-radiogroup-desc';
 
+const SIZING_MODES = [
+  { id: 'pct_capital' as const, label: '% Capitale' },
+  { id: 'lots' as const, label: 'Lotti' },
+  { id: 'euro' as const, label: 'Euro' },
+];
+
 // ── Helpers ───────────────────────────────────────────────────────────────
 
 function fmtEUR(n: number): string {
