@@ -163,19 +163,28 @@ type SimulatorState = {
 // MOTION CONSTANTS
 // ---------------------------------------------------------------------------
 
-const EASE_OUT  = [0.25, 0.46, 0.45, 0.94] as [number,number,number,number];
-const EASE_SPRING = { type: 'spring' as const, stiffness: 380, damping: 40, mass: 0.8 };
-const EASE_FAST = { duration: 0.16, ease: EASE_OUT };
+// SOTA 2026: Natural spring physics for smooth animations
+const EASE_OUT      = [0.25, 0.46, 0.45, 0.94] as [number,number,number,number];
+const EASE_SPRING    = { type: 'spring' as const, stiffness: 320, damping: 28, mass: 0.85 }; // Smoother spring
+const EASE_SPRING_FAST = { type: 'spring' as const, stiffness: 400, damping: 32, mass: 0.7 }; // Quick replies
+const EASE_FAST     = { duration: 0.14, ease: EASE_OUT };
+const EASE_GLIDE    = { duration: 0.32, ease: [0.22, 0.65, 0.35, 0.95] }; // iOS-style glide
+
+// Staggered children for list animations
+const staggerChildren = (delay: number = 0.05) => ({
+  transition: { staggerChildren: delay, delayChildren: 0.02 }
+});
 
 const stepFade = {
-  initial:  { opacity: 0, y: 10, scale: 0.99 },
-  animate:  { opacity: 1, y: 0,  scale: 1, transition: { ...EASE_SPRING } },
-  exit:     { opacity: 0, y: -6, scale: 0.99, transition: EASE_FAST, position: 'absolute' as const },
+  initial:  { opacity: 0, y: 12, scale: 0.98, filter: 'blur(4px)' },
+  animate:  { opacity: 1, y: 0,  scale: 1, filter: 'blur(0px)', transition: { ...EASE_SPRING, delay: 0.02 } },
+  exit:     { opacity: 0, y: -8, scale: 0.98, filter: 'blur(4px)', transition: { duration: 0.12, ease: 'easeOut' }, position: 'absolute' as const },
 };
+
 const slideUp = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: EASE_OUT } },
-  exit:    { opacity: 0, y: -4, transition: { duration: 0.12 } },
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0, transition: { ...EASE_SPRING } },
+  exit:    { opacity: 0, y: -6, transition: { duration: 0.10 } },
 };
 
 const DISMISS_VEL = 450;
@@ -289,7 +298,7 @@ function BottomSheet({
             style={{ y, scale: sheetScale }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0.02, bottom: 0.35 }}
+            dragElastic={{ top: 0.02, bottom: 0.32 }}
             dragMomentum={false}
             onDragEnd={handleDragEnd}
             role="dialog"
@@ -1449,29 +1458,43 @@ function CtaButton({ children, onClick, full }: { children: React.ReactNode; onC
     <button
       onClick={onClick}
       style={{
-        display:        'inline-flex',
-        alignItems:     'center',
-        justifyContent: 'center',
-        gap:            '8px',
-        width:          full ? '100%' : undefined,
-        height:         '48px',
-        borderRadius:   '14px',
-        border:         'none',
-        background:     'hsl(var(--primary))',
-        color:          'hsl(var(--primary-foreground))',
-        fontSize:       '14px',
-        fontWeight:     600,
-        cursor:         'pointer',
-        transition:     'opacity 150ms ease, transform 120ms ease',
-        outline:        'none',
+        display:           'inline-flex',
+        alignItems:        'center',
+        justifyContent:    'center',
+        gap:             '10px',
+        width:            full ? '100%' : undefined,
+        minHeight:        '52px',
+        paddingInline:    '24px',
+        borderRadius:     '16px',
+        border:          'none',
+        background:       'hsl(var(--primary))',
+        color:            'hsl(var(--primary-foreground))',
+        fontSize:         '15px',
+        fontWeight:       600,
+        letterSpacing:    '-0.01em',
+        cursor:           'pointer',
+        transition:       'transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease',
+        outline:          'none',
         WebkitTapHighlightColor: 'transparent',
-        /* Subtle inset highlight — iOS-grade */
-        boxShadow:      'inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 8px hsl(var(--primary) / 0.25)',
-        letterSpacing:  '-0.01em',
+        /* SOTA 2026: Premium shadow + subtle gradient */
+        boxShadow: [
+          'inset 0 1px 0 rgba(255,255,255,0.14)',
+          '0 4px 16px hsl(var(--primary) / 0.28)',
+          '0 1px 3px hsl(var(--primary) / 0.12)',
+        ].join(', '),
       }}
-      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)'; (e.currentTarget as HTMLButtonElement).style.opacity = '0.9'; }}
-      onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
-      onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
+      onPointerDown={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.965)'; 
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px hsl(var(--primary) / 0.18)';
+      }}
+      onPointerUp={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; 
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.14), 0 4px 16px hsl(var(--primary) / 0.28), 0 1px 3px hsl(var(--primary) / 0.12)';
+      }}
+      onPointerLeave={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; 
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.14), 0 4px 16px hsl(var(--primary) / 0.28), 0 1px 3px hsl(var(--primary) / 0.12)';
+      }}
     >
       {children}
     </button>
