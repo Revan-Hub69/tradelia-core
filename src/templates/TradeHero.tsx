@@ -1,8 +1,6 @@
 'use client';
 
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ArrowRight } from 'lucide-react';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { InteractiveSimulator } from '@/features/landing/InteractiveSimulator';
@@ -50,16 +48,6 @@ export const TradeHero = () => {
 
           <div className="rounded-[32px] border border-border/60 bg-card/80 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.35)]">
             <InteractiveSimulator />
-          </div>
-
-          <div className="mt-4 flex justify-end">
-            <Link
-              href="/simulatore"
-              className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground/75 transition-colors hover:text-foreground"
-            >
-              Apri simulatore completo
-              <ArrowRight size={13} strokeWidth={1.75} />
-            </Link>
           </div>
         </div>
       </SectionContainer>
