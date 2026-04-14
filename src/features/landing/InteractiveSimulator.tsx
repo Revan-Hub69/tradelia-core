@@ -266,9 +266,9 @@ function BottomSheet({
             style={{
               // @ts-ignore
               opacity: bgOpacity,
-              background: 'rgba(0,0,0,0.52)',
-              backdropFilter: 'blur(3px)',
-              WebkitBackdropFilter: 'blur(3px)',
+              background: 'radial-gradient(circle at 50% 120%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.52) 60%, rgba(0,0,0,0.42) 100%)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
             }}
             onClick={onClose}
             aria-hidden
@@ -284,7 +284,7 @@ function BottomSheet({
             style={{ y, scale: sheetScale }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0.02, bottom: 0.55 }}
+            dragElastic={{ top: 0.02, bottom: 0.35 }}
             dragMomentum={false}
             onDragEnd={handleDragEnd}
             role="dialog"
@@ -295,22 +295,24 @@ function BottomSheet({
               // @ts-ignore
               y,
               scale: sheetScale,
-              /* ── Liquid Glass Material (allineato a glass-effects-tokens.css) ── */
+              /* ── SOTA 2026 Liquid Glass ── */
               background:            'var(--glass-material-bg, hsl(var(--background)))',
-              backdropFilter:        'blur(var(--glass-material-blur, 20px)) saturate(var(--glass-material-saturate, 180%))',
-              WebkitBackdropFilter:  'blur(var(--glass-material-blur, 20px)) saturate(var(--glass-material-saturate, 180%))',
-              border:                '1px solid var(--glass-material-border, rgba(0,0,0,0.06))',
+              backdropFilter:        'blur(var(--glass-material-blur, 28px)) saturate(var(--glass-material-saturate, 200%))',
+              WebkitBackdropFilter:  'blur(var(--glass-material-blur, 28px)) saturate(var(--glass-material-saturate, 200%))',
+              border:                '1px solid var(--glass-material-border, rgba(255,255,255,0.08))',
               borderBottom:          'none',
-              borderTopLeftRadius:   '24px',
-              borderTopRightRadius:  '24px',
-              /* Shadow tripla da bottomsheet-premium-2026.css */
+              borderTopLeftRadius:   '28px',
+              borderTopRightRadius: '28px',
+              /* SOTA 2026 Quintuple shadow + ambient */
               boxShadow: [
-                '0 -16px 48px rgba(0,0,0,0.18)',
-                '0 -6px 18px rgba(0,0,0,0.10)',
-                '0 -1px 4px rgba(0,0,0,0.05)',
+                '0 -24px 64px rgba(0,0,0,0.28)',
+                '0 -12px 32px rgba(0,0,0,0.18)',
+                '0 -6px 16px rgba(0,0,0,0.12)',
+                '0 -2px 8px rgba(0,0,0,0.08)',
+                '0 0 96px rgba(59,130,246,0.06)',
               ].join(', '),
-              height:    '92dvh',
-              maxHeight: '92dvh',
+              height:    '85dvh',
+              maxHeight: '85dvh',
               /* GPU */
               transform:  'translateZ(0)',
               willChange: 'transform',
@@ -374,27 +376,28 @@ function SheetChrome({ stepLabel, onClose }: { stepLabel?: string; onClose: () =
     <div
       className="shrink-0 flex items-center"
       style={{
-        paddingInline: '20px',
-        paddingTop:    '12px',
-        paddingBottom: '4px',
+        paddingInline: '24px',
+        paddingTop:    '14px',
+        paddingBottom: '6px',
         position:      'relative',
-        minHeight:     '48px',
+        minHeight:     '56px',
       }}
     >
-      {/* Handle pill — perfettamente centrata, pointer-events-none */}
+      {/* SOTA 2026 Handle pill with glow */}
       <div
         aria-hidden
         style={{
           position:        'absolute',
-          top:             '10px',
+          top:             '12px',
           left:            '50%',
           transform:       'translateX(-50%)',
-          width:           '36px',
-          height:          '4px',
-          borderRadius:    '2px',
-          background:      'currentColor',
-          opacity:         0.18,
-          pointerEvents:   'none',
+          width:           '40px',
+          height:         '5px',
+          borderRadius:   '3px',
+          background:    'currentColor',
+          opacity:       0.22,
+          pointerEvents: 'none',
+          boxShadow:    '0 0 12px currentColor',
         }}
       />
 
@@ -417,33 +420,32 @@ function SheetChrome({ stepLabel, onClose }: { stepLabel?: string; onClose: () =
         </span>
       )}
 
-      {/* Close button — destra, 44×44 touch target */}
+      {/* SOTA 2026 Close button — 44×44 touch target */}
       <button
         onClick={onClose}
         aria-label="Chiudi"
         style={{
           marginLeft:    'auto',
-          marginTop:     '8px',
-          display:       'flex',
-          alignItems:    'center',
+          marginTop:   '10px',
+          display:     'flex',
+          alignItems:  'center',
           justifyContent:'center',
-          width:         '32px',
-          height:        '32px',
-          borderRadius:  '50%',
-          border:        '1px solid var(--glass-material-border, rgba(0,0,0,0.08))',
-          background:    'hsl(var(--muted) / 0.5)',
-          color:         'hsl(var(--muted-foreground))',
-          cursor:        'pointer',
-          transition:    'background 160ms ease, color 160ms ease, transform 120ms ease',
-          flexShrink:    0,
-          /* outline rimosso — focus-visible gestito globalmente */
-          outline:       'none',
+          width:      '44px',
+          height:     '44px',
+          borderRadius:'50%',
+          border:     '1px solid rgba(255,255,255,0.08)',
+          background: 'rgba(255,255,255,0.04)',
+          color:     'rgba(255,255,255,0.65)',
+          cursor:    'pointer',
+          transition:'background 160ms ease, color 160ms ease, transform 120ms ease',
+          flexShrink: 0,
+          outline:   'none',
         }}
-        onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.90)'; }}
-        onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
-        onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
+        onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.90)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)'; }}
+        onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)'; }}
+        onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)'; }}
       >
-        <X size={14} strokeWidth={2.2} />
+        <X size={16} strokeWidth={2.2} />
       </button>
     </div>
   );
@@ -1181,43 +1183,43 @@ function OptionCard({ icon: Icon, title, desc, onClick, selected = false }: {
         display:        'flex',
         flexDirection:  'column',
         alignItems:     'flex-start',
-        gap:            '10px',
-        padding:        '14px',
-        borderRadius:   '16px',
+        gap:            '12px',
+        padding:        '18px',
+        borderRadius:   '20px',
         border:         selected
-          ? '1px solid hsl(var(--primary) / 0.5)'
+          ? '1.5px solid hsl(var(--primary) / 0.7)'
           : '1px solid hsl(var(--border))',
         background:     selected
-          ? 'hsl(var(--primary) / 0.07)'
+          ? 'hsl(var(--primary) / 0.12)'
           : 'transparent',
         textAlign:      'left',
         cursor:         'pointer',
         transition:     'border-color 160ms ease, background 160ms ease, transform 120ms ease, box-shadow 160ms ease',
-        minHeight:      '80px',
+        minHeight:      '88px',
         outline:        'none',
         boxShadow:      selected
-          ? '0 0 0 1px hsl(var(--primary) / 0.15), 0 2px 8px hsl(var(--primary) / 0.08)'
-          : '0 1px 3px rgba(0,0,0,0.04)',
+          ? '0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 16px hsl(var(--primary) / 0.12)'
+          : '0 2px 6px rgba(0,0,0,0.06)',
         WebkitTapHighlightColor: 'transparent',
       }}
-      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.97)'; }}
+      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.96)'; }}
       onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
       onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
     >
       <Icon
-        size={16}
+        size={20}
         strokeWidth={1.8}
         style={{
-          color: selected ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.38)',
+          color: selected ? 'hsl(var(--primary))' : 'hsl(var(--foreground) / 0.45)',
           transition: 'color 160ms ease',
         }}
       />
       <div>
-        <p style={{ fontSize: '13px', fontWeight: 600, color: 'hsl(var(--foreground))', lineHeight: '18px' }}>
+        <p style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))', lineHeight: '20px' }}>
           {title}
         </p>
         {desc && (
-          <p style={{ fontSize: '10px', color: 'hsl(var(--muted-foreground))', opacity: 0.65, marginTop: '2px', lineHeight: '14px' }}>
+          <p style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.7, marginTop: '3px', lineHeight: '15px' }}>
             {desc}
           </p>
         )}
@@ -1236,21 +1238,22 @@ function Pill({ children, selected, onClick }: {
         display:        'inline-flex',
         alignItems:     'center',
         justifyContent: 'center',
-        height:         '36px',
+        height:        '44px',
         borderRadius:   '999px',
-        border:         selected
-          ? '1px solid hsl(var(--primary) / 0.55)'
+        border:        selected
+          ? '1.5px solid hsl(var(--primary) / 0.65)'
           : '1px solid hsl(var(--border))',
-        background:     selected ? 'hsl(var(--primary) / 0.09)' : 'transparent',
-        padding:        '0 14px',
-        fontFamily:     'var(--font-mono, monospace)',
-        fontSize:       '12px',
-        fontWeight:     700,
-        letterSpacing:  '0.04em',
-        color:          selected ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
-        cursor:         'pointer',
-        transition:     'all 160ms ease',
-        outline:        'none',
+        background:    selected ? 'hsl(var(--primary) / 0.12)' : 'transparent',
+        padding:       '0 18px',
+        fontFamily:   'var(--font-mono, monospace)',
+        fontSize:     '13px',
+        fontWeight:   700,
+        letterSpacing:'0.03em',
+        color:         selected ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
+        cursor:        'pointer',
+        transition:    'all 160ms ease',
+        outline:       'none',
+        boxShadow:    selected ? '0 0 10px hsl(var(--primary) / 0.12)' : 'none',
         WebkitTapHighlightColor: 'transparent',
       }}
       onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.94)'; }}
@@ -1266,13 +1269,14 @@ function SubTab({ children, active, onClick }: { children: React.ReactNode; acti
   return (
     <button onClick={onClick}
       style={{
-        flex: 1, height: '36px', borderRadius: '999px', border: 'none',
-        background:    active ? 'hsl(var(--foreground))' : 'hsl(var(--muted) / 0.45)',
-        color:         active ? 'hsl(var(--background))' : 'hsl(var(--muted-foreground))',
+        flex: 1, height: '40px', borderRadius: '999px', border: active ? '1.5px solid hsl(var(--primary) / 0.7)' : 'none',
+        background:    active ? 'hsl(var(--primary) / 0.15)' : 'hsl(var(--muted) / 0.35)',
+        color:         active ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
         fontSize:      '12px', fontWeight: 600,
         cursor:        'pointer',
-        transition:    'background 180ms ease, color 180ms ease, transform 120ms ease',
+        transition:    'background 180ms ease, color 180ms ease, transform 120ms ease, border 180ms ease',
         outline:       'none',
+        boxShadow:    active ? '0 0 12px hsl(var(--primary) / 0.15)' : 'none',
         WebkitTapHighlightColor: 'transparent',
       }}
       onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.96)'; }}
@@ -1288,29 +1292,30 @@ function UGRow({ label, desc, onClick }: { label: string; desc: string; onClick:
   return (
     <button onClick={onClick}
       style={{
-        display:        'flex',
+        display:         'flex',
         alignItems:     'center',
         justifyContent: 'space-between',
         width:          '100%',
-        padding:        '14px 16px',
-        borderRadius:   '14px',
+        padding:        '16px 18px',
+        borderRadius:   '18px',
         border:         '1px solid hsl(var(--border))',
         background:     'transparent',
         textAlign:      'left',
         cursor:         'pointer',
         transition:     'border-color 160ms ease, background 160ms ease, transform 120ms ease',
         outline:        'none',
+        boxShadow:     '0 2px 6px rgba(0,0,0,0.05)',
         WebkitTapHighlightColor: 'transparent',
       }}
-      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.985)'; (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--muted) / 0.4)'; }}
+      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.985)'; (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--muted) / 0.35'; }}
       onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
       onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
     >
       <div>
-        <p style={{ fontSize: '13px', fontWeight: 600, color: 'hsl(var(--foreground))' }}>{label}</p>
-        <p style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.65, marginTop: '2px' }}>{desc}</p>
+        <p style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))', lineHeight: '20px' }}>{label}</p>
+        <p style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.7, marginTop: '3px', lineHeight: '15px' }}>{desc}</p>
       </div>
-      <ArrowRight size={14} style={{ color: 'hsl(var(--primary))', flexShrink: 0, marginLeft: '12px', opacity: 0.6 }} />
+      <ArrowRight size={16} style={{ color: 'hsl(var(--primary))', flexShrink: 0, marginLeft: '14px', opacity: 0.7 }} />
     </button>
   );
 }
@@ -1319,16 +1324,17 @@ function RiskBtn({ value, selected, onClick }: { value: RiskPercentStep; selecte
   return (
     <button onClick={onClick}
       style={{
-        height:         '44px',
-        borderRadius:   '12px',
-        border:         selected ? '1.5px solid hsl(var(--primary) / 0.6)' : '1px solid hsl(var(--border))',
-        background:     selected ? 'hsl(var(--primary) / 0.09)' : 'transparent',
-        fontFamily:     'var(--font-mono, monospace)',
-        fontSize:       '13px', fontWeight: 700,
-        color:          selected ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
-        cursor:         'pointer',
-        transition:     'all 160ms ease',
-        outline:        'none',
+        height:        '52px',
+        borderRadius:  '14px',
+        border:       selected ? '2px solid hsl(var(--primary) / 0.75)' : '1px solid hsl(var(--border))',
+        background:    selected ? 'hsl(var(--primary) / 0.15)' : 'transparent',
+        fontFamily:  'var(--font-mono, monospace)',
+        fontSize:    '14px', fontWeight: 700,
+        color:       selected ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
+        cursor:      'pointer',
+        transition:  'all 160ms ease',
+        outline:     'none',
+        boxShadow:   selected ? '0 0 14px hsl(var(--primary) / 0.18)' : 'none',
         WebkitTapHighlightColor: 'transparent',
       }}
       onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.93)'; }}
