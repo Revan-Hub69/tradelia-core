@@ -77,6 +77,51 @@ const UNDERLYING_GROUPS = [
 
 type UnderlyingGroupId = typeof UNDERLYING_GROUPS[number]['id'];
 
+// ---------------------------------------------------------------------------
+// FOREX ASSET SELECTOR — pill filter + asset grid
+// ---------------------------------------------------------------------------
+
+type ForexSubgroup = 'major' | 'cross' | 'exotic';
+
+const FOREX_SUBGROUPS: { id: ForexSubgroup; label: string; ugId: UnderlyingGroupId }[] = [
+  { id: 'major',  label: 'Major',   ugId: 'ug_fx_core'   },
+  { id: 'cross',  label: 'Cross',   ugId: 'ug_fx_cross'  },
+  { id: 'exotic', label: 'Esotico', ugId: 'ug_fx_exotic' },
+];
+
+type ForexAsset = { id: string; label: string; subgroup: ForexSubgroup };
+
+const FOREX_ASSETS: ForexAsset[] = [
+  // Major
+  { id: 'eurusd', label: 'EUR/USD', subgroup: 'major' },
+  { id: 'gbpusd', label: 'GBP/USD', subgroup: 'major' },
+  { id: 'usdjpy', label: 'USD/JPY', subgroup: 'major' },
+  { id: 'usdchf', label: 'USD/CHF', subgroup: 'major' },
+  { id: 'audusd', label: 'AUD/USD', subgroup: 'major' },
+  { id: 'usdcad', label: 'USD/CAD', subgroup: 'major' },
+  { id: 'nzdusd', label: 'NZD/USD', subgroup: 'major' },
+  // Cross
+  { id: 'eurgbp', label: 'EUR/GBP', subgroup: 'cross' },
+  { id: 'eurjpy', label: 'EUR/JPY', subgroup: 'cross' },
+  { id: 'gbpjpy', label: 'GBP/JPY', subgroup: 'cross' },
+  { id: 'eurchf', label: 'EUR/CHF', subgroup: 'cross' },
+  { id: 'audjpy', label: 'AUD/JPY', subgroup: 'cross' },
+  { id: 'gbpchf', label: 'GBP/CHF', subgroup: 'cross' },
+  { id: 'cadjpy', label: 'CAD/JPY', subgroup: 'cross' },
+  // Exotic
+  { id: 'usdtry', label: 'USD/TRY', subgroup: 'exotic' },
+  { id: 'usdmxn', label: 'USD/MXN', subgroup: 'exotic' },
+  { id: 'usdzar', label: 'USD/ZAR', subgroup: 'exotic' },
+  { id: 'eurtry', label: 'EUR/TRY', subgroup: 'exotic' },
+  { id: 'usdsgd', label: 'USD/SGD', subgroup: 'exotic' },
+  { id: 'usdhkd', label: 'USD/HKD', subgroup: 'exotic' },
+];
+
+// Map asset → ugId per computeDrag
+const ASSET_TO_UG: Record<string, UnderlyingGroupId> = Object.fromEntries(
+  FOREX_ASSETS.map(a => [a.id, FOREX_SUBGROUPS.find(s => s.id === a.subgroup)!.ugId]),
+);
+
 const HORIZONS = [
   { id: 'scalping',  label: 'Scalping',  icon: Clock,        desc: 'Minuti / Ore'         },
   { id: 'intraday',  label: 'Intraday',  icon: Calendar,     desc: 'Chiusura in giornata' },
@@ -299,21 +344,12 @@ function computeDrag(
 // 3. RATING CONFIG — usa CSS tokens, non Tailwind hardcoded
 // ---------------------------------------------------------------------------
 
-/**
- * Tutti i colori del simulatore passano attraverso i CSS token del progetto:
- *   low    → --primary   (emerald — verde profitto, coerente col brand)
- *   medium → --warning   (amber)
- *   high   → --destructive (rosso)
- *
- * In questo modo dark mode, P3 wide-gamut e future palette change
- * si propagano automaticamente senza toccare il componente.
- */
 type RatingKey = 'low' | 'medium' | 'high';
 
 const RATING_CONFIG: Record<RatingKey, {
   icon:       React.ElementType;
-  colorClass: string;   // testo
-  bgClass:    string;   // bg + bordo del badge principale
+  colorClass: string;
+  bgClass:    string;
   label:      string;
 }> = {
   low: {
@@ -343,6 +379,7 @@ const RATING_CONFIG: Record<RatingKey, {
 type SimulatorState = {
   category?:     CategoryId;
   ugId?:         UnderlyingGroupId;
+  assetId?:      string;          // solo per forex: coppia selezionata (es. 'eurusd')
   horizon?:      HorizonId;
   style?:        StyleId;
   accountSize?:  AccountSizeId;
@@ -398,6 +435,7 @@ function statReveal(i: number) {
 export function InteractiveSimulator() {
   const [step, setStep]             = useState<number>(0);
   const [selections, setSelections] = useState<SimulatorState>({});
+  const [forexSubgroup, setForexSubgroup] = useState<ForexSubgroup>('major');
 
   const filteredUGs = selections.category
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
@@ -405,8 +443,25 @@ export function InteractiveSimulator() {
 
   const availableStyles = selections.horizon ? filteredStyles(selections.horizon) : [];
 
-  const handleSelectCategory     = (id: CategoryId)        => { setSelections({ category: id }); setStep(1); };
-  const handleSelectUG           = (id: UnderlyingGroupId) => { setSelections(prev => ({ ...prev, ugId: id })); setStep(2); };
+  const handleSelectCategory = (id: CategoryId) => {
+    setSelections({ category: id });
+    setForexSubgroup('major');
+    setStep(1);
+  };
+
+  // Forex: selezione diretta dell'asset → ugId derivato dalla mappa
+  const handleSelectForexAsset = (asset: ForexAsset) => {
+    const ugId = ASSET_TO_UG[asset.id];
+    setSelections(prev => ({ ...prev, ugId, assetId: asset.id }));
+    setStep(2);
+  };
+
+  // Non-forex: selezione del gruppo come prima
+  const handleSelectUG = (id: UnderlyingGroupId) => {
+    setSelections(prev => ({ ...prev, ugId: id, assetId: undefined }));
+    setStep(2);
+  };
+
   const handleSelectHorizon      = (id: HorizonId)         => { setSelections(prev => ({ ...prev, horizon: id, style: undefined })); };
   const handleSelectStyle        = (id: StyleId)           => { setSelections(prev => ({ ...prev, style: id })); setStep(3); };
   const handleSelectAccountSize  = (id: AccountSizeId)     => { setSelections(prev => ({ ...prev, accountSize: id })); };
@@ -415,14 +470,14 @@ export function InteractiveSimulator() {
 
   const navigateToStep = (target: number) => {
     if (target >= step) return;
-    if (target === 0) setSelections({});
+    if (target === 0) { setSelections({}); setForexSubgroup('major'); }
     if (target === 1) setSelections(prev => ({ category: prev.category }));
-    if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, horizon: undefined, style: undefined }));
+    if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, assetId: prev.assetId, horizon: undefined, style: undefined }));
     if (target === 3) setSelections(prev => ({ ...prev, accountSize: undefined, leverage: undefined }));
     setStep(target);
   };
 
-  const reset = () => { setSelections({}); setStep(0); };
+  const reset = () => { setSelections({}); setForexSubgroup('major'); setStep(0); };
 
   const selectedStyle = STYLES.find(s => s.id === selections.style);
   const step4Ready    = !!(selections.accountSize && selections.leverage);
@@ -432,9 +487,14 @@ export function InteractiveSimulator() {
       ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
       : null;
 
+  // Label da mostrare nel breadcrumb per lo step 1
+  const step1BreadcrumbLabel = selections.category === 'forex' && selections.assetId
+    ? FOREX_ASSETS.find(a => a.id === selections.assetId)?.label ?? ''
+    : UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label ?? '';
+
   const PROMPTS: (string | null)[] = [
     'Cosa tradi principalmente?',
-    'Qual è il sottogruppo?',
+    selections.category === 'forex' ? 'Quale coppia vuoi analizzare?' : 'Qual è il sottogruppo?',
     'Come operi?',
     'Il tuo profilo operativo',
     null,
@@ -486,7 +546,7 @@ export function InteractiveSimulator() {
       <motion.div layout="size" className="relative overflow-hidden min-h-[300px] sm:min-h-[340px] xl:min-h-[320px]">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 */}
+          {/* STEP 0 — category */}
           {step === 0 && (
             <motion.div key="step-0" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full">
@@ -496,9 +556,53 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 1 */}
-          {step === 1 && (
-            <motion.div key="step-1" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+          {/* STEP 1 — forex: asset selector | altri: UGCard list */}
+          {step === 1 && selections.category === 'forex' && (
+            <motion.div key="step-1-forex" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+              className="flex flex-col gap-3 w-full">
+
+              {/* Pill filter subgroup */}
+              <div className="flex gap-1.5">
+                {FOREX_SUBGROUPS.map(sg => (
+                  <button
+                    key={sg.id}
+                    onClick={() => setForexSubgroup(sg.id)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border',
+                      forexSubgroup === sg.id
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-background/60 text-muted-foreground border-border/50 hover:border-primary/40 hover:text-foreground',
+                    )}
+                  >
+                    {sg.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Asset grid */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={forexSubgroup}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
+                  exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                  className="grid grid-cols-3 sm:grid-cols-4 gap-2"
+                >
+                  {FOREX_ASSETS.filter(a => a.subgroup === forexSubgroup).map(asset => (
+                    <AssetPill
+                      key={asset.id}
+                      label={asset.label}
+                      selected={selections.assetId === asset.id}
+                      onClick={() => handleSelectForexAsset(asset)}
+                    />
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {step === 1 && selections.category !== 'forex' && (
+            <motion.div key="step-1-other" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="flex flex-col gap-2 w-full">
               {filteredUGs.map(ug => (
                 <UGCard key={ug.id} label={ug.label} desc={ug.desc} onClick={() => handleSelectUG(ug.id)} />
@@ -619,7 +723,7 @@ export function InteractiveSimulator() {
             <><span className="text-muted-foreground/30 text-xs">/</span>
             <button onClick={() => navigateToStep(1)}
               className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
-              <ChevronLeft className="size-3" />{UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label}
+              <ChevronLeft className="size-3" />{step1BreadcrumbLabel}
             </button></>
           )}
           {step > 2 && selections.horizon && (
@@ -637,7 +741,7 @@ export function InteractiveSimulator() {
 }
 
 // ---------------------------------------------------------------------------
-// 6. RESULT VIEW — estratto per leggibilità, usa token CSS
+// 6. RESULT VIEW
 // ---------------------------------------------------------------------------
 
 function ResultView({
@@ -651,13 +755,18 @@ function ResultView({
   const cfg = RATING_CONFIG[result.rating];
   const Icon = cfg.icon;
 
+  // Label asset nel risultato
+  const assetLabel = selections.assetId
+    ? FOREX_ASSETS.find(a => a.id === selections.assetId)?.label
+    : UNDERLYING_GROUPS.find(u => u.id === selections.ugId)?.label;
+
   return (
     <motion.div key="step-4"
       initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.15 } }}
       exit={{ opacity: 0, transition: { duration: 0.1 } }}
       className="w-full space-y-3">
 
-      {/* Rating badge — usa token CSS */}
+      {/* Rating badge */}
       <motion.div variants={badgeReveal} initial="initial" animate="animate"
         className={cn('flex items-center gap-3 rounded-2xl border px-4 py-3', cfg.bgClass)}>
         <Icon className={cn('size-5 shrink-0', cfg.colorClass)} />
@@ -720,10 +829,15 @@ function ResultView({
       <motion.div variants={revealVariant(460)} initial="initial" animate="animate"
         className="flex items-center justify-between">
         <div className="flex gap-2 flex-wrap">
-          {[selections.category, selections.ugId, selections.horizon, selections.style].map(s => s && (
+          {[
+            CATEGORIES.find(c => c.id === selections.category)?.label,
+            assetLabel,
+            selections.horizon,
+            selections.style,
+          ].filter(Boolean).map(s => (
             <span key={s}
               className="rounded-full border border-border/50 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              {s.replace('ug_', '').replace(/_/g, ' ')}
+              {s}
             </span>
           ))}
         </div>
@@ -760,6 +874,23 @@ function OptionCard({
         <p className="text-sm font-medium leading-5 text-foreground">{title}</p>
         {description && <p className="mt-0.5 text-[10px] text-muted-foreground hidden sm:block">{description}</p>}
       </div>
+    </button>
+  );
+}
+
+function AssetPill({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'rounded-xl border px-3 py-2.5 text-center font-mono text-xs font-semibold tracking-wide transition-all duration-200',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        selected
+          ? 'border-primary/70 bg-primary/10 text-primary'
+          : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:-translate-y-0.5 hover:shadow-sm',
+      )}
+    >
+      {label}
     </button>
   );
 }
