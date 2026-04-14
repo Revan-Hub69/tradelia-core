@@ -145,6 +145,16 @@ const RATING_CONFIG = {
   high:   { icon: TrendingDown,  colorText: 'text-rose-600 dark:text-rose-400',      colorBg: 'bg-rose-500/8 dark:bg-rose-500/10',        colorBorder: 'border-rose-500/20 dark:border-rose-500/25',      colorDot: 'bg-rose-500',    label: 'Attrito elevato'  },
 } as const;
 
+// Position size suggestions based on account
+function getPositionSuggestions(accountSize: number): { min: number; max: number; typical: number } {
+  if (accountSize < 500) return { min: 10, max: 50, typical: 25 };
+  if (accountSize < 2000) return { min: 25, max: 100, typical: 50 };
+  if (accountSize < 5000) return { min: 50, max: 200, typical: 100 };
+  if (accountSize < 10000) return { min: 100, max: 400, typical: 200 };
+  if (accountSize < 25000) return { min: 200, max: 800, typical: 400 };
+  return { min: Math.round(accountSize * 0.02), max: Math.round(accountSize * 0.06), typical: Math.round(accountSize * 0.04) };
+}
+
 // ---------------------------------------------------------------------------
 // STATE
 // ---------------------------------------------------------------------------
@@ -777,7 +787,10 @@ function StepContent(p: StepContentProps) {
               </div>
 
               <div className="flex flex-col gap-2.5">
-                <SectionLabel>Rischio per trade</SectionLabel>
+                <SectionLabel>Dimensione operazione</SectionLabel>
+                <p style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.6, marginTop: '-8px', marginBottom: '2px' }}>
+                  Quanta parte del conto rischi per singola operazione?
+                </p>
                 <div className="grid grid-cols-5 gap-1.5">
                   {RISK_PERCENT_STEPS.map(r => (
                     <RiskBtn key={r} value={r} selected={p.sel.riskPercent === r} onClick={() => p.onRisk(r)} />
@@ -785,16 +798,57 @@ function StepContent(p: StepContentProps) {
                 </div>
                 <AnimatePresence>
                   {p.sel.riskPercent && p.sel.ugId && (
-                    <motion.p key="notionale" variants={slideUp} initial="initial" animate="animate" exit="exit"
+                    <motion.div key="notionale" variants={slideUp} initial="initial" animate="animate" exit="exit"
                       style={{
-                        fontFamily: 'var(--font-mono, monospace)',
-                        fontSize: '11px',
-                        color: 'hsl(var(--muted-foreground))',
-                        opacity: 0.55,
-                        marginTop: '2px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        marginTop: '4px',
+                        padding: '12px',
+                        borderRadius: '12px',
+                        background: 'hsl(var(--muted) / 0.08)',
+                        border: '1px solid hsl(var(--border) / 0.3)',
                       }}>
-                      ≈ {formatAccountSize(deriveNotional(p.sel.accountSize ?? p.accountValue, p.sel.riskPercent, p.sel.ugId))} notionale / trade
-                    </motion.p>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          color: 'hsl(var(--foreground))',
+                          letterSpacing: '0.02em',
+                        }}>
+                          Notionale indicativo
+                        </span>
+                        <span style={{
+                          fontFamily: 'var(--font-mono, monospace)',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          color: 'hsl(var(--primary))',
+                        }}>
+                          {formatAccountSize(deriveNotional(p.sel.accountSize ?? p.accountValue, p.sel.riskPercent, p.sel.ugId))}
+                        </span>
+                      </div>
+                      {/* Suggestion box - subtle, non-prescriptive */}
+                      {(() => {
+                        const suggestions = getPositionSuggestions(p.sel.accountSize ?? p.accountValue);
+                        return (
+                          <div style={{
+                            fontSize: '10px',
+                            color: 'hsl(var(--muted-foreground))',
+                            opacity: 0.6,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                          }}>
+                            <span>💡</span>
+                            <span>Range tipico per questo conto: <strong style={{ color: 'hsl(var(--foreground))', opacity: 0.8 }}>{formatAccountSize(suggestions.min)} – {formatAccountSize(suggestions.max)}</strong></span>
+                          </div>
+                        );
+                      })()}
+                    </motion.div>
                   )}
                 </AnimatePresence>
               </div>
