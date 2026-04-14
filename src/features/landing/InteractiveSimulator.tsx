@@ -18,7 +18,6 @@ import {
   TrendingDown,
   AlertTriangle,
   CheckCircle2,
-  Target,
   ChevronLeft,
   Sprout,
   Wallet,
@@ -78,7 +77,7 @@ const UNDERLYING_GROUPS = [
 type UnderlyingGroupId = typeof UNDERLYING_GROUPS[number]['id'];
 
 // ---------------------------------------------------------------------------
-// FOREX ASSET SELECTOR — pill filter + asset grid
+// FOREX ASSET SELECTOR
 // ---------------------------------------------------------------------------
 
 type ForexSubgroup = 'major' | 'cross' | 'exotic';
@@ -92,7 +91,6 @@ const FOREX_SUBGROUPS: { id: ForexSubgroup; label: string; ugId: UnderlyingGroup
 type ForexAsset = { id: string; label: string; subgroup: ForexSubgroup };
 
 const FOREX_ASSETS: ForexAsset[] = [
-  // Major
   { id: 'eurusd', label: 'EUR/USD', subgroup: 'major' },
   { id: 'gbpusd', label: 'GBP/USD', subgroup: 'major' },
   { id: 'usdjpy', label: 'USD/JPY', subgroup: 'major' },
@@ -100,7 +98,6 @@ const FOREX_ASSETS: ForexAsset[] = [
   { id: 'audusd', label: 'AUD/USD', subgroup: 'major' },
   { id: 'usdcad', label: 'USD/CAD', subgroup: 'major' },
   { id: 'nzdusd', label: 'NZD/USD', subgroup: 'major' },
-  // Cross
   { id: 'eurgbp', label: 'EUR/GBP', subgroup: 'cross' },
   { id: 'eurjpy', label: 'EUR/JPY', subgroup: 'cross' },
   { id: 'gbpjpy', label: 'GBP/JPY', subgroup: 'cross' },
@@ -108,7 +105,6 @@ const FOREX_ASSETS: ForexAsset[] = [
   { id: 'audjpy', label: 'AUD/JPY', subgroup: 'cross' },
   { id: 'gbpchf', label: 'GBP/CHF', subgroup: 'cross' },
   { id: 'cadjpy', label: 'CAD/JPY', subgroup: 'cross' },
-  // Exotic
   { id: 'usdtry', label: 'USD/TRY', subgroup: 'exotic' },
   { id: 'usdmxn', label: 'USD/MXN', subgroup: 'exotic' },
   { id: 'usdzar', label: 'USD/ZAR', subgroup: 'exotic' },
@@ -117,86 +113,48 @@ const FOREX_ASSETS: ForexAsset[] = [
   { id: 'usdhkd', label: 'USD/HKD', subgroup: 'exotic' },
 ];
 
-// Map asset → ugId per computeDrag
 const ASSET_TO_UG: Record<string, UnderlyingGroupId> = Object.fromEntries(
   FOREX_ASSETS.map(a => [a.id, FOREX_SUBGROUPS.find(s => s.id === a.subgroup)!.ugId]),
 );
 
+// ---------------------------------------------------------------------------
+// HORIZONS
+// ---------------------------------------------------------------------------
+
 const HORIZONS = [
-  { id: 'scalping',  label: 'Scalping',  icon: Clock,        desc: 'Minuti / Ore'         },
-  { id: 'intraday',  label: 'Intraday',  icon: Calendar,     desc: 'Chiusura in giornata' },
-  { id: 'multiday',  label: 'Multiday',  icon: CalendarDays, desc: 'Da 2 a 5 giorni'      },
+  { id: 'intraday', label: 'Intraday', icon: Clock,        desc: 'Chiudi in giornata'    },
+  { id: 'multiday', label: 'Multiday', icon: Calendar,     desc: '2–5 giorni'            },
+  { id: 'swing',    label: 'Swing',    icon: CalendarDays, desc: 'Settimane / mesi'      },
 ] as const;
 
 type HorizonId = typeof HORIZONS[number]['id'];
 
-const STYLES = [
-  {
-    id: 'selective',
-    label: 'Selettivo',
-    icon: Target,
-    freq: 2,
-    desc: {
-      scalping: '1–3 trade/ora · alta selettività',
-      intraday: '1–3 setup/giornata · alta qualità',
-      multiday: '1–2 posizioni · massima selezione',
-    } as Record<HorizonId, string>,
-  },
-  {
-    id: 'active',
-    label: 'Attivo',
-    icon: TrendingUp,
-    freq: 7,
-    desc: {
-      scalping: '5–10 trade/ora · segue momentum',
-      intraday: '4–8 setup/giornata · multi-setup',
-      multiday: '3–6 posizioni · basket attivo',
-    } as Record<HorizonId, string>,
-  },
-  {
-    id: 'high_freq',
-    label: 'Alta frequenza',
-    icon: Zap,
-    freq: 20,
-    desc: {
-      scalping: '20+ trade/ora · scalping continuo',
-      intraday: '15–25 trade/giornata · alta frequenza',
-      multiday: '',
-    } as Record<HorizonId, string>,
-  },
-] as const;
-
-type StyleId = typeof STYLES[number]['id'];
-
-function filteredStyles(horizonId: HorizonId) {
-  if (horizonId === 'multiday') return STYLES.filter(s => s.id !== 'high_freq');
-  return STYLES;
-}
-
-const STYLE_PROMPT: Record<HorizonId, string> = {
-  scalping: 'Quanti trade fai per ora?',
-  intraday: 'Quanti setup apri in giornata?',
-  multiday: 'Quante posizioni tieni aperte?',
-};
+// trades/mese slider config
+const TRADES_MIN     = 1;
+const TRADES_MAX     = 500;
+const TRADES_DEFAULT = 20;
+const TRADES_WARNING = 200;
 
 // ---------------------------------------------------------------------------
-// 2. COST MODEL
+// 2. COST MODEL (placeholder — motore verrà riscritto)
 // ---------------------------------------------------------------------------
 
 type SimResult = {
-  spreadBps:    number;
-  swapPerDay:   number;
-  platformFee:  number;
-  totalDrag:    number;
-  rating:       'low' | 'medium' | 'high';
-  primaryIssue: string;
-  suggestion:   string;
+  spreadBps:      number;
+  swapPerDay:     number;
+  platformFee:    number;
+  tradesPerMonth: number;
+  totalDrag:      number;
+  rating:         'low' | 'medium' | 'high';
+  primaryIssue:   string;
+  suggestion:     string;
 };
 
-const HORIZON_PARAMS: Record<HorizonId, { holdingDays: number; holdingFactor: number }> = {
-  scalping: { holdingDays: 0.02, holdingFactor: 0.1 },
-  intraday: { holdingDays: 0.3,  holdingFactor: 0.4 },
-  multiday: { holdingDays: 3.5,  holdingFactor: 1.0 },
+// holdingDays: durata media posizione per calcolo swap mensile
+const HORIZON_HOLDING: Record<HorizonId, number> = {
+  intraday: 0.3,
+  multiday: 3.5,
+  swing:    15,
 };
 
 type UgTexts = Record<HorizonId, { primaryIssue: string; suggestion: string }>;
@@ -214,113 +172,113 @@ const UG_PARAMS: Record<UnderlyingGroupId, UgParams> = {
   ug_fx_core: {
     spread: 2, swapPerDay: 1.2, platformFee: 0.01, thresholdLow: 15, thresholdHigh: 40,
     texts: {
-      scalping: { primaryIssue: 'Spread bid/ask ripetuto ad alta frequenza', suggestion: 'Broker ECN spread < 0.5 pip, evita orari illiquidi' },
       intraday: { primaryIssue: 'Spread ampliato nelle ore news macro',       suggestion: 'Evita aperture 30min prima di dati CPI/NFP' },
       multiday: { primaryIssue: 'Swap overnight si accumula sui giorni',      suggestion: 'Considera futures su valute per multiday' },
+      swing:    { primaryIssue: 'Swap si accumula su settimane intere',       suggestion: 'Futures su valute o FX forward per swing' },
     },
   },
   ug_fx_cross: {
     spread: 4, swapPerDay: 1.5, platformFee: 0.01, thresholdLow: 20, thresholdHigh: 50,
     texts: {
-      scalping: { primaryIssue: 'Spread piu largo sui cross riduce edge',     suggestion: 'Usa ECN, evita cross illiquidi in scalping' },
       intraday: { primaryIssue: 'Spread variabile durante overlap London/NY', suggestion: 'Opera negli overlap London/NY per spread minimo' },
       multiday: { primaryIssue: 'Spread + swap si sommano sui giorni',        suggestion: 'CFD con swap contenuto o futures OTC' },
+      swing:    { primaryIssue: 'Swap cross elevato su settimane',            suggestion: 'Riduci size, monitora swap settimanale' },
     },
   },
   ug_fx_exotic: {
     spread: 15, swapPerDay: 3.0, platformFee: 0.02, thresholdLow: 40, thresholdHigh: 70,
     texts: {
-      scalping: { primaryIssue: 'Spread esotici estremi in scalping',         suggestion: 'Esotici inadatti a scalping -- usa swing' },
       intraday: { primaryIssue: 'Spread > 10 pip comune su esotici',          suggestion: 'Target solo su movimenti news macro rilevanti' },
       multiday: { primaryIssue: 'Spread + swap esotici molto alti',           suggestion: 'Position sizing molto ridotto, stop ampio' },
+      swing:    { primaryIssue: 'Swap esotico devastante su settimane',       suggestion: 'Solo spot, no CFD per swing su esotici' },
     },
   },
   ug_index_us: {
     spread: 3, swapPerDay: 1.5, platformFee: 0.02, thresholdLow: 20, thresholdHigh: 45,
     texts: {
-      scalping: { primaryIssue: 'CFD spread ampliato in volatilita alta',     suggestion: 'Usa E-mini o Micro futures per scalping' },
       intraday: { primaryIssue: 'Falsi breakout comuni su open NYSE',         suggestion: 'Filtra con volumi futures, non solo CFD' },
       multiday: { primaryIssue: 'Financing charge CFD overnight elevato',     suggestion: 'Futures su indici eliminano il financing' },
+      swing:    { primaryIssue: 'Financing CFD si accumula in settimane',     suggestion: 'ETF o futures per swing su indici US' },
     },
   },
   ug_index_eu: {
     spread: 4, swapPerDay: 1.5, platformFee: 0.02, thresholdLow: 22, thresholdHigh: 48,
     texts: {
-      scalping: { primaryIssue: 'Spread CFD EU piu largo rispetto agli US',   suggestion: 'Futures micro DAX o CAC per scalping efficiente' },
       intraday: { primaryIssue: 'Spread variabile a open Londra',              suggestion: 'Opera nelle prime 2h di apertura EU' },
       multiday: { primaryIssue: 'Financing overnight CFD EU accumulato',       suggestion: 'Futures EU-listed con rollover pulito' },
+      swing:    { primaryIssue: 'Financing CFD EU pesante su swing',           suggestion: 'Futures DAX/CAC o ETF per swing' },
     },
   },
   ug_index_asia: {
     spread: 5, swapPerDay: 2.0, platformFee: 0.02, thresholdLow: 25, thresholdHigh: 55,
     texts: {
-      scalping: { primaryIssue: 'Sessioni asiatiche illiquide fuori orario',   suggestion: 'Spread molto ampio fuori orario EU/US' },
       intraday: { primaryIssue: 'Spread piu alto che su EU/US',                suggestion: 'Opera nelle 2h di open Tokyo o Hong Kong' },
       multiday: { primaryIssue: 'Financing + spread asiatico accumulato',      suggestion: 'ETF Nikkei/Hang Seng senza swap' },
+      swing:    { primaryIssue: 'Financing + FX risk su swing Asia',           suggestion: 'ETF hedgiato o futures locali' },
     },
   },
   ug_equity_us_large: {
     spread: 2, swapPerDay: 1.0, platformFee: 0.02, thresholdLow: 15, thresholdHigh: 40,
     texts: {
-      scalping: { primaryIssue: 'Commissioni per trade moltiplicano su scalp', suggestion: 'Broker zero-commission o DMA per ridurre drag' },
       intraday: { primaryIssue: 'Slippage su breakout pre-market e news',      suggestion: 'Opera solo su titoli volume > 5M/giorno' },
       multiday: { primaryIssue: 'CFD overnight charge + gap risk',             suggestion: 'Azioni cash per multiday, evita CFD a leva' },
+      swing:    { primaryIssue: 'Financing CFD lungo su swing equity',         suggestion: 'Cash equity, incassa anche dividendi' },
     },
   },
   ug_equity_us_mid: {
     spread: 5, swapPerDay: 1.2, platformFee: 0.02, thresholdLow: 22, thresholdHigh: 48,
     texts: {
-      scalping: { primaryIssue: 'Spread piu largo su mid cap in scalping',     suggestion: 'Opera solo su titoli volume > 1M/giorno' },
       intraday: { primaryIssue: 'Breakout valido solo con catalyst noto',       suggestion: 'Entra solo con earnings/news come trigger' },
       multiday: { primaryIssue: 'Gap overnight frequente su mid cap',           suggestion: 'Stop fisso obbligatorio, size ridotta' },
+      swing:    { primaryIssue: 'Gap risk e bassa liquidita su swing',          suggestion: 'Size piccola, stop ampio, solo cash equity' },
     },
   },
   ug_equity_eu_large: {
     spread: 3, swapPerDay: 1.2, platformFee: 0.02, thresholdLow: 20, thresholdHigh: 45,
     texts: {
-      scalping: { primaryIssue: 'Spread EU leggermente piu largo degli US',    suggestion: 'DMA broker o CFD con spread fisso' },
       intraday: { primaryIssue: 'Liquidita alta su DE/NL large cap',            suggestion: 'Opera nelle prime 2h apertura Xetra' },
       multiday: { primaryIssue: 'CFD overnight charge EU accumulato',           suggestion: 'Cash equity per multiday, incassa dividendi' },
+      swing:    { primaryIssue: 'Financing CFD EU lungo su swing',              suggestion: 'Cash equity EU, dividendi coprono parte del costo' },
     },
   },
   ug_equity_asia: {
     spread: 6, swapPerDay: 2.0, platformFee: 0.03, thresholdLow: 28, thresholdHigh: 58,
     texts: {
-      scalping: { primaryIssue: 'Spread asiatico ampio + sessioni ridotte',    suggestion: 'Opera solo durante orario Tokyo/HK' },
       intraday: { primaryIssue: 'Breakout segue catalyst locali PBOC/BOJ',     suggestion: 'Tokyo: 02:00-08:00 CET, HK: 03:30-09:00' },
       multiday: { primaryIssue: 'Overnight financing + gap valutario FX',      suggestion: 'ETF Nikkei/Hang Seng senza swap' },
+      swing:    { primaryIssue: 'Financing + FX exposure su swing Asia',       suggestion: 'ETF hedgiato, evita CFD con leva' },
     },
   },
   ug_commodity_metal: {
     spread: 3, swapPerDay: 1.0, platformFee: 0.02, thresholdLow: 18, thresholdHigh: 42,
     texts: {
-      scalping: { primaryIssue: 'Spread Gold Spot ok, Silver piu volatile',    suggestion: 'Usa XAU/USD ECN per scalping metalli' },
       intraday: { primaryIssue: 'Spread variabile in overlap London-NY',        suggestion: 'Opera durante London-NY overlap' },
       multiday: { primaryIssue: 'Swap spot su metalli si accumula nei giorni',  suggestion: 'Futures COMEX per eliminare swap' },
+      swing:    { primaryIssue: 'Swap spot metalli pesante su settimane',       suggestion: 'Futures COMEX rolling mensile' },
     },
   },
   ug_commodity_energy: {
     spread: 8, swapPerDay: 2.0, platformFee: 0.03, thresholdLow: 30, thresholdHigh: 60,
     texts: {
-      scalping: { primaryIssue: 'WTI spread ampio + slippage su EIA report',   suggestion: 'Futures CL (NYMEX) per scalping energia' },
       intraday: { primaryIssue: 'Spread variabile intorno a EIA/OPEC report',  suggestion: 'Non operare 30min prima/dopo report EIA' },
       multiday: { primaryIssue: 'Contango futures petrolio erode la leva',     suggestion: 'Futures rolling attento a contango' },
+      swing:    { primaryIssue: 'Contango + rollover su swing energia',        suggestion: 'Valuta struttura futures prima di entrare' },
     },
   },
   ug_crypto_major: {
     spread: 6, swapPerDay: 2.0, platformFee: 0.04, thresholdLow: 25, thresholdHigh: 55,
     texts: {
-      scalping: { primaryIssue: 'Fee taker + spread molto elevati su crypto',  suggestion: 'Maker orders su MEXC/Bybit per fee zero' },
       intraday: { primaryIssue: 'Fee taker + spread variabile e liquidazioni',  suggestion: 'Maker-only strategy o exchange con rebate' },
       multiday: { primaryIssue: 'Funding rate perpetual ogni 8h si accumula',  suggestion: 'Monitora funding ogni 8h, chiudi se > 0.1%' },
+      swing:    { primaryIssue: 'Funding rate perpetual devasta lo swing',     suggestion: 'Spot only per swing crypto, no perp' },
     },
   },
   ug_crypto_altcoin: {
     spread: 18, swapPerDay: 3.0, platformFee: 0.06, thresholdLow: 45, thresholdHigh: 80,
     texts: {
-      scalping: { primaryIssue: 'Spread altcoin estremo + fee alta su scalp',   suggestion: 'Altcoin incompatibili con scalping' },
       intraday: { primaryIssue: 'Liquidita bassa, slippage enorme su altcoin',  suggestion: 'Solo altcoin top-20 per intraday' },
       multiday: { primaryIssue: 'Funding + spread + liquidita bassa accumulati',suggestion: 'Size tiny, stop molto largo, spot only' },
+      swing:    { primaryIssue: 'Funding devastante + illiquidita su swing',   suggestion: 'Solo spot, size minima, stop larghissimo' },
     },
   },
 };
@@ -328,20 +286,31 @@ const UG_PARAMS: Record<UnderlyingGroupId, UgParams> = {
 function computeDrag(
   ugId: UnderlyingGroupId,
   horizonId: HorizonId,
-  styleFreq: number,
+  tradesPerMonth: number,
 ): SimResult {
   const { spread, swapPerDay, platformFee, thresholdLow, thresholdHigh, texts } = UG_PARAMS[ugId];
-  const { holdingDays, holdingFactor } = HORIZON_PARAMS[horizonId];
-  const spreadDrag = spread * styleFreq * holdingFactor;
-  const swapDrag   = swapPerDay * holdingDays;
-  const totalDrag  = Math.round(spreadDrag + swapDrag + platformFee * 100);
-  const rating     = totalDrag <= thresholdLow ? 'low' : totalDrag >= thresholdHigh ? 'high' : 'medium';
+  const holdingDays = HORIZON_HOLDING[horizonId];
+
+  // spread drag: spread per trade × numero trade mensili (in bps totali/mese)
+  const spreadDrag  = spread * tradesPerMonth;
+  // swap drag: swap/giorno × giorni holding × trade mensili
+  const swapDrag    = swapPerDay * holdingDays * tradesPerMonth;
+  // platform fee mensile (normalizzato a bps per confronto)
+  const feeDrag     = platformFee * 100 * tradesPerMonth;
+
+  const totalDrag   = Math.round(spreadDrag + swapDrag + feeDrag);
+  const rating      = totalDrag <= thresholdLow * tradesPerMonth * 0.5
+    ? 'low'
+    : totalDrag >= thresholdHigh * tradesPerMonth * 0.5
+      ? 'high'
+      : 'medium';
+
   const { primaryIssue, suggestion } = texts[horizonId];
-  return { spreadBps: spread, swapPerDay, platformFee, totalDrag, rating, primaryIssue, suggestion };
+  return { spreadBps: spread, swapPerDay, platformFee, tradesPerMonth, totalDrag, rating, primaryIssue, suggestion };
 }
 
 // ---------------------------------------------------------------------------
-// 3. RATING CONFIG — usa CSS tokens, non Tailwind hardcoded
+// 3. RATING CONFIG
 // ---------------------------------------------------------------------------
 
 type RatingKey = 'low' | 'medium' | 'high';
@@ -377,13 +346,13 @@ const RATING_CONFIG: Record<RatingKey, {
 // ---------------------------------------------------------------------------
 
 type SimulatorState = {
-  category?:     CategoryId;
-  ugId?:         UnderlyingGroupId;
-  assetId?:      string;
-  horizon?:      HorizonId;
-  style?:        StyleId;
-  accountSize?:  AccountSizeId;
-  leverage?:     LeverageProfileId;
+  category?:       CategoryId;
+  ugId?:           UnderlyingGroupId;
+  assetId?:        string;
+  horizon?:        HorizonId;
+  tradesPerMonth?: number;
+  accountSize?:    AccountSizeId;
+  leverage?:       LeverageProfileId;
 };
 
 const spring = { type: 'spring' as const, stiffness: 280, damping: 28 };
@@ -437,11 +406,12 @@ export function InteractiveSimulator() {
   const [selections, setSelections] = useState<SimulatorState>({});
   const [forexSubgroup, setForexSubgroup] = useState<ForexSubgroup>('major');
 
-  // Autoscroll: keeps the simulator card in view on every step transition
+  // Local state for slider/input — synced into selections on confirm
+  const [tradesInput, setTradesInput] = useState<number>(TRADES_DEFAULT);
+
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!rootRef.current) return;
-    // Small delay to let framer-motion start the transition first
     const id = setTimeout(() => {
       rootRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 60);
@@ -451,8 +421,6 @@ export function InteractiveSimulator() {
   const filteredUGs = selections.category
     ? UNDERLYING_GROUPS.filter(ug => ug.categoryId === selections.category)
     : [];
-
-  const availableStyles = selections.horizon ? filteredStyles(selections.horizon) : [];
 
   const handleSelectCategory = (id: CategoryId) => {
     setSelections({ category: id });
@@ -471,29 +439,37 @@ export function InteractiveSimulator() {
     setStep(2);
   };
 
-  const handleSelectHorizon      = (id: HorizonId)         => { setSelections(prev => ({ ...prev, horizon: id, style: undefined })); };
-  const handleSelectStyle        = (id: StyleId)           => { setSelections(prev => ({ ...prev, style: id })); setStep(3); };
+  const handleSelectHorizon = (id: HorizonId) => {
+    setSelections(prev => ({ ...prev, horizon: id }));
+  };
+
+  const handleConfirmTrading = () => {
+    if (!selections.horizon) return;
+    setSelections(prev => ({ ...prev, tradesPerMonth: tradesInput }));
+    setStep(3);
+  };
+
   const handleSelectAccountSize  = (id: AccountSizeId)     => { setSelections(prev => ({ ...prev, accountSize: id })); };
   const handleSelectLeverage     = (id: LeverageProfileId) => { setSelections(prev => ({ ...prev, leverage: id })); };
   const handleConfirmProfile     = () => { if (step4Ready) setStep(4); };
 
   const navigateToStep = (target: number) => {
     if (target >= step) return;
-    if (target === 0) { setSelections({}); setForexSubgroup('major'); }
+    if (target === 0) { setSelections({}); setForexSubgroup('major'); setTradesInput(TRADES_DEFAULT); }
     if (target === 1) setSelections(prev => ({ category: prev.category }));
-    if (target === 2) setSelections(prev => ({ category: prev.category, ugId: prev.ugId, assetId: prev.assetId, horizon: undefined, style: undefined }));
+    if (target === 2) { setSelections(prev => ({ category: prev.category, ugId: prev.ugId, assetId: prev.assetId })); setTradesInput(TRADES_DEFAULT); }
     if (target === 3) setSelections(prev => ({ ...prev, accountSize: undefined, leverage: undefined }));
     setStep(target);
   };
 
-  const reset = () => { setSelections({}); setForexSubgroup('major'); setStep(0); };
+  const reset = () => { setSelections({}); setForexSubgroup('major'); setTradesInput(TRADES_DEFAULT); setStep(0); };
 
-  const selectedStyle = STYLES.find(s => s.id === selections.style);
-  const step4Ready    = !!(selections.accountSize && selections.leverage);
+  const step2Ready = !!(selections.horizon);
+  const step4Ready = !!(selections.accountSize && selections.leverage);
 
   const result: SimResult | null =
-    step === 4 && selections.ugId && selections.horizon && selectedStyle
-      ? computeDrag(selections.ugId, selections.horizon, selectedStyle.freq)
+    step === 4 && selections.ugId && selections.horizon && selections.tradesPerMonth
+      ? computeDrag(selections.ugId, selections.horizon, selections.tradesPerMonth)
       : null;
 
   const step1BreadcrumbLabel = selections.category === 'forex' && selections.assetId
@@ -568,8 +544,6 @@ export function InteractiveSimulator() {
           {step === 1 && selections.category === 'forex' && (
             <motion.div key="step-1-forex" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="flex flex-col gap-5 w-full">
-
-              {/* Pill filter subgroup */}
               <div className="flex gap-1.5">
                 {FOREX_SUBGROUPS.map(sg => (
                   <button
@@ -586,8 +560,6 @@ export function InteractiveSimulator() {
                   </button>
                 ))}
               </div>
-
-              {/* Asset grid — gap-5 from pills above gives breathing room */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={forexSubgroup}
@@ -618,13 +590,14 @@ export function InteractiveSimulator() {
             </motion.div>
           )}
 
-          {/* STEP 2 — orizzonte + stile */}
+          {/* STEP 2 — orizzonte + trade/mese */}
           {step === 2 && (
             <motion.div key="step-2" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-4 w-full">
+              className="flex flex-col gap-5 w-full">
 
-              <ProfileSection label="Orizzonte temporale">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+              {/* Orizzonte */}
+              <ProfileSection label="Orizzonte tipico">
+                <div className="grid grid-cols-3 gap-2">
                   {HORIZONS.map(item => (
                     <OptionCard
                       key={item.id} icon={item.icon} title={item.label} description={item.desc}
@@ -635,24 +608,72 @@ export function InteractiveSimulator() {
                 </div>
               </ProfileSection>
 
+              {/* Trade/mese — appare dopo la selezione dell'orizzonte */}
               <AnimatePresence>
                 {selections.horizon && (
-                  <motion.div key={`styles-${selections.horizon}`} variants={slideDown} initial="initial" animate="animate" exit="exit">
-                    <ProfileSection label={STYLE_PROMPT[selections.horizon]}>
-                      <div className={cn(
-                        'grid gap-2 sm:gap-3',
-                        availableStyles.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3',
-                      )}>
-                        {availableStyles.map(item => (
-                          <OptionCard
-                            key={item.id} icon={item.icon} title={item.label}
-                            description={item.desc[selections.horizon!]}
-                            selected={selections.style === item.id}
-                            onClick={() => handleSelectStyle(item.id as StyleId)}
+                  <motion.div key="trades-section" variants={slideDown} initial="initial" animate="animate" exit="exit"
+                    className="flex flex-col gap-4">
+
+                    <ProfileSection label="Trade al mese">
+                      {/* Input + slider */}
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="number"
+                            min={TRADES_MIN}
+                            max={TRADES_MAX}
+                            value={tradesInput}
+                            onChange={e => {
+                              const v = Math.min(TRADES_MAX, Math.max(TRADES_MIN, parseInt(e.target.value) || TRADES_MIN));
+                              setTradesInput(v);
+                            }}
+                            className={cn(
+                              'w-20 rounded-xl border px-3 py-2 text-center font-mono text-sm font-semibold tabular-nums',
+                              'bg-background/60 text-foreground outline-none transition-colors duration-200',
+                              'focus:border-primary/60 focus:ring-2 focus:ring-primary/20',
+                              'border-border/50',
+                            )}
                           />
-                        ))}
+                          <span className="text-xs text-muted-foreground">trade / mese</span>
+                          {tradesInput >= TRADES_WARNING && (
+                            <motion.span
+                              initial={{ opacity: 0, x: -4 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="ml-auto flex items-center gap-1 rounded-full bg-warning/10 border border-warning/20 px-2.5 py-1 font-mono text-[10px] text-warning"
+                            >
+                              <Zap className="size-3" /> Alta frequenza
+                            </motion.span>
+                          )}
+                        </div>
+
+                        {/* Slider */}
+                        <input
+                          type="range"
+                          min={TRADES_MIN}
+                          max={TRADES_MAX}
+                          value={tradesInput}
+                          onChange={e => setTradesInput(parseInt(e.target.value))}
+                          className="w-full accent-primary h-1.5 rounded-full cursor-pointer"
+                        />
+
+                        {/* Tick labels */}
+                        <div className="flex justify-between font-mono text-[9px] text-muted-foreground/40 uppercase tracking-wider px-0.5">
+                          <span>1</span>
+                          <span>10–40 intraday</span>
+                          <span>100+ scalping</span>
+                          <span>500</span>
+                        </div>
                       </div>
                     </ProfileSection>
+
+                    {/* CTA conferma */}
+                    <button
+                      onClick={handleConfirmTrading}
+                      disabled={!step2Ready}
+                      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3 bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      Continua <ArrowRight className="size-4" />
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -706,11 +727,10 @@ export function InteractiveSimulator() {
           )}
 
           {/* STEP 4 — Risultato */}
-          {step === 4 && result && selections.ugId && selections.horizon && selectedStyle && (
+          {step === 4 && result && selections.ugId && selections.horizon && (
             <ResultView
               result={result}
               selections={selections}
-              selectedStyle={selectedStyle}
               onReset={reset}
             />
           )}
@@ -739,7 +759,7 @@ export function InteractiveSimulator() {
             <button onClick={() => navigateToStep(2)}
               className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary">
               <ChevronLeft className="size-3" />{HORIZONS.find(h => h.id === selections.horizon)?.label}
-              {selections.style && <span className="opacity-50">· {STYLES.find(s => s.id === selections.style)?.label}</span>}
+              {selections.tradesPerMonth && <span className="opacity-50">· {selections.tradesPerMonth} trade/mese</span>}
             </button></>
           )}
         </motion.div>
@@ -753,12 +773,11 @@ export function InteractiveSimulator() {
 // ---------------------------------------------------------------------------
 
 function ResultView({
-  result, selections, selectedStyle, onReset,
+  result, selections, onReset,
 }: {
-  result:        SimResult;
-  selections:    SimulatorState;
-  selectedStyle: typeof STYLES[number];
-  onReset:       () => void;
+  result:     SimResult;
+  selections: SimulatorState;
+  onReset:    () => void;
 }) {
   const cfg = RATING_CONFIG[result.rating];
   const Icon = cfg.icon;
@@ -791,8 +810,8 @@ function ResultView({
       {/* Profilo recap chips */}
       <motion.div variants={statReveal(0)} initial="initial" animate="animate" className="flex flex-wrap gap-1.5">
         {[
-          selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label   : null,
-          selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label  : null,
+          selections.accountSize  ? ACCOUNT_SIZES[selections.accountSize].label  : null,
+          selections.leverage     ? LEVERAGE_PROFILES[selections.leverage].label : null,
         ].filter(Boolean).map(label => (
           <span key={label}
             className="rounded-full border border-border/50 bg-background px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
@@ -804,9 +823,9 @@ function ResultView({
       {/* Cost breakdown */}
       <div className="grid grid-cols-3 gap-2">
         {[
-          { label: 'Spread',       value: `${result.spreadBps} bps` },
-          { label: 'Swap/giorno',  value: result.swapPerDay > 0 ? `${result.swapPerDay} bps` : '--' },
-          { label: 'Platform fee', value: `${result.platformFee}%` },
+          { label: 'Spread/trade',  value: `${result.spreadBps} bps` },
+          { label: 'Swap/giorno',   value: result.swapPerDay > 0 ? `${result.swapPerDay} bps` : '--' },
+          { label: 'Trade/mese',    value: `${result.tradesPerMonth}` },
         ].map(({ label, value }, i) => (
           <motion.div key={label} variants={statReveal(i + 1)} initial="initial" animate="animate"
             className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center">
@@ -819,7 +838,7 @@ function ResultView({
       {/* Formula line */}
       <motion.p variants={revealVariant(300)} initial="initial" animate="animate"
         className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide">
-        {selectedStyle.freq} trade/sessione · {HORIZON_PARAMS[selections.horizon!].holdingDays}gg holding · spread {result.spreadBps}bps
+        {result.tradesPerMonth} trade/mese · {HORIZON_HOLDING[selections.horizon!]}gg holding medio · spread {result.spreadBps} bps/trade
       </motion.p>
 
       {/* Suggestion */}
@@ -840,7 +859,7 @@ function ResultView({
             CATEGORIES.find(c => c.id === selections.category)?.label,
             assetLabel,
             selections.horizon,
-            selections.style,
+            selections.tradesPerMonth ? `${selections.tradesPerMonth} trade/mese` : null,
           ].filter(Boolean).map(s => (
             <span key={s}
               className="rounded-full border border-border/50 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
