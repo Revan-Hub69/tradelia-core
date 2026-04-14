@@ -1,24 +1,26 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import {
   Globe, BarChart3, Coins, Building2, Wheat,
   Clock, Calendar, CalendarDays,
-  ArrowRight, RotateCcw, TrendingDown, AlertTriangle, CheckCircle2, ChevronLeft, Zap, SlidersHorizontal,
+  ArrowRight, RotateCcw, TrendingDown, AlertTriangle, CheckCircle2,
+  ChevronLeft, Zap, SlidersHorizontal, X,
 } from 'lucide-react';
 import { cn } from '@/utils/Helpers';
 import {
   TRADES_PER_MONTH_STEPS, TRADES_DEFAULT, TRADES_PRESETS,
   ACCOUNT_SIZE_STEPS, ACCOUNT_SIZE_DEFAULT, ACCOUNT_PRESETS,
   RISK_PERCENT_STEPS,
-  formatAccountSize, deriveNotional, snapToTradesStep, snapToAccountStep,
+  formatAccountSize, deriveNotional,
   type TradesPerMonthStep, type AccountSizeStep, type RiskPercentStep,
 } from '@/data/simulator/trade-scales';
 
-// ---------------------------------------------------------------------------
-// DATA DOMAIN
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
 
 const CATEGORIES = [
   { id: 'forex',       label: 'Forex',     icon: Globe,     desc: 'Major, Cross & Esotico' },
@@ -88,9 +90,9 @@ const HORIZONS = [
 type HorizonId = typeof HORIZONS[number]['id'];
 const HORIZON_HOLDING: Record<HorizonId, number> = { intraday: 0.3, multiday: 3.5, swing: 15 };
 
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
 // COST MODEL
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
 
 type SimResult = {
   spreadBps: number; swapPerDay: number;
@@ -128,25 +130,24 @@ function computeDrag(ugId: UnderlyingGroupId, horizonId: HorizonId, tradesPerMon
   const totalDragBps = Math.round(spreadDrag + swapDrag);
   const totalDragEur = Math.round((totalDragBps / 10_000) * notionale * tradesPerMonth);
   const mid    = (thresholdLow + thresholdHigh) / 2;
-  const rating = totalDragBps <= mid * 0.6 ? 'low' : totalDragBps >= mid * 1.4 ? 'high' : 'medium';
+  const rating: SimResult['rating'] = totalDragBps <= mid * 0.6 ? 'low' : totalDragBps >= mid * 1.4 ? 'high' : 'medium';
   const { primaryIssue, suggestion } = texts[horizonId];
   return { spreadBps: spread, swapPerDay, tradesPerMonth, notionale, totalDragBps, totalDragEur, rating, primaryIssue, suggestion };
 }
 
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
 // RATING
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
 
-type RatingKey = 'low' | 'medium' | 'high';
-const RATING_CONFIG: Record<RatingKey, { icon: React.ElementType; colorClass: string; bgClass: string; borderClass: string; label: string }> = {
-  low:    { icon: CheckCircle2,  colorClass: 'text-emerald-600 dark:text-emerald-400',  bgClass: 'bg-emerald-50 dark:bg-emerald-950/40',   borderClass: 'border-emerald-200 dark:border-emerald-800/60',  label: 'Attrito basso'    },
-  medium: { icon: AlertTriangle, colorClass: 'text-amber-600 dark:text-amber-400',      bgClass: 'bg-amber-50 dark:bg-amber-950/40',        borderClass: 'border-amber-200 dark:border-amber-800/60',      label: 'Attrito moderato' },
-  high:   { icon: TrendingDown,  colorClass: 'text-rose-600 dark:text-rose-400',        bgClass: 'bg-rose-50 dark:bg-rose-950/40',          borderClass: 'border-rose-200 dark:border-rose-800/60',        label: 'Attrito elevato'  },
-};
+const RATING_CONFIG = {
+  low:    { icon: CheckCircle2,  color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/50',  border: 'border-emerald-200 dark:border-emerald-800', label: 'Attrito basso'    },
+  medium: { icon: AlertTriangle, color: 'text-amber-600 dark:text-amber-400',    bg: 'bg-amber-50 dark:bg-amber-950/50',      border: 'border-amber-200 dark:border-amber-800',    label: 'Attrito moderato' },
+  high:   { icon: TrendingDown,  color: 'text-rose-600 dark:text-rose-400',      bg: 'bg-rose-50 dark:bg-rose-950/50',        border: 'border-rose-200 dark:border-rose-800',      label: 'Attrito elevato'  },
+} as const;
 
-// ---------------------------------------------------------------------------
-// STATE
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
+// STATE TYPE
+// ─────────────────────────────────────────────
 
 type SimulatorState = {
   category?:       CategoryId;
@@ -158,154 +159,165 @@ type SimulatorState = {
   riskPercent?:    RiskPercentStep;
 };
 
-// ---------------------------------------------------------------------------
-// ANIMATIONS
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
+// MOTION CONSTANTS
+// ─────────────────────────────────────────────
 
-const EASING = [0.16, 1, 0.3, 1] as [number, number, number, number];
-const spring = { type: 'spring' as const, stiffness: 280, damping: 28 };
-const fade = {
-  initial: { opacity: 0, y: 14, scale: 0.99 },
-  animate: { opacity: 1, y: 0,  scale: 1 },
-  exit:    { opacity: 0, y: -10, scale: 0.99, position: 'absolute' as const },
+const E = [0.16, 1, 0.3, 1] as [number, number, number, number];
+const SP = { type: 'spring' as const, stiffness: 300, damping: 30 };
+
+const stepFade = {
+  initial:  { opacity: 0, y: 12, scale: 0.985 },
+  animate:  { opacity: 1, y: 0,  scale: 1, transition: SP },
+  exit:     { opacity: 0, y: -8, scale: 0.985, transition: { duration: 0.15 }, position: 'absolute' as const },
 };
 const slideDown = {
   initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.26, ease: EASING } },
-  exit:    { opacity: 0, transition: { duration: 0.14 } },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.24, ease: E } },
+  exit:    { opacity: 0, y: -4, transition: { duration: 0.12 } },
 };
-function revealVariant(delayMs: number) {
-  return {
-    initial: { opacity: 0, y: 8, filter: 'blur(3px)' },
-    animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { delay: delayMs / 1000, duration: 0.36, ease: EASING } },
-  };
+const DISMISS_VEL = 500;
+const DISMISS_Y   = 100;
+
+// ─────────────────────────────────────────────
+// HOOK: isMobile
+// ─────────────────────────────────────────────
+
+function useIsMobile() {
+  const [v, set] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    set(mq.matches);
+    const h = (e: MediaQueryListEvent) => set(e.matches);
+    mq.addEventListener('change', h);
+    return () => mq.removeEventListener('change', h);
+  }, []);
+  return v;
 }
-const badgeReveal = {
-  initial: { opacity: 0, scale: 0.97, filter: 'blur(4px)' },
-  animate: { opacity: 1, scale: 1, filter: 'blur(0px)', transition: { delay: 0.05, duration: 0.38, ease: EASING } },
-};
-function statReveal(i: number) {
-  return {
-    initial: { opacity: 0, y: 6, scale: 0.97 },
-    animate: { opacity: 1, y: 0, scale: 1, transition: { delay: 0.18 + i * 0.05, duration: 0.3, ease: EASING } },
-  };
-}
 
-// ---------------------------------------------------------------------------
-// BOTTOM SHEET
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
+// BOTTOM SHEET — portalled to document.body
+// Questo è l'unico modo affidabile per evitare
+// z-index inheritance dal parent component.
+// ─────────────────────────────────────────────
 
-const DISMISS_THRESHOLD = 120;
-const SHEET_RADIUS = '20px';
-
-interface BottomSheetProps {
+function BottomSheet({
+  open, onClose, children, footer, label,
+}: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  title?: string;
-}
+  label?: string;
+}) {
+  const y            = useMotionValue(0);
+  const bgOpacity    = useTransform(y, [0, DISMISS_Y * 1.5], [1, 0]);
+  const sheetScale   = useTransform(y, [0, DISMISS_Y],       [1, 0.98]);
+  const scrollRef    = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
-function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProps) {
-  const y = useMotionValue(0);
-  const backdropOpacity = useTransform(y, [0, DISMISS_THRESHOLD * 1.5], [1, 0]);
-  const sheetScale = useTransform(y, [0, DISMISS_THRESHOLD], [1, 0.98]);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
+    const body = document.body;
     if (open) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
+      body.style.overflow    = 'hidden';
+      body.style.touchAction = 'none';
+      animate(y, 0, { type: 'spring', stiffness: 420, damping: 42 });
     } else {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
+      body.style.overflow    = '';
+      body.style.touchAction = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.touchAction = '';
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (open) animate(y, 0, { type: 'spring', stiffness: 400, damping: 40 });
+    return () => { body.style.overflow = ''; body.style.touchAction = ''; };
   }, [open, y]);
 
-  const handleDragEnd = useCallback((_: unknown, info: { offset: { y: number }; velocity: { y: number } }) => {
-    const shouldDismiss = info.offset.y > DISMISS_THRESHOLD || info.velocity.y > 500;
-    if (shouldDismiss) {
-      animate(y, window.innerHeight, { duration: 0.28, ease: EASING }).then(onClose);
-    } else {
-      animate(y, 0, { type: 'spring', stiffness: 400, damping: 40 });
-    }
-  }, [y, onClose]);
+  const handleDragEnd = useCallback(
+    (_: unknown, info: { offset: { y: number }; velocity: { y: number } }) => {
+      if (info.offset.y > DISMISS_Y || info.velocity.y > DISMISS_VEL) {
+        animate(y, window.innerHeight, { duration: 0.26, ease: E }).then(onClose);
+      } else {
+        animate(y, 0, { type: 'spring', stiffness: 420, damping: 42 });
+      }
+    },
+    [y, onClose],
+  );
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
+          {/* Backdrop — z-[9998] */}
           <motion.div
-            key="backdrop"
+            key="sim-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            style={{ opacity: backdropOpacity }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            transition={{ duration: 0.2 }}
+            style={{ opacity: bgOpacity }}
+            className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-[2px]"
             onClick={onClose}
             aria-hidden
           />
 
+          {/* Sheet — z-[9999] */}
           <motion.div
-            key="sheet"
+            key="sim-sheet"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', stiffness: 380, damping: 40, mass: 0.9 }}
-            style={{
-              y,
-              scale: sheetScale,
-              height: '92dvh',
-              maxHeight: '92dvh',
-              borderRadius: `${SHEET_RADIUS} ${SHEET_RADIUS} 0 0`,
-            }}
+            exit={{ y: '100%', transition: { duration: 0.26, ease: E } }}
+            transition={{ type: 'spring', stiffness: 380, damping: 40, mass: 0.85 }}
+            style={{ y, scale: sheetScale }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0.04, bottom: 0.5 }}
+            dragElastic={{ top: 0.03, bottom: 0.45 }}
             dragMomentum={false}
             onDragEnd={handleDragEnd}
-            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col bg-background"
+            className="fixed bottom-0 left-0 right-0 z-[9999] flex flex-col bg-background rounded-t-[22px] shadow-2xl"
+            style={{ y, scale: sheetScale, height: '92dvh', maxHeight: '92dvh' }}
             role="dialog"
             aria-modal="true"
-            aria-label={title ?? 'Simulatore'}
+            aria-label={label ?? 'Simulatore'}
           >
-            {/* Handle bar */}
-            <div
-              className="flex justify-center pt-3 pb-1 shrink-0 cursor-grab active:cursor-grabbing"
-              aria-hidden
-            >
-              <div className="h-1 w-9 rounded-full bg-foreground/15" />
+            {/* Drag handle + header row */}
+            <div className="shrink-0 flex items-center px-5 pt-3 pb-3">
+              {/* handle centrato */}
+              <div className="absolute left-0 right-0 top-3 flex justify-center pointer-events-none">
+                <div className="h-[5px] w-10 rounded-full bg-foreground/12" />
+              </div>
+
+              {/* label a sinistra */}
+              {label && (
+                <span className="font-mono text-[10px] uppercase tracking-[0.20em] text-muted-foreground/50 pt-2">
+                  {label}
+                </span>
+              )}
+
+              {/* X a destra */}
+              <button
+                onClick={onClose}
+                aria-label="Chiudi"
+                className="ml-auto mt-2 flex items-center justify-center size-8 rounded-full text-muted-foreground/50 hover:text-foreground hover:bg-muted/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <X className="size-4" />
+              </button>
             </div>
 
-            {title && (
-              <div className="shrink-0 px-5 pb-2 pt-1">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/50 text-center">
-                  {title}
-                </p>
-              </div>
-            )}
-
+            {/* Scrollable body */}
             <div
               ref={scrollRef}
-              className="flex-1 overflow-y-auto overscroll-contain px-5 py-4"
+              className="flex-1 overflow-y-auto overscroll-contain px-5 pb-4"
               style={{ WebkitOverflowScrolling: 'touch' }}
             >
               {children}
             </div>
 
+            {/* Sticky footer CTA */}
             {footer && (
               <div
-                className="shrink-0 border-t border-border/30 bg-background/95 backdrop-blur-sm px-5 pt-3"
-                style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 20px)' }}
+                className="shrink-0 px-5 pt-3 border-t border-border/20 bg-background/98 backdrop-blur-sm"
+                style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 20px)' }}
               >
                 {footer}
               </div>
@@ -313,34 +325,19 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
 
-// ---------------------------------------------------------------------------
-// HOOK
-// ---------------------------------------------------------------------------
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)');
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-  return isMobile;
-}
-
-// ---------------------------------------------------------------------------
-// MAIN COMPONENT
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
+// MAIN EXPORT
+// ─────────────────────────────────────────────
 
 export function InteractiveSimulator() {
-  const [step, setStep]         = useState<number>(0);
-  const [sel,  setSel]          = useState<SimulatorState>({});
-  const [forexSub, setForexSub] = useState<ForexSubgroup>('major');
+  const [step,      setStep]      = useState(0);
+  const [sel,       setSel]       = useState<SimulatorState>({});
+  const [forexSub,  setForexSub]  = useState<ForexSubgroup>('major');
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const [tradesIdx,         setTradesIdx]         = useState(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
@@ -348,12 +345,12 @@ export function InteractiveSimulator() {
   const [showTradesSlider,  setShowTradesSlider]  = useState(false);
   const [showAccountSlider, setShowAccountSlider] = useState(false);
 
-  const isMobile = useIsMobile();
-
+  const isMobile    = useIsMobile();
   const tradesValue  = TRADES_PER_MONTH_STEPS[tradesIdx];
   const accountValue = ACCOUNT_SIZE_STEPS[accountIdx];
+  const filteredUGs  = sel.category ? UNDERLYING_GROUPS.filter(u => u.categoryId === sel.category) : [];
 
-  const filteredUGs = sel.category ? UNDERLYING_GROUPS.filter(u => u.categoryId === sel.category) : [];
+  // ── handlers ──────────────────────────────
 
   const handleCategory = (id: CategoryId) => {
     setSel({ category: id });
@@ -361,15 +358,25 @@ export function InteractiveSimulator() {
     setStep(1);
     if (isMobile) setSheetOpen(true);
   };
-  const handleForexAsset  = (a: ForexAsset)         => { setSel(p => ({ ...p, ugId: ASSET_TO_UG[a.id], assetId: a.id })); setStep(2); };
-  const handleUG          = (id: UnderlyingGroupId) => { setSel(p => ({ ...p, ugId: id, assetId: undefined })); setStep(2); };
-  const handleHorizon     = (id: HorizonId)         => { setSel(p => ({ ...p, horizon: id })); };
+
+  const handleForexAsset = (a: ForexAsset) => {
+    setSel(p => ({ ...p, ugId: ASSET_TO_UG[a.id], assetId: a.id }));
+    setStep(2);
+  };
+
+  const handleUG = (id: UnderlyingGroupId) => {
+    setSel(p => ({ ...p, ugId: id, assetId: undefined }));
+    setStep(2);
+  };
+
+  const handleHorizon = (id: HorizonId) => setSel(p => ({ ...p, horizon: id }));
 
   const handleTradesPreset = (v: TradesPerMonthStep) => {
     setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(v));
     setSel(p => ({ ...p, tradesPerMonth: v }));
     setShowTradesSlider(false);
   };
+
   const handleAccountPreset = (v: AccountSizeStep) => {
     setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(v));
     setSel(p => ({ ...p, accountSize: v }));
@@ -381,7 +388,9 @@ export function InteractiveSimulator() {
     setSel(p => ({ ...p, tradesPerMonth: p.tradesPerMonth ?? tradesValue }));
     setStep(3);
   };
-  const handleRisk = (r: RiskPercentStep) => { setSel(p => ({ ...p, riskPercent: r })); };
+
+  const handleRisk = (r: RiskPercentStep) => setSel(p => ({ ...p, riskPercent: r }));
+
   const handleConfirmStep3 = () => {
     if (!sel.riskPercent) return;
     setSel(p => ({ ...p, accountSize: p.accountSize ?? accountValue }));
@@ -390,32 +399,41 @@ export function InteractiveSimulator() {
 
   const navTo = (t: number) => {
     if (t >= step) return;
-    setShowTradesSlider(false); setShowAccountSlider(false);
-    if (t === 0) {
-      setSel({}); setForexSub('major');
+    setShowTradesSlider(false);
+    setShowAccountSlider(false);
+    if (t <= 0) {
+      setSel({});
+      setForexSub('major');
       setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
       setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
-      // FIX: su mobile NON chiudere lo sheet — lo step0 va dentro lo sheet
-      // Lo sheet rimane aperto con step0 al suo interno
+      // mobile: lo sheet rimane aperto — step0 viene mostrato dentro
+    } else if (t === 1) {
+      setSel(p => ({ category: p.category }));
+    } else if (t === 2) {
+      setSel(p => ({ category: p.category, ugId: p.ugId, assetId: p.assetId }));
+      setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
+    } else if (t === 3) {
+      setSel(p => ({ ...p, accountSize: undefined, riskPercent: undefined }));
     }
-    if (t === 1) setSel(p => ({ category: p.category }));
-    if (t === 2) { setSel(p => ({ category: p.category, ugId: p.ugId, assetId: p.assetId })); setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT)); }
-    if (t === 3) setSel(p => ({ ...p, accountSize: undefined, riskPercent: undefined }));
     setStep(t);
   };
 
-  // FIX: reset non chiude lo sheet su mobile — riparte da step0 dentro lo sheet
+  // reset: non chiude lo sheet — step0 appare dentro lo sheet su mobile
   const reset = () => {
-    setSel({}); setForexSub('major');
+    setSel({});
+    setForexSub('major');
     setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
     setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
-    setShowTradesSlider(false); setShowAccountSlider(false);
+    setShowTradesSlider(false);
+    setShowAccountSlider(false);
     setStep(0);
-    // sheetOpen rimane invariato: se eravamo nello sheet restiamo nello sheet
+    // sheetOpen invariato
   };
 
+  // ── derived ───────────────────────────────
+
   const step2Ready = !!(sel.horizon && (sel.tradesPerMonth ?? tradesValue));
-  const step3Ready = !!(sel.riskPercent);
+  const step3Ready = !!sel.riskPercent;
 
   const notionale = sel.ugId && sel.riskPercent
     ? deriveNotional(sel.accountSize ?? accountValue, sel.riskPercent, sel.ugId)
@@ -426,98 +444,116 @@ export function InteractiveSimulator() {
       ? computeDrag(sel.ugId, sel.horizon, sel.tradesPerMonth, notionale)
       : null;
 
-  const step1Crumb = sel.category === 'forex' && sel.assetId
-    ? FOREX_ASSETS.find(a => a.id === sel.assetId)?.label ?? ''
-    : UNDERLYING_GROUPS.find(u => u.id === sel.ugId)?.label ?? '';
+  const step1Crumb =
+    sel.category === 'forex' && sel.assetId
+      ? (FOREX_ASSETS.find(a => a.id === sel.assetId)?.label ?? '')
+      : (UNDERLYING_GROUPS.find(u => u.id === sel.ugId)?.label ?? '');
 
   const PROMPTS = [
     'Cosa tradi principalmente?',
-    sel.category === 'forex' ? 'Quale coppia vuoi analizzare?' : 'Qual è il sottogruppo?',
+    sel.category === 'forex' ? 'Quale coppia?' : 'Sottogruppo?',
     'Come operi?',
-    'Il tuo profilo operativo',
+    'Profilo operativo',
     null,
-  ];
+  ] as const;
 
-  // CTA footer sheet
-  const sheetFooter = step === 2 && step2Ready ? (
-    <button onClick={handleConfirmStep2}
-      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-primary text-primary-foreground font-semibold text-[15px] hover:bg-primary/90 active:bg-primary/80 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-      Continua <ArrowRight className="size-5" />
-    </button>
-  ) : step === 3 && step3Ready ? (
-    <button onClick={handleConfirmStep3}
-      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-primary text-primary-foreground font-semibold text-[15px] hover:bg-primary/90 active:bg-primary/80 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-      Vedi i risultati <ArrowRight className="size-5" />
-    </button>
-  ) : null;
+  // ── sheet footer CTA ──────────────────────
 
-  // Contenuto interno (condiviso: inline desktop + sheet mobile)
+  const sheetFooter =
+    step === 2 && step2Ready ? (
+      <Btn full onClick={handleConfirmStep2}>Continua <ArrowRight className="size-[18px]" /></Btn>
+    ) : step === 3 && step3Ready ? (
+      <Btn full onClick={handleConfirmStep3}>Vedi i risultati <ArrowRight className="size-[18px]" /></Btn>
+    ) : null;
+
+  // ─────────────────────────────────────────
+  // STEP CONTENT (shared mobile sheet + desktop inline)
+  // ─────────────────────────────────────────
+
   const stepContent = (
-    <>
-      {/* Progress dots */}
-      <div className="mb-6 flex items-center gap-2">
+    <div className="flex flex-col">
+
+      {/* Progress bar */}
+      <div className="flex items-center gap-1.5 mb-5">
         {Array.from({ length: 4 }).map((_, i) => (
-          <button key={i} onClick={() => navTo(i)} disabled={i >= step} aria-label={`Torna allo step ${i + 1}`}
-            className={cn('h-[6px] rounded-full transition-all duration-300',
-              i < step  ? 'w-8 bg-primary cursor-pointer hover:bg-primary/70'
-              : i === step ? 'w-8 bg-primary/35' : 'w-4 bg-border/40',
-            )} />
+          <button
+            key={i}
+            onClick={() => navTo(i)}
+            disabled={i >= step}
+            aria-label={`Step ${i + 1}`}
+            className={cn(
+              'h-[5px] rounded-full transition-all duration-300 focus:outline-none',
+              i < step  ? 'bg-primary w-8 cursor-pointer' : '',
+              i === step ? 'bg-primary/30 w-8' : '',
+              i > step  ? 'bg-border/50 w-4' : '',
+            )}
+          />
         ))}
-        <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40">
-          {step < 4 ? `${step + 1} / 4` : 'Risultato'}
+        <span className="ml-auto font-mono text-[10px] tracking-widest uppercase text-muted-foreground/40">
+          {step < 4 ? `${step + 1} / 4` : 'Risultato'}
         </span>
       </div>
 
-      {/* Prompt */}
-      <div className="mb-5 min-h-[1.75rem]">
+      {/* Prompt heading */}
+      <div className="mb-4 h-7">
         <AnimatePresence mode="wait">
           {PROMPTS[step] && (
-            <motion.p key={step} variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="text-[17px] font-semibold tracking-tight text-foreground leading-snug">
+            <motion.p
+              key={step}
+              variants={stepFade}
+              initial="initial" animate="animate" exit="exit"
+              className="text-[16px] font-semibold tracking-tight text-foreground leading-7"
+            >
               {PROMPTS[step]}
             </motion.p>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Steps — FIX desktop: altezza minima fissa per evitare deformazione container */}
-      <div className="relative min-h-[200px]">
+      {/* Step panels — min-h previene deformazione layout desktop */}
+      <div className="relative min-h-[220px] w-full">
         <AnimatePresence mode="wait">
 
-          {/* STEP 0 — inside sheet on mobile (after reset or if opened to step0) */}
+          {/* STEP 0 — nel sheet dopo reset */}
           {step === 0 && (
-            <motion.div key="step0-sheet" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-4 w-full">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {CATEGORIES.map(c => (
-                  <OptionCard key={c.id} icon={c.icon} title={c.label} description={c.desc}
-                    onClick={() => handleCategory(c.id)} />
-                ))}
-              </div>
+            <motion.div key="s0" variants={stepFade} initial="initial" animate="animate" exit="exit"
+              className="w-full grid grid-cols-2 gap-2.5">
+              {CATEGORIES.map(c => (
+                <OptionCard key={c.id} icon={c.icon} title={c.label} desc={c.desc}
+                  onClick={() => handleCategory(c.id)} />
+              ))}
             </motion.div>
           )}
 
           {/* STEP 1 forex */}
           {step === 1 && sel.category === 'forex' && (
-            <motion.div key="s1-fx" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-5 w-full">
+            <motion.div key="s1-fx" variants={stepFade} initial="initial" animate="animate" exit="exit"
+              className="w-full flex flex-col gap-4">
+              {/* subgroup tabs */}
               <div className="flex gap-2">
                 {FOREX_SUBGROUPS.map(sg => (
                   <button key={sg.id} onClick={() => setForexSub(sg.id)}
                     className={cn(
-                      'flex-1 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border',
+                      'flex-1 h-9 rounded-full text-[13px] font-semibold border transition-all duration-200',
                       forexSub === sg.id
-                        ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                        : 'bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground',
-                    )}>{sg.label}</button>
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-transparent text-muted-foreground border-border hover:border-foreground/30 hover:text-foreground',
+                    )}>
+                    {sg.label}
+                  </button>
                 ))}
               </div>
+              {/* asset grid */}
               <AnimatePresence mode="wait">
                 <motion.div key={forexSub}
-                  initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASING } }} exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                  className="grid grid-cols-3 gap-2.5">
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: E } }}
+                  exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                  className="grid grid-cols-3 gap-2">
                   {FOREX_ASSETS.filter(a => a.subgroup === forexSub).map(a => (
-                    <AssetPill key={a.id} label={a.label} selected={sel.assetId === a.id} onClick={() => handleForexAsset(a)} />
+                    <Pill key={a.id} selected={sel.assetId === a.id} onClick={() => handleForexAsset(a)}>
+                      {a.label}
+                    </Pill>
                   ))}
                 </motion.div>
               </AnimatePresence>
@@ -526,78 +562,89 @@ export function InteractiveSimulator() {
 
           {/* STEP 1 other */}
           {step === 1 && sel.category !== 'forex' && (
-            <motion.div key="s1-o" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-2 w-full">
+            <motion.div key="s1-o" variants={stepFade} initial="initial" animate="animate" exit="exit"
+              className="w-full flex flex-col gap-2">
               {filteredUGs.map(ug => (
-                <UGCard key={ug.id} label={ug.label} desc={ug.desc} onClick={() => handleUG(ug.id)} />
+                <UGRow key={ug.id} label={ug.label} desc={ug.desc} onClick={() => handleUG(ug.id)} />
               ))}
             </motion.div>
           )}
 
           {/* STEP 2 */}
           {step === 2 && (
-            <motion.div key="s2" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-6 w-full">
+            <motion.div key="s2" variants={stepFade} initial="initial" animate="animate" exit="exit"
+              className="w-full flex flex-col gap-5">
 
-              <ProfileSection label="Orizzonte tipico">
-                <div className="grid grid-cols-3 gap-2.5">
+              <Section label="Orizzonte tipico">
+                <div className="grid grid-cols-3 gap-2">
                   {HORIZONS.map(h => (
-                    <OptionCard key={h.id} icon={h.icon} title={h.label} description={h.desc}
+                    <OptionCard key={h.id} icon={h.icon} title={h.label} desc={h.desc}
                       selected={sel.horizon === h.id} onClick={() => handleHorizon(h.id)} />
                   ))}
                 </div>
-              </ProfileSection>
+              </Section>
 
               <AnimatePresence>
                 {sel.horizon && (
-                  <motion.div key="trades-section" variants={slideDown} initial="initial" animate="animate" exit="exit">
-                    <ProfileSection label="Trade al mese">
-                      <div className="flex gap-2 flex-wrap">
+                  <motion.div key="trades" variants={slideDown} initial="initial" animate="animate" exit="exit">
+                    <Section label="Trade / mese">
+                      <div className="flex flex-wrap gap-2">
                         {TRADES_PRESETS.map(p => (
-                          <PresetPill key={p.value} label={p.label}
+                          <Pill key={p.value}
                             selected={sel.tradesPerMonth === p.value && !showTradesSlider}
-                            onClick={() => handleTradesPreset(p.value)} />
+                            onClick={() => handleTradesPreset(p.value)}>
+                            {p.label}
+                          </Pill>
                         ))}
-                        <button onClick={() => { setShowTradesSlider(v => !v); setSel(p => ({ ...p, tradesPerMonth: undefined })); }}
-                          className={cn('flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-xs font-semibold transition-all duration-200 min-h-[44px]',
-                            showTradesSlider ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground')}>
+                        <button
+                          onClick={() => { setShowTradesSlider(v => !v); setSel(p => ({ ...p, tradesPerMonth: undefined })); }}
+                          className={cn(
+                            'inline-flex items-center gap-1.5 h-9 rounded-full border px-4 text-[12px] font-semibold transition-all duration-200',
+                            showTradesSlider
+                              ? 'border-primary bg-primary/8 text-primary'
+                              : 'border-border bg-transparent text-muted-foreground hover:border-foreground/30 hover:text-foreground',
+                          )}>
                           <SlidersHorizontal className="size-3" /> Altro
                         </button>
                       </div>
+
                       <AnimatePresence>
                         {showTradesSlider && (
-                          <motion.div variants={slideDown} initial="initial" animate="animate" exit="exit" className="flex flex-col gap-3 pt-2">
+                          <motion.div variants={slideDown} initial="initial" animate="animate" exit="exit"
+                            className="flex flex-col gap-2.5 pt-1.5">
                             <div className="flex items-center gap-3">
-                              <span className="w-16 rounded-xl border border-border bg-background px-2 py-2 text-center font-mono text-sm font-bold tabular-nums text-foreground">{tradesValue}</span>
-                              <span className="text-sm text-muted-foreground">trade / mese</span>
+                              <span className="w-14 rounded-xl border border-border bg-muted/40 px-2 py-1.5 text-center font-mono text-[13px] font-bold tabular-nums">
+                                {tradesValue}
+                              </span>
+                              <span className="text-[13px] text-muted-foreground">trade / mese</span>
                               {tradesValue >= 200 && (
                                 <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                  className="ml-auto flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 px-2.5 py-1 font-mono text-[10px] text-amber-600 dark:text-amber-400">
+                                  className="ml-auto inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-2.5 py-1 font-mono text-[10px] text-amber-600 dark:text-amber-400">
                                   <Zap className="size-3" /> Alta freq.
                                 </motion.span>
                               )}
                             </div>
-                            <input type="range" min={0} max={TRADES_PER_MONTH_STEPS.length - 1} step={1} value={tradesIdx}
-                              onChange={e => { const idx = Number(e.target.value); setTradesIdx(idx); setSel(p => ({ ...p, tradesPerMonth: TRADES_PER_MONTH_STEPS[idx] })); }}
-                              className="w-full accent-primary rounded-full cursor-pointer" style={{ height: '6px', touchAction: 'none' }} />
-                            <div className="flex justify-between font-mono text-[9px] text-muted-foreground/40 uppercase tracking-wider">
+                            <input type="range"
+                              min={0} max={TRADES_PER_MONTH_STEPS.length - 1} step={1} value={tradesIdx}
+                              onChange={e => { const i = +e.target.value; setTradesIdx(i); setSel(p => ({ ...p, tradesPerMonth: TRADES_PER_MONTH_STEPS[i] })); }}
+                              className="w-full accent-primary cursor-pointer"
+                              style={{ height: '5px', touchAction: 'none' }}
+                            />
+                            <div className="flex justify-between font-mono text-[9px] uppercase tracking-wider text-muted-foreground/35">
                               <span>1</span><span>swing</span><span>intraday</span><span>scalping</span><span>500</span>
                             </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
-                    </ProfileSection>
+                    </Section>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* CTA inline — solo desktop */}
+              {/* CTA desktop-only */}
               {!isMobile && step2Ready && (
                 <motion.div variants={slideDown} initial="initial" animate="animate">
-                  <button onClick={handleConfirmStep2}
-                    className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 active:scale-[0.99] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                    Continua <ArrowRight className="size-4" />
-                  </button>
+                  <Btn full onClick={handleConfirmStep2}>Continua <ArrowRight className="size-4" /></Btn>
                 </motion.div>
               )}
             </motion.div>
@@ -605,72 +652,82 @@ export function InteractiveSimulator() {
 
           {/* STEP 3 */}
           {step === 3 && (
-            <motion.div key="s3" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-6 w-full">
+            <motion.div key="s3" variants={stepFade} initial="initial" animate="animate" exit="exit"
+              className="w-full flex flex-col gap-5">
 
-              <ProfileSection label="Capitale disponibile">
-                <div className="flex flex-col gap-3">
-                  <div className="flex gap-2 flex-wrap">
-                    {ACCOUNT_PRESETS.map(p => (
-                      <PresetPill key={p.value} label={p.label}
-                        selected={sel.accountSize === p.value && !showAccountSlider}
-                        onClick={() => handleAccountPreset(p.value)} />
-                    ))}
-                    <button onClick={() => { setShowAccountSlider(v => !v); setSel(p => ({ ...p, accountSize: undefined })); }}
-                      className={cn('flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-xs font-semibold transition-all duration-200 min-h-[44px]',
-                        showAccountSlider ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground')}>
-                      <SlidersHorizontal className="size-3" /> Altro
-                    </button>
-                  </div>
-                  <AnimatePresence>
-                    {showAccountSlider && (
-                      <motion.div variants={slideDown} initial="initial" animate="animate" exit="exit" className="flex flex-col gap-3">
-                        <div className="flex items-center gap-3">
-                          <span className="w-20 rounded-xl border border-border bg-background px-2 py-2 text-center font-mono text-sm font-bold tabular-nums text-foreground">{formatAccountSize(accountValue)}</span>
-                          <span className="text-sm text-muted-foreground">sul conto</span>
-                        </div>
-                        <input type="range" min={0} max={ACCOUNT_SIZE_STEPS.length - 1} step={1} value={accountIdx}
-                          onChange={e => { const idx = Number(e.target.value); setAccountIdx(idx); setSel(p => ({ ...p, accountSize: ACCOUNT_SIZE_STEPS[idx] })); }}
-                          className="w-full accent-primary rounded-full cursor-pointer" style={{ height: '6px', touchAction: 'none' }} />
-                        <div className="flex justify-between font-mono text-[9px] text-muted-foreground/40 uppercase tracking-wider">
-                          <span>50€</span><span>micro</span><span>retail</span><span>pro</span><span>500k+</span>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+              <Section label="Capitale sul conto">
+                <div className="flex flex-wrap gap-2">
+                  {ACCOUNT_PRESETS.map(p => (
+                    <Pill key={p.value}
+                      selected={sel.accountSize === p.value && !showAccountSlider}
+                      onClick={() => handleAccountPreset(p.value)}>
+                      {p.label}
+                    </Pill>
+                  ))}
+                  <button
+                    onClick={() => { setShowAccountSlider(v => !v); setSel(p => ({ ...p, accountSize: undefined })); }}
+                    className={cn(
+                      'inline-flex items-center gap-1.5 h-9 rounded-full border px-4 text-[12px] font-semibold transition-all duration-200',
+                      showAccountSlider
+                        ? 'border-primary bg-primary/8 text-primary'
+                        : 'border-border bg-transparent text-muted-foreground hover:border-foreground/30 hover:text-foreground',
+                    )}>
+                    <SlidersHorizontal className="size-3" /> Altro
+                  </button>
                 </div>
-              </ProfileSection>
+                <AnimatePresence>
+                  {showAccountSlider && (
+                    <motion.div variants={slideDown} initial="initial" animate="animate" exit="exit"
+                      className="flex flex-col gap-2.5">
+                      <div className="flex items-center gap-3">
+                        <span className="w-20 rounded-xl border border-border bg-muted/40 px-2 py-1.5 text-center font-mono text-[13px] font-bold tabular-nums">
+                          {formatAccountSize(accountValue)}
+                        </span>
+                        <span className="text-[13px] text-muted-foreground">sul conto</span>
+                      </div>
+                      <input type="range"
+                        min={0} max={ACCOUNT_SIZE_STEPS.length - 1} step={1} value={accountIdx}
+                        onChange={e => { const i = +e.target.value; setAccountIdx(i); setSel(p => ({ ...p, accountSize: ACCOUNT_SIZE_STEPS[i] })); }}
+                        className="w-full accent-primary cursor-pointer"
+                        style={{ height: '5px', touchAction: 'none' }}
+                      />
+                      <div className="flex justify-between font-mono text-[9px] uppercase tracking-wider text-muted-foreground/35">
+                        <span>50€</span><span>micro</span><span>retail</span><span>pro</span><span>500k+</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Section>
 
-              <ProfileSection label="Rischio per trade">
+              <Section label="Rischio per trade">
                 <div className="grid grid-cols-5 gap-2">
                   {RISK_PERCENT_STEPS.map(r => (
                     <button key={r} onClick={() => handleRisk(r)}
                       className={cn(
-                        'rounded-xl border py-3.5 text-center font-mono text-sm font-bold transition-all duration-200 min-h-[52px]',
+                        'h-12 rounded-xl border text-[13px] font-bold font-mono transition-all duration-200',
                         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                         sel.riskPercent === r
-                          ? 'border-primary bg-primary/10 text-primary shadow-sm'
-                          : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground',
-                      )}>{r}%</button>
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border bg-transparent text-muted-foreground hover:border-foreground/30 hover:text-foreground',
+                      )}>
+                      {r}%
+                    </button>
                   ))}
                 </div>
                 <AnimatePresence>
                   {sel.riskPercent && sel.ugId && (
                     <motion.p key="notionale" variants={slideDown} initial="initial" animate="animate" exit="exit"
-                      className="font-mono text-[11px] text-muted-foreground/60 mt-2">
-                      ≈ {formatAccountSize(deriveNotional(sel.accountSize ?? accountValue, sel.riskPercent, sel.ugId))} notionale per trade
+                      className="font-mono text-[11px] text-muted-foreground/55 mt-1">
+                      ≈ {formatAccountSize(deriveNotional(sel.accountSize ?? accountValue, sel.riskPercent, sel.ugId))} notionale / trade
                     </motion.p>
                   )}
                 </AnimatePresence>
-              </ProfileSection>
+              </Section>
 
-              {/* CTA inline — solo desktop */}
+              {/* CTA desktop-only */}
               {!isMobile && step3Ready && (
                 <motion.div variants={slideDown} initial="initial" animate="animate">
-                  <button onClick={handleConfirmStep3}
-                    className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 active:scale-[0.99] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                    Vedi i risultati <ArrowRight className="size-4" />
-                  </button>
+                  <Btn full onClick={handleConfirmStep3}>Vedi i risultati <ArrowRight className="size-4" /></Btn>
                 </motion.div>
               )}
             </motion.div>
@@ -684,180 +741,203 @@ export function InteractiveSimulator() {
         </AnimatePresence>
       </div>
 
-      {/* Breadcrumb */}
+      {/* Breadcrumb nav */}
       {step > 0 && step < 4 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 flex items-center gap-2 flex-wrap">
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="mt-5 flex items-center gap-1.5 flex-wrap"
+        >
           {sel.category && (
-            <button onClick={() => navTo(0)}
-              className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-muted/60 border border-border/50 hover:border-border min-h-[36px]">
-              <ChevronLeft className="size-3" />{CATEGORIES.find(c => c.id === sel.category)?.label}
-            </button>
+            <Crumb onClick={() => navTo(0)}>
+              {CATEGORIES.find(c => c.id === sel.category)?.label}
+            </Crumb>
           )}
           {step > 1 && sel.ugId && (
-            <><span className="text-muted-foreground/30 text-xs">/</span>
-            <button onClick={() => navTo(1)}
-              className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-muted/60 border border-border/50 hover:border-border min-h-[36px]">
-              <ChevronLeft className="size-3" />{step1Crumb}
-            </button></>
+            <><Slash /><Crumb onClick={() => navTo(1)}>{step1Crumb}</Crumb></>
           )}
           {step > 2 && sel.horizon && (
-            <><span className="text-muted-foreground/30 text-xs">/</span>
-            <button onClick={() => navTo(2)}
-              className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-muted/60 border border-border/50 hover:border-border min-h-[36px]">
-              <ChevronLeft className="size-3" />{HORIZONS.find(h => h.id === sel.horizon)?.label}
-              {sel.tradesPerMonth && <span className="opacity-50"> · {sel.tradesPerMonth}/mese</span>}
-            </button></>
+            <><Slash />
+            <Crumb onClick={() => navTo(2)}>
+              {HORIZONS.find(h => h.id === sel.horizon)?.label}
+              {sel.tradesPerMonth && <span className="opacity-40"> · {sel.tradesPerMonth}/mo</span>}
+            </Crumb></>
           )}
         </motion.div>
       )}
-    </>
+    </div>
   );
 
+  // ─────────────────────────────────────────
+  // RENDER
+  // Desktop: tutto inline.
+  // Mobile:  step0 inline, step1+ dentro bottom sheet portalled.
+  // ─────────────────────────────────────────
+
   return (
-    <>
-      {/* STEP 0 inline — sempre visibile; su mobile sparisce quando sheet è aperto */}
-      <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
-        <AnimatePresence mode="wait">
-          {/* Su mobile: mostra step0 solo se sheet è chiuso */}
-          {(!isMobile || (isMobile && !sheetOpen)) && step === 0 && (
-            <motion.div key="step0-inline" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-4">
-              <p className="text-[17px] font-semibold tracking-tight text-foreground">
-                Cosa tradi principalmente?
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {CATEGORIES.map(c => (
-                  <OptionCard key={c.id} icon={c.icon} title={c.label} description={c.desc}
-                    onClick={() => handleCategory(c.id)} />
-                ))}
-              </div>
-            </motion.div>
-          )}
+    <div className="w-full px-4 py-5 sm:px-6 sm:py-6">
 
-          {/* Desktop: step 1-4 inline */}
-          {!isMobile && step > 0 && (
-            <motion.div key="desktop-inline" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="w-full">
-              {stepContent}
-            </motion.div>
-          )}
-
-          {/* FIX: Mobile step>0 sheet chiuso — mini riepilogo SENZA overlay sul container,
-              renderizzato FUORI dal box dello step0 */}
-        </AnimatePresence>
-
-        {/* FIX: Mini-riepilogo mobile — solo quando sheet è chiuso E step > 0.
-            Era il "pulsante top" sopra lo sheet: ora appare sotto le card step0
-            solo dopo che lo sheet è stato chiuso manualmente, permettendo di riaprirlo. */}
-        {isMobile && step > 0 && !sheetOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0, transition: { duration: 0.22, ease: EASING } }}
-            className="mt-3 flex items-center justify-between rounded-2xl border border-border bg-muted/40 px-4 py-3 gap-3"
-          >
-            <div className="flex items-center gap-2 flex-wrap min-w-0">
-              {[
-                sel.category && CATEGORIES.find(c => c.id === sel.category)?.label,
-                step1Crumb || null,
-                sel.horizon ? HORIZONS.find(h => h.id === sel.horizon)?.label : null,
-              ].filter(Boolean).map((s, i) => (
-                <span key={i} className="font-mono text-[10px] uppercase tracking-wider text-foreground/70 truncate">{s}</span>
+      {/* STEP 0 inline — sempre visibile (mobile e desktop) quando step === 0 */}
+      <AnimatePresence mode="wait">
+        {step === 0 && (
+          <motion.div key="step0-inline" variants={stepFade} initial="initial" animate="animate" exit="exit"
+            className="flex flex-col gap-3">
+            <p className="text-[16px] font-semibold text-foreground tracking-tight">
+              Cosa tradi principalmente?
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {CATEGORIES.map(c => (
+                <OptionCard key={c.id} icon={c.icon} title={c.label} desc={c.desc}
+                  onClick={() => handleCategory(c.id)} />
               ))}
             </div>
-            <button
-              onClick={() => setSheetOpen(true)}
-              className="shrink-0 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3.5 py-2 font-semibold text-xs min-h-[36px] hover:bg-primary/90 active:bg-primary/80 transition-colors"
-            >
-              Continua <ArrowRight className="size-3.5" />
-            </button>
           </motion.div>
         )}
-      </div>
 
-      {/* BOTTOM SHEET — mobile, step 1+ */}
+        {/* DESKTOP: step 1-4 inline */}
+        {!isMobile && step > 0 && (
+          <motion.div key="desktop-steps" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            {stepContent}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* MOBILE: quando sheet è chiuso e step > 0, mostra mini pill per riaprire.
+          Questo è un figlio normale del container, NON fixed/absolute,
+          quindi non ha problemi di z-index col sheet che è portalled in body. */}
+      {isMobile && step > 0 && !sheetOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: E } }}
+          className="mt-3 flex items-center gap-3 rounded-2xl border border-border bg-muted/30 px-4 py-3"
+        >
+          <div className="flex-1 flex items-center gap-2 min-w-0 overflow-hidden">
+            {([
+              sel.category && CATEGORIES.find(c => c.id === sel.category)?.label,
+              step1Crumb || undefined,
+              sel.horizon && HORIZONS.find(h => h.id === sel.horizon)?.label,
+            ] as (string | undefined)[]).filter(Boolean).map((s, i) => (
+              <span key={i} className="font-mono text-[10px] uppercase tracking-wider text-foreground/60 truncate">
+                {i > 0 && <span className="mr-1.5 text-muted-foreground/25">·</span>}
+                {s}
+              </span>
+            ))}
+          </div>
+          <button
+            onClick={() => setSheetOpen(true)}
+            className="shrink-0 inline-flex items-center gap-1.5 h-8 rounded-full bg-primary text-primary-foreground px-4 text-[12px] font-semibold hover:bg-primary/90 active:bg-primary/80 transition-colors"
+          >
+            Continua <ArrowRight className="size-3.5" />
+          </button>
+        </motion.div>
+      )}
+
+      {/* BOTTOM SHEET — portalled to document.body, z-[9999] */}
       {isMobile && (
         <BottomSheet
           open={sheetOpen}
           onClose={() => setSheetOpen(false)}
           footer={sheetFooter}
-          title={step === 0 ? 'Ricomincia' : (PROMPTS[step] ?? undefined)}
+          label={step === 0 ? 'Simulatore' : (PROMPTS[step] ?? undefined)}
         >
           {stepContent}
         </BottomSheet>
       )}
-    </>
+    </div>
   );
 }
 
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
 // RESULT VIEW
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
 
 function ResultView({ result, sel, onReset }: { result: SimResult; sel: SimulatorState; onReset: () => void }) {
   const cfg  = RATING_CONFIG[result.rating];
   const Icon = cfg.icon;
-  const assetLabel = sel.assetId
-    ? FOREX_ASSETS.find(a => a.id === sel.assetId)?.label
-    : UNDERLYING_GROUPS.find(u => u.id === sel.ugId)?.label;
+  const assetLabel =
+    sel.assetId
+      ? FOREX_ASSETS.find(a => a.id === sel.assetId)?.label
+      : UNDERLYING_GROUPS.find(u => u.id === sel.ugId)?.label;
 
   return (
-    <motion.div key="s4" initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.15 } }}
-      exit={{ opacity: 0, transition: { duration: 0.1 } }} className="w-full space-y-3">
-
-      <motion.div variants={badgeReveal} initial="initial" animate="animate"
-        className={cn('flex items-center gap-3 rounded-2xl border px-4 py-4', cfg.bgClass, cfg.borderClass)}>
-        <Icon className={cn('size-5 shrink-0', cfg.colorClass)} />
-        <div className="min-w-0">
-          <p className={cn('font-mono text-[11px] font-bold uppercase tracking-[0.18em]', cfg.colorClass)}>{cfg.label}</p>
-          <p className="text-xs text-muted-foreground/80 mt-0.5 leading-5">{result.primaryIssue}</p>
+    <motion.div
+      key="s4"
+      initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.18 } }}
+      exit={{ opacity: 0, transition: { duration: 0.1 } }}
+      className="w-full flex flex-col gap-3"
+    >
+      {/* Rating card */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.97, filter: 'blur(4px)' }}
+        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)', transition: { delay: 0.05, duration: 0.36, ease: E } }}
+        className={cn('flex items-start gap-3 rounded-2xl border px-4 py-4', cfg.bg, cfg.border)}
+      >
+        <Icon className={cn('mt-0.5 size-[18px] shrink-0', cfg.color)} />
+        <div className="flex-1 min-w-0">
+          <p className={cn('font-mono text-[10px] font-bold uppercase tracking-[0.2em]', cfg.color)}>{cfg.label}</p>
+          <p className="text-[13px] text-foreground/75 mt-1 leading-5">{result.primaryIssue}</p>
         </div>
-        <div className="ml-auto text-right shrink-0">
-          <p className={cn('font-mono text-xl font-bold tabular-nums', cfg.colorClass)}>{result.totalDragBps} bps</p>
-          <p className="font-mono text-xs text-muted-foreground/70 tabular-nums mt-0.5">≈ {result.totalDragEur}€/mese</p>
+        <div className="text-right shrink-0">
+          <p className={cn('font-mono text-xl font-bold tabular-nums', cfg.color)}>{result.totalDragBps} bps</p>
+          <p className="font-mono text-[11px] text-muted-foreground tabular-nums mt-0.5">≈{result.totalDragEur}€/mese</p>
         </div>
       </motion.div>
 
+      {/* Stats row */}
       <div className="grid grid-cols-3 gap-2">
         {[
           { label: 'Spread/trade', value: `${result.spreadBps} bps`          },
           { label: 'Trade/mese',   value: `${result.tradesPerMonth}`          },
           { label: 'Notionale',    value: formatAccountSize(result.notionale) },
         ].map(({ label, value }, i) => (
-          <motion.div key={label} variants={statReveal(i + 1)} initial="initial" animate="animate"
-            className="rounded-2xl border border-border bg-muted/30 px-3 py-3 text-center">
-            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
-            <p className="mt-1 font-mono text-sm font-bold text-foreground tabular-nums">{value}</p>
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.18 + i * 0.06, duration: 0.28, ease: E } }}
+            className="rounded-2xl border border-border bg-muted/25 px-3 py-3 text-center"
+          >
+            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/55">{label}</p>
+            <p className="mt-1 font-mono text-[13px] font-bold text-foreground tabular-nums">{value}</p>
           </motion.div>
         ))}
       </div>
 
-      <motion.p variants={revealVariant(280)} initial="initial" animate="animate"
-        className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide">
-        {result.tradesPerMonth}/mese · {HORIZON_HOLDING[sel.horizon!]}gg · {result.spreadBps} bps/trade · {formatAccountSize(result.notionale)} notionale
-      </motion.p>
-
-      <motion.div variants={revealVariant(360)} initial="initial" animate="animate"
-        className="flex items-start gap-3 rounded-2xl border border-border bg-muted/20 px-4 py-3.5">
+      {/* Suggestion */}
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.32, duration: 0.3, ease: E } }}
+        className="flex items-start gap-3 rounded-2xl border border-border bg-muted/20 px-4 py-3.5"
+      >
         <ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" />
-        <p className="text-sm leading-6 text-muted-foreground">
-          <span className="font-semibold text-foreground">Cosa fare: </span>{result.suggestion}
+        <p className="text-[13px] leading-6 text-muted-foreground">
+          <span className="font-semibold text-foreground">Cosa fare: </span>
+          {result.suggestion}
         </p>
       </motion.div>
 
-      <motion.div variants={revealVariant(440)} initial="initial" animate="animate"
-        className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex gap-2 flex-wrap">
-          {[CATEGORIES.find(c => c.id === sel.category)?.label, assetLabel, sel.horizon,
-            sel.tradesPerMonth ? `${sel.tradesPerMonth} trade/mese` : null,
-            sel.accountSize   ? formatAccountSize(sel.accountSize) : null,
-            sel.riskPercent   ? `${sel.riskPercent}% rischio`      : null,
+      {/* Tags + reset */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.44, duration: 0.28, ease: E } }}
+        className="flex items-center justify-between gap-2 flex-wrap"
+      >
+        <div className="flex gap-1.5 flex-wrap">
+          {[
+            CATEGORIES.find(c => c.id === sel.category)?.label,
+            assetLabel,
+            sel.horizon,
+            sel.tradesPerMonth ? `${sel.tradesPerMonth}/mo` : null,
+            sel.riskPercent ? `${sel.riskPercent}%` : null,
           ].filter(Boolean).map(s => (
-            <span key={s} className="rounded-full border border-border/60 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80">{s}</span>
+            <span key={s}
+              className="rounded-full border border-border/50 bg-muted/30 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-muted-foreground/70">
+              {s}
+            </span>
           ))}
         </div>
-        {/* FIX: "Ricomincia" non chiude lo sheet — navTo(0) gestisce il reset dentro lo sheet */}
-        <button onClick={onReset}
-          className="flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors min-h-[36px]">
+        <button
+          onClick={onReset}
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-transparent px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+        >
           <RotateCcw className="size-3" /> Ricomincia
         </button>
       </motion.div>
@@ -865,79 +945,115 @@ function ResultView({ result, sel, onReset }: { result: SimResult; sel: Simulato
   );
 }
 
-// ---------------------------------------------------------------------------
-// SUB-COMPONENTS
-// ---------------------------------------------------------------------------
+// ─────────────────────────────────────────────
+// PRIMITIVE COMPONENTS
+// ─────────────────────────────────────────────
 
-function OptionCard({ icon: Icon, title, description, onClick, selected = false }: {
-  icon: React.ElementType; title: string; description: string; onClick: () => void; selected?: boolean;
+function OptionCard({ icon: Icon, title, desc, onClick, selected = false }: {
+  icon: React.ElementType; title: string; desc?: string; onClick: () => void; selected?: boolean;
 }) {
   return (
-    <button onClick={onClick}
+    <button
+      onClick={onClick}
       className={cn(
-        'group relative flex flex-col items-start justify-between p-4 text-left transition-all duration-200 border rounded-2xl min-h-[80px]',
+        'group flex flex-col items-start gap-2.5 p-4 rounded-2xl border text-left',
+        'transition-all duration-200 min-h-[76px]',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
         selected
           ? 'border-primary bg-primary/8 shadow-sm'
-          : 'bg-background border-border hover:border-primary/60 hover:bg-accent/20 hover:shadow-sm hover:-translate-y-0.5',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-      )}>
-      <Icon className={cn('mb-2.5 size-[18px] stroke-[1.6] transition-colors duration-200', selected ? 'text-primary' : 'text-foreground/50 group-hover:text-primary')} />
+          : 'border-border bg-transparent hover:border-foreground/25 hover:bg-muted/40 active:bg-muted/60',
+      )}
+    >
+      <Icon className={cn(
+        'size-[17px] stroke-[1.7] transition-colors duration-200',
+        selected ? 'text-primary' : 'text-foreground/40 group-hover:text-foreground/70',
+      )} />
       <div>
-        <p className="text-[13px] font-semibold leading-5 text-foreground">{title}</p>
-        {description && <p className="mt-0.5 text-[10px] text-muted-foreground/70 leading-4">{description}</p>}
+        <p className="text-[13px] font-semibold text-foreground leading-5">{title}</p>
+        {desc && <p className="text-[10px] text-muted-foreground/65 mt-0.5 leading-4">{desc}</p>}
       </div>
     </button>
   );
 }
 
-function AssetPill({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+function Pill({ children, selected, onClick }: {
+  children: React.ReactNode; selected: boolean; onClick: () => void;
+}) {
   return (
-    <button onClick={onClick}
+    <button
+      onClick={onClick}
       className={cn(
-        'rounded-xl border px-3 py-3 text-center font-mono text-xs font-bold tracking-wide transition-all duration-200 min-h-[48px]',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'inline-flex items-center justify-center h-9 rounded-full border px-4 font-mono text-[12px] font-bold tracking-wide',
+        'transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         selected
-          ? 'border-primary bg-primary/10 text-primary shadow-sm'
-          : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground hover:-translate-y-0.5 hover:shadow-sm',
-      )}>{label}</button>
+          ? 'border-primary bg-primary/10 text-primary'
+          : 'border-border bg-transparent text-muted-foreground hover:border-foreground/30 hover:text-foreground',
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
-function UGCard({ label, desc, onClick }: { label: string; desc: string; onClick: () => void }) {
+function UGRow({ label, desc, onClick }: { label: string; desc: string; onClick: () => void }) {
   return (
-    <button onClick={onClick}
+    <button
+      onClick={onClick}
       className={cn(
-        'group flex items-center justify-between w-full px-4 py-4 text-left transition-all duration-200 min-h-[60px]',
-        'bg-background border border-border rounded-2xl hover:border-primary/60 hover:bg-accent/20 hover:shadow-sm',
+        'group flex items-center justify-between w-full px-4 py-3.5 rounded-2xl border border-border',
+        'bg-transparent hover:border-foreground/25 hover:bg-muted/40 transition-all duration-200 text-left',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-      )}>
+      )}
+    >
       <div>
         <p className="text-[13px] font-semibold text-foreground">{label}</p>
-        <p className="mt-0.5 text-[11px] text-muted-foreground/70">{desc}</p>
+        <p className="text-[11px] text-muted-foreground/65 mt-0.5">{desc}</p>
       </div>
-      <ArrowRight className="size-4 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200 shrink-0 ml-3" />
+      <ArrowRight className="size-[15px] text-muted-foreground/30 group-hover:text-primary transition-colors shrink-0 ml-3" />
     </button>
   );
 }
 
-function ProfileSection({ label, children }: { label: string; children: React.ReactNode }) {
+function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2.5">
-      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60 font-semibold">{label}</p>
+      <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground/50 font-semibold">
+        {label}
+      </p>
       {children}
     </div>
   );
 }
 
-function PresetPill({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
+function Btn({ children, onClick, full }: { children: React.ReactNode; onClick: () => void; full?: boolean }) {
   return (
-    <button onClick={onClick}
+    <button
+      onClick={onClick}
       className={cn(
-        'rounded-full border px-4 py-2 font-mono text-sm font-bold transition-all duration-200 min-h-[44px]',
+        'inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5',
+        'bg-primary text-primary-foreground font-semibold text-[14px]',
+        'hover:bg-primary/90 active:bg-primary/80 transition-colors duration-150',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        selected
-          ? 'border-primary bg-primary/10 text-primary shadow-sm'
-          : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground',
-      )}>{label}</button>
+        full && 'w-full',
+      )}
+    >
+      {children}
+    </button>
   );
+}
+
+function Crumb({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="inline-flex items-center gap-1 rounded-full bg-muted/50 border border-border/60 px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-border transition-colors min-h-[32px]"
+    >
+      <ChevronLeft className="size-3 shrink-0" />
+      {children}
+    </button>
+  );
+}
+
+function Slash() {
+  return <span className="text-muted-foreground/25 text-xs select-none">/</span>;
 }
