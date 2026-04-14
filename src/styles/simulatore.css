@@ -102,6 +102,9 @@
     background: var(--s-s1);
   }
   
+  .sim-sheet--collapsed { transform: translateY(65%); }
+  .sim-sheet--full      { transform: translateY(0); }
+  
   .sim-sheet__handle-area {
     padding-top: 12px;
     gap: 8px;
@@ -281,43 +284,45 @@
   
   /* Desktop Panel - Modern SOTA 2026 */
   .sim-panel {
-    width: 380px;
+    width: 400px;
+    max-width: 35vw;
     border-right: 1px solid var(--s-line);
     background: linear-gradient(180deg, var(--s-s0) 0%, var(--s-s1) 100%);
   }
   
   .sim-panel__content {
-    padding: 24px 0 32px;
+    padding: 32px 0 48px;
   }
   
   .sim-section {
-    padding: 20px 24px 24px;
-    gap: 16px;
+    padding: 24px 28px 28px;
+    gap: 20px;
   }
   
   .sim-section__label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--s-t3);
-    margin-bottom: 4px;
-  }
-  
-  .sim-section__value {
-    font-size: 15px;
-    font-weight: 700;
-  }
-  
-  .sim-section__header {
+    color: var(--s-t2);
     margin-bottom: 8px;
   }
   
+  .sim-section__value {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  
+  .sim-section__header {
+    margin-bottom: 12px;
+  }
+  
   .sim-chip {
-    min-height: 44px;
-    padding: 12px 18px;
-    font-size: 14px;
-    border-radius: 10px;
+    min-height: 52px;
+    padding: 16px 22px;
+    font-size: 15px;
+    border-radius: 12px;
   }
   
   .sim-chip__main {
@@ -390,29 +395,86 @@
     gap: 8px;
   }
   
-  .sim-mode-bar__tab {
-    min-height: 44px;
-    padding: 12px 18px;
-    font-size: 14px;
+.sim-mode-bar__tab {
+    min-height: 52px;
+    padding: 16px 24px;
+    font-size: 15px;
     font-weight: 600;
-    border-radius: 10px;
+    border-radius: 12px;
+  }
+
+  .sim-block-divider {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--s-t2);
+    padding: 28px 28px 16px;
+  }
+
+  .sim-sheet__cta {
+    margin: 16px 28px 32px;
+    padding: 18px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 14px;
   }
   
-  .sim-block-divider {
-    font-size: 10px;
+  .sim-presets__label {
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--s-t3);
-    padding: 24px 24px 12px;
+    color: var(--s-t2);
+    padding: 0 28px;
   }
   
-  .sim-sheet__cta {
-    margin: 12px 24px 28px;
-    padding: 16px 20px;
+  .sim-presets__chips {
+    padding: 0 28px;
+    gap: 12px;
+  }
+  
+  .sim-preset-chip {
+    min-height: 56px;
+    padding: 18px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 14px;
+  }
+  
+  .sim-stepper__input {
+    height: 56px;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 12px;
+  }
+  
+  .sim-stepper__btn {
+    width: 56px;
+    height: 56px;
+    font-size: 26px;
+    border-radius: 14px;
+  }
+  
+  .sim-capital__input {
+    height: 56px;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 12px;
+  }
+  
+  .sim-results {
+    padding: 32px 40px 48px;
+  }
+  
+  .sim-results__count {
     font-size: 14px;
     font-weight: 600;
-    border-radius: 12px;
+  }
+  
+  .sim-card {
+    border-radius: 18px;
+    padding: 24px;
   }
 }
 
