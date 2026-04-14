@@ -468,13 +468,7 @@ function SheetChrome({ stepLabel, onClose }: { stepLabel?: string; onClose: () =
         </span>
       )}
 
-      {/* Focus-visible for accessibility */
-.sim-h:focus-visible {
-  outline: 2px solid hsl(var(--primary));
-  outline-offset: 2px;
-}
-
-/* SOTA 2026 Close button — 44×44 touch target */}
+      {/* SOTA 2026 Close button — 44×44 touch target */}
       <button
         onClick={onClose}
         aria-label="Chiudi"
