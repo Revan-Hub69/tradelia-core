@@ -789,7 +789,10 @@ function StepContent(p: StepContentProps) {
               <div className="flex flex-col gap-2.5">
                 <SectionLabel>Dimensione operazione</SectionLabel>
                 <p style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.6, marginTop: '-8px', marginBottom: '2px' }}>
-                  Quanta parte del conto rischi per singola operazione?
+                  Quanto è grande una singola operazione che apri?
+                </p>
+                <p style={{ fontSize: '9px', color: 'hsl(var(--muted-foreground))', opacity: 0.45, marginTop: '-4px', marginBottom: '4px' }}>
+                  Serve per calcolare costi di spread e commissioni
                 </p>
                 <div className="grid grid-cols-5 gap-1.5">
                   {RISK_PERCENT_STEPS.map(r => (
