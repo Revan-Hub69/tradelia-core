@@ -165,10 +165,32 @@ type SimulatorState = {
 
 // SOTA 2026: Natural spring physics for smooth animations
 const EASE_OUT      = [0.25, 0.46, 0.45, 0.94] as [number,number,number,number];
-const EASE_SPRING    = { type: 'spring' as const, stiffness: 320, damping: 28, mass: 0.85 }; // Smoother spring
-const EASE_SPRING_FAST = { type: 'spring' as const, stiffness: 400, damping: 32, mass: 0.7 }; // Quick replies
+const EASE_SPRING    = { type: 'spring' as const, stiffness: 320, damping: 28, mass: 0.85 };
+const EASE_SPRING_FAST = { type: 'spring' as const, stiffness: 400, damping: 32, mass: 0.7 };
 const EASE_FAST     = { duration: 0.14, ease: EASE_OUT };
-const EASE_GLIDE    = { duration: 0.32, ease: [0.22, 0.65, 0.35, 0.95] }; // iOS-style glide
+const EASE_GLIDE    = { duration: 0.32, ease: [0.22, 0.65, 0.35, 0.95] };
+
+// SOTA 2026: Directional step transitions - slide from direction of travel
+const stepVariants = {
+  enter: (direction: number) => ({
+    opacity: 0,
+    x: direction * 30,
+    scale: 0.98,
+    filter: 'blur(2px)',
+  }),
+  center: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    filter: 'blur(0px)',
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction * -30,
+    scale: 0.98,
+    filter: 'blur(2px)',
+  }),
+};
 
 // Staggered children for list animations
 const staggerChildren = (delay: number = 0.05) => ({
@@ -222,8 +244,21 @@ function BottomSheet({
 }) {
   const y          = useMotionValue(0);
   
-  // SOTA 2026: Height adapts to content/step - less empty space
-  const SHEIGHT = step >= 4 ? 85 : step >= 3 ? 75 : step >= 2 ? 70 : step >= 1 ? 65 : 55;
+  // SOTA 2026: Responsive heights based on viewport + content
+  // Use min-height with max to prevent too small/large
+  const getResponsiveHeight = () => {
+    const vh = window.innerHeight;
+    // Base on viewport height - use more on larger screens
+    const basePercent = vh > 800 ? 82 : vh > 600 ? 85 : 90;
+    // Adjust per step - results need more space
+    if (step >= 4) return basePercent;
+    if (step >= 3) return basePercent - 8;
+    if (step >= 2) return basePercent - 15;
+    if (step >= 1) return basePercent - 22;
+    return basePercent - 28; // Step 0 needs least
+  };
+  
+  const SHEIGHT = getResponsiveHeight();
   
   // Backdrop va da 1 a 0 man mano che si trascina verso il basso
   const bgOpacity  = useTransform(y, [0, DISMISS_Y * 2], [1, 0]);
@@ -823,6 +858,7 @@ export function InteractiveSimulator() {
   const [accountIdx,         setAccountIdx]         = useState(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
   const [showTradesSlider,   setShowTradesSlider]   = useState(false);
   const [showAccountSlider,  setShowAccountSlider]  = useState(false);
+  const [direction,         setDirection]         = useState(0); // 1 = forward, -1 = back
 
   const isMobile     = useIsMobile();
   const tradesValue  = TRADES_PER_MONTH_STEPS[tradesIdx];
@@ -833,21 +869,36 @@ export function InteractiveSimulator() {
 
   // ── handlers ──────────────────────────────────────────────
 
+  // Scroll to top when step changes
+  const scrollToContent = () => {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const scrollEl = document.querySelector('[data-sheet-content]');
+      if (scrollEl) scrollEl.scrollTop = 0;
+    }, 50);
+  };
+
   const handleCategory = (id: CategoryId) => {
     setSel({ category: id });
     setForexSub('major');
+    setDirection(1);
     setStep(1);
+    scrollToContent();
     if (isMobile) setSheetOpen(true);
   };
 
   const handleForexAsset = (a: ForexAsset) => {
     setSel(p => ({ ...p, ugId: ASSET_TO_UG[a.id], assetId: a.id }));
+    setDirection(1);
     setStep(2);
+    scrollToContent();
   };
 
   const handleUG = (id: UnderlyingGroupId) => {
     setSel(p => ({ ...p, ugId: id, assetId: undefined }));
+    setDirection(1);
     setStep(2);
+    scrollToContent();
   };
 
   const handleHorizon    = (id: HorizonId)      => setSel(p => ({ ...p, horizon: id }));
@@ -877,6 +928,7 @@ export function InteractiveSimulator() {
 
   const navTo = (t: number) => {
     if (t >= step) return;
+    setDirection(t < step ? -1 : 1);
     setShowTradesSlider(false);
     setShowAccountSlider(false);
     if (t <= 0) {
@@ -892,6 +944,7 @@ export function InteractiveSimulator() {
       setSel(p => ({ ...p, accountSize: undefined, riskPercent: undefined }));
     }
     setStep(t);
+    scrollToContent();
   };
 
   const reset = () => {
