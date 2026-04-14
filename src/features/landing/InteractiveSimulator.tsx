@@ -946,6 +946,7 @@ function StepContent(p: StepContentProps) {
                 )}
               </AnimatePresence>
               </div>
+              </div>
 
               {!p.isMobile && p.step3Ready && (
                 <motion.div variants={slideUp} initial="initial" animate="animate">
