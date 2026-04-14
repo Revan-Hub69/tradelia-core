@@ -138,10 +138,10 @@ function computeDrag(ugId: UnderlyingGroupId, horizonId: HorizonId, tradesPerMon
 // ---------------------------------------------------------------------------
 
 type RatingKey = 'low' | 'medium' | 'high';
-const RATING_CONFIG: Record<RatingKey, { icon: React.ElementType; colorClass: string; bgClass: string; label: string }> = {
-  low:    { icon: CheckCircle2,  colorClass: 'text-primary',      bgClass: 'bg-primary/10 border-primary/20',          label: 'Attrito basso'    },
-  medium: { icon: AlertTriangle, colorClass: 'text-warning',      bgClass: 'bg-warning/10 border-warning/20',          label: 'Attrito moderato' },
-  high:   { icon: TrendingDown,  colorClass: 'text-destructive',  bgClass: 'bg-destructive/10 border-destructive/20',  label: 'Attrito elevato'  },
+const RATING_CONFIG: Record<RatingKey, { icon: React.ElementType; colorClass: string; bgClass: string; borderClass: string; label: string }> = {
+  low:    { icon: CheckCircle2,  colorClass: 'text-emerald-600 dark:text-emerald-400',  bgClass: 'bg-emerald-50 dark:bg-emerald-950/40',   borderClass: 'border-emerald-200 dark:border-emerald-800/60',  label: 'Attrito basso'    },
+  medium: { icon: AlertTriangle, colorClass: 'text-amber-600 dark:text-amber-400',      bgClass: 'bg-amber-50 dark:bg-amber-950/40',        borderClass: 'border-amber-200 dark:border-amber-800/60',      label: 'Attrito moderato' },
+  high:   { icon: TrendingDown,  colorClass: 'text-rose-600 dark:text-rose-400',        bgClass: 'bg-rose-50 dark:bg-rose-950/40',          borderClass: 'border-rose-200 dark:border-rose-800/60',        label: 'Attrito elevato'  },
 };
 
 // ---------------------------------------------------------------------------
@@ -165,39 +165,38 @@ type SimulatorState = {
 const EASING = [0.16, 1, 0.3, 1] as [number, number, number, number];
 const spring = { type: 'spring' as const, stiffness: 280, damping: 28 };
 const fade = {
-  initial: { opacity: 0, y: 16, scale: 0.99 },
+  initial: { opacity: 0, y: 14, scale: 0.99 },
   animate: { opacity: 1, y: 0,  scale: 1 },
-  exit:    { opacity: 0, y: -12, scale: 0.99, position: 'absolute' as const },
+  exit:    { opacity: 0, y: -10, scale: 0.99, position: 'absolute' as const },
 };
 const slideDown = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.28, ease: EASING } },
-  exit:    { opacity: 0, transition: { duration: 0.15 } },
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.26, ease: EASING } },
+  exit:    { opacity: 0, transition: { duration: 0.14 } },
 };
 function revealVariant(delayMs: number) {
   return {
-    initial: { opacity: 0, y: 10, filter: 'blur(4px)' },
-    animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { delay: delayMs / 1000, duration: 0.38, ease: EASING } },
+    initial: { opacity: 0, y: 8, filter: 'blur(3px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { delay: delayMs / 1000, duration: 0.36, ease: EASING } },
   };
 }
 const badgeReveal = {
-  initial: { opacity: 0, scale: 0.96, filter: 'blur(6px)' },
-  animate: { opacity: 1, scale: 1, filter: 'blur(0px)', transition: { delay: 0.06, duration: 0.42, ease: EASING } },
+  initial: { opacity: 0, scale: 0.97, filter: 'blur(4px)' },
+  animate: { opacity: 1, scale: 1, filter: 'blur(0px)', transition: { delay: 0.05, duration: 0.38, ease: EASING } },
 };
 function statReveal(i: number) {
   return {
-    initial: { opacity: 0, y: 8, scale: 0.97 },
-    animate: { opacity: 1, y: 0, scale: 1, transition: { delay: 0.20 + i * 0.055, duration: 0.32, ease: EASING } },
+    initial: { opacity: 0, y: 6, scale: 0.97 },
+    animate: { opacity: 1, y: 0, scale: 1, transition: { delay: 0.18 + i * 0.05, duration: 0.3, ease: EASING } },
   };
 }
 
 // ---------------------------------------------------------------------------
-// BOTTOM SHEET — SOTA 2026
-// 100dvh, drag-to-dismiss, handle bar, backdrop blur, safe-area CTA
+// BOTTOM SHEET
 // ---------------------------------------------------------------------------
 
-const DISMISS_THRESHOLD = 120; // px drag verso il basso per chiudere
-const SHEET_RADIUS = '20px';   // top border radius
+const DISMISS_THRESHOLD = 120;
+const SHEET_RADIUS = '20px';
 
 interface BottomSheetProps {
   open: boolean;
@@ -213,7 +212,6 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
   const sheetScale = useTransform(y, [0, DISMISS_THRESHOLD], [1, 0.98]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Blocca scroll body quando sheet è aperto
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -228,7 +226,6 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
     };
   }, [open]);
 
-  // Reset y quando sheet si apre
   useEffect(() => {
     if (open) animate(y, 0, { type: 'spring', stiffness: 400, damping: 40 });
   }, [open, y]);
@@ -246,7 +243,6 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop — frosted glass iOS style */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
@@ -254,45 +250,42 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
             style={{ opacity: backdropOpacity }}
-            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             onClick={onClose}
             aria-hidden
           />
 
-          {/* Sheet */}
           <motion.div
             key="sheet"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 380, damping: 40, mass: 0.9 }}
-            style={{ y, scale: sheetScale, borderRadius: `${SHEET_RADIUS} ${SHEET_RADIUS} 0 0` }}
+            style={{
+              y,
+              scale: sheetScale,
+              height: '92dvh',
+              maxHeight: '92dvh',
+              borderRadius: `${SHEET_RADIUS} ${SHEET_RADIUS} 0 0`,
+            }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0.04, bottom: 0.5 }}
             dragMomentum={false}
             onDragEnd={handleDragEnd}
             className="fixed bottom-0 left-0 right-0 z-50 flex flex-col bg-background"
-            style={{
-              height: '92dvh',       // iOS HIG: large detent ≈ 92%, non 100%
-              maxHeight: '92dvh',
-              borderRadius: `${SHEET_RADIUS} ${SHEET_RADIUS} 0 0`,
-              y,
-              scale: sheetScale,
-            }}
             role="dialog"
             aria-modal="true"
             aria-label={title ?? 'Simulatore'}
           >
-            {/* Handle bar — iOS/Material3 spec: 4×32px centrata */}
+            {/* Handle bar */}
             <div
               className="flex justify-center pt-3 pb-1 shrink-0 cursor-grab active:cursor-grabbing"
               aria-hidden
             >
-              <div className="h-1 w-8 rounded-full bg-border/60" />
+              <div className="h-1 w-9 rounded-full bg-foreground/15" />
             </div>
 
-            {/* Header con titolo opzionale */}
             {title && (
               <div className="shrink-0 px-5 pb-2 pt-1">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/50 text-center">
@@ -301,7 +294,6 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
               </div>
             )}
 
-            {/* Contenuto scrollabile — overscroll-behavior: contain evita scroll leak */}
             <div
               ref={scrollRef}
               className="flex-1 overflow-y-auto overscroll-contain px-5 py-4"
@@ -310,11 +302,10 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
               {children}
             </div>
 
-            {/* Footer sticky con safe-area-inset-bottom per notch iPhone */}
             {footer && (
               <div
-                className="shrink-0 border-t border-border/40 bg-background/95 px-5 pt-3"
-                style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}
+                className="shrink-0 border-t border-border/30 bg-background/95 backdrop-blur-sm px-5 pt-3"
+                style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 20px)' }}
               >
                 {footer}
               </div>
@@ -327,7 +318,7 @@ function BottomSheet({ open, onClose, children, footer, title }: BottomSheetProp
 }
 
 // ---------------------------------------------------------------------------
-// HOOK — rilevamento mobile (solo client)
+// HOOK
 // ---------------------------------------------------------------------------
 
 function useIsMobile() {
@@ -358,16 +349,6 @@ export function InteractiveSimulator() {
   const [showAccountSlider, setShowAccountSlider] = useState(false);
 
   const isMobile = useIsMobile();
-  const rootRef  = useRef<HTMLDivElement>(null);
-
-  // Su desktop: scroll center allo step change
-  useEffect(() => {
-    if (isMobile || !rootRef.current) return;
-    const id = setTimeout(() =>
-      rootRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    , 60);
-    return () => clearTimeout(id);
-  }, [step, isMobile]);
 
   const tradesValue  = TRADES_PER_MONTH_STEPS[tradesIdx];
   const accountValue = ACCOUNT_SIZE_STEPS[accountIdx];
@@ -414,7 +395,8 @@ export function InteractiveSimulator() {
       setSel({}); setForexSub('major');
       setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
       setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
-      if (isMobile) setSheetOpen(false);
+      // FIX: su mobile NON chiudere lo sheet — lo step0 va dentro lo sheet
+      // Lo sheet rimane aperto con step0 al suo interno
     }
     if (t === 1) setSel(p => ({ category: p.category }));
     if (t === 2) { setSel(p => ({ category: p.category, ugId: p.ugId, assetId: p.assetId })); setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT)); }
@@ -422,13 +404,14 @@ export function InteractiveSimulator() {
     setStep(t);
   };
 
+  // FIX: reset non chiude lo sheet su mobile — riparte da step0 dentro lo sheet
   const reset = () => {
     setSel({}); setForexSub('major');
     setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
     setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
     setShowTradesSlider(false); setShowAccountSlider(false);
-    setSheetOpen(false);
     setStep(0);
+    // sheetOpen rimane invariato: se eravamo nello sheet restiamo nello sheet
   };
 
   const step2Ready = !!(sel.horizon && (sel.tradesPerMonth ?? tradesValue));
@@ -455,29 +438,29 @@ export function InteractiveSimulator() {
     null,
   ];
 
-  // CTA da passare come footer del sheet
+  // CTA footer sheet
   const sheetFooter = step === 2 && step2Ready ? (
     <button onClick={handleConfirmStep2}
-      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-primary text-primary-foreground font-medium text-base hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-primary text-primary-foreground font-semibold text-[15px] hover:bg-primary/90 active:bg-primary/80 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
       Continua <ArrowRight className="size-5" />
     </button>
   ) : step === 3 && step3Ready ? (
     <button onClick={handleConfirmStep3}
-      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-primary text-primary-foreground font-medium text-base hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-primary text-primary-foreground font-semibold text-[15px] hover:bg-primary/90 active:bg-primary/80 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
       Vedi i risultati <ArrowRight className="size-5" />
     </button>
   ) : null;
 
-  // Contenuto interno (condiviso tra sheet e inline)
+  // Contenuto interno (condiviso: inline desktop + sheet mobile)
   const stepContent = (
     <>
-      {/* Progress */}
+      {/* Progress dots */}
       <div className="mb-6 flex items-center gap-2">
         {Array.from({ length: 4 }).map((_, i) => (
           <button key={i} onClick={() => navTo(i)} disabled={i >= step} aria-label={`Torna allo step ${i + 1}`}
-            className={cn('h-2 rounded-full transition-all duration-300',
-              i < step  ? 'w-8 bg-primary cursor-pointer hover:bg-primary/80'
-              : i === step ? 'w-8 bg-primary/40' : 'w-4 bg-border/50',
+            className={cn('h-[6px] rounded-full transition-all duration-300',
+              i < step  ? 'w-8 bg-primary cursor-pointer hover:bg-primary/70'
+              : i === step ? 'w-8 bg-primary/35' : 'w-4 bg-border/40',
             )} />
         ))}
         <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40">
@@ -486,20 +469,33 @@ export function InteractiveSimulator() {
       </div>
 
       {/* Prompt */}
-      <div className="mb-5 min-h-[2rem]">
+      <div className="mb-5 min-h-[1.75rem]">
         <AnimatePresence mode="wait">
           {PROMPTS[step] && (
             <motion.p key={step} variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="text-lg font-semibold tracking-tight text-foreground">
+              className="text-[17px] font-semibold tracking-tight text-foreground leading-snug">
               {PROMPTS[step]}
             </motion.p>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Steps */}
-      <motion.div layout="size" className="relative overflow-hidden">
+      {/* Steps — FIX desktop: altezza minima fissa per evitare deformazione container */}
+      <div className="relative min-h-[200px]">
         <AnimatePresence mode="wait">
+
+          {/* STEP 0 — inside sheet on mobile (after reset or if opened to step0) */}
+          {step === 0 && (
+            <motion.div key="step0-sheet" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
+              className="flex flex-col gap-4 w-full">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {CATEGORIES.map(c => (
+                  <OptionCard key={c.id} icon={c.icon} title={c.label} description={c.desc}
+                    onClick={() => handleCategory(c.id)} />
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           {/* STEP 1 forex */}
           {step === 1 && sel.category === 'forex' && (
@@ -509,16 +505,16 @@ export function InteractiveSimulator() {
                 {FOREX_SUBGROUPS.map(sg => (
                   <button key={sg.id} onClick={() => setForexSub(sg.id)}
                     className={cn(
-                      'flex-1 py-2.5 rounded-full text-sm font-medium transition-all duration-200 border',
+                      'flex-1 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border',
                       forexSub === sg.id
-                        ? 'bg-primary text-primary-foreground border-primary'
-                        : 'bg-background/60 text-muted-foreground border-border/50 hover:border-primary/40 hover:text-foreground',
+                        ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                        : 'bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground',
                     )}>{sg.label}</button>
                 ))}
               </div>
               <AnimatePresence mode="wait">
                 <motion.div key={forexSub}
-                  initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0, transition: { duration: 0.22, ease: EASING } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                  initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: EASING } }} exit={{ opacity: 0, transition: { duration: 0.1 } }}
                   className="grid grid-cols-3 gap-2.5">
                   {FOREX_ASSETS.filter(a => a.subgroup === forexSub).map(a => (
                     <AssetPill key={a.id} label={a.label} selected={sel.assetId === a.id} onClick={() => handleForexAsset(a)} />
@@ -531,7 +527,7 @@ export function InteractiveSimulator() {
           {/* STEP 1 other */}
           {step === 1 && sel.category !== 'forex' && (
             <motion.div key="s1-o" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
-              className="flex flex-col gap-2.5 w-full">
+              className="flex flex-col gap-2 w-full">
               {filteredUGs.map(ug => (
                 <UGCard key={ug.id} label={ug.label} desc={ug.desc} onClick={() => handleUG(ug.id)} />
               ))}
@@ -563,8 +559,8 @@ export function InteractiveSimulator() {
                             onClick={() => handleTradesPreset(p.value)} />
                         ))}
                         <button onClick={() => { setShowTradesSlider(v => !v); setSel(p => ({ ...p, tradesPerMonth: undefined })); }}
-                          className={cn('flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-xs font-medium transition-all duration-200 min-h-[44px]',
-                            showTradesSlider ? 'border-primary/70 bg-primary/10 text-primary' : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground')}>
+                          className={cn('flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-xs font-semibold transition-all duration-200 min-h-[44px]',
+                            showTradesSlider ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground')}>
                           <SlidersHorizontal className="size-3" /> Altro
                         </button>
                       </div>
@@ -572,11 +568,11 @@ export function InteractiveSimulator() {
                         {showTradesSlider && (
                           <motion.div variants={slideDown} initial="initial" animate="animate" exit="exit" className="flex flex-col gap-3 pt-2">
                             <div className="flex items-center gap-3">
-                              <span className="w-16 rounded-xl border border-border/50 bg-background/60 px-2 py-2 text-center font-mono text-sm font-semibold tabular-nums text-foreground">{tradesValue}</span>
+                              <span className="w-16 rounded-xl border border-border bg-background px-2 py-2 text-center font-mono text-sm font-bold tabular-nums text-foreground">{tradesValue}</span>
                               <span className="text-sm text-muted-foreground">trade / mese</span>
                               {tradesValue >= 200 && (
                                 <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                  className="ml-auto flex items-center gap-1 rounded-full bg-warning/10 border border-warning/20 px-2.5 py-1 font-mono text-[10px] text-warning">
+                                  className="ml-auto flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 px-2.5 py-1 font-mono text-[10px] text-amber-600 dark:text-amber-400">
                                   <Zap className="size-3" /> Alta freq.
                                 </motion.span>
                               )}
@@ -595,11 +591,11 @@ export function InteractiveSimulator() {
                 )}
               </AnimatePresence>
 
-              {/* CTA inline — visibile solo su desktop */}
+              {/* CTA inline — solo desktop */}
               {!isMobile && step2Ready && (
                 <motion.div variants={slideDown} initial="initial" animate="animate">
                   <button onClick={handleConfirmStep2}
-                    className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 active:scale-[0.99] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     Continua <ArrowRight className="size-4" />
                   </button>
                 </motion.div>
@@ -621,8 +617,8 @@ export function InteractiveSimulator() {
                         onClick={() => handleAccountPreset(p.value)} />
                     ))}
                     <button onClick={() => { setShowAccountSlider(v => !v); setSel(p => ({ ...p, accountSize: undefined })); }}
-                      className={cn('flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-xs font-medium transition-all duration-200 min-h-[44px]',
-                        showAccountSlider ? 'border-primary/70 bg-primary/10 text-primary' : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground')}>
+                      className={cn('flex items-center gap-1.5 rounded-full border px-4 py-2 font-mono text-xs font-semibold transition-all duration-200 min-h-[44px]',
+                        showAccountSlider ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground')}>
                       <SlidersHorizontal className="size-3" /> Altro
                     </button>
                   </div>
@@ -630,7 +626,7 @@ export function InteractiveSimulator() {
                     {showAccountSlider && (
                       <motion.div variants={slideDown} initial="initial" animate="animate" exit="exit" className="flex flex-col gap-3">
                         <div className="flex items-center gap-3">
-                          <span className="w-20 rounded-xl border border-border/50 bg-background/60 px-2 py-2 text-center font-mono text-sm font-semibold tabular-nums text-foreground">{formatAccountSize(accountValue)}</span>
+                          <span className="w-20 rounded-xl border border-border bg-background px-2 py-2 text-center font-mono text-sm font-bold tabular-nums text-foreground">{formatAccountSize(accountValue)}</span>
                           <span className="text-sm text-muted-foreground">sul conto</span>
                         </div>
                         <input type="range" min={0} max={ACCOUNT_SIZE_STEPS.length - 1} step={1} value={accountIdx}
@@ -650,18 +646,18 @@ export function InteractiveSimulator() {
                   {RISK_PERCENT_STEPS.map(r => (
                     <button key={r} onClick={() => handleRisk(r)}
                       className={cn(
-                        'rounded-xl border py-3.5 text-center font-mono text-sm font-semibold transition-all duration-200 min-h-[52px]',
+                        'rounded-xl border py-3.5 text-center font-mono text-sm font-bold transition-all duration-200 min-h-[52px]',
                         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                         sel.riskPercent === r
-                          ? 'border-primary/70 bg-primary/10 text-primary'
-                          : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',
+                          ? 'border-primary bg-primary/10 text-primary shadow-sm'
+                          : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground',
                       )}>{r}%</button>
                   ))}
                 </div>
                 <AnimatePresence>
                   {sel.riskPercent && sel.ugId && (
                     <motion.p key="notionale" variants={slideDown} initial="initial" animate="animate" exit="exit"
-                      className="font-mono text-[11px] text-muted-foreground/50 mt-1.5">
+                      className="font-mono text-[11px] text-muted-foreground/60 mt-2">
                       ≈ {formatAccountSize(deriveNotional(sel.accountSize ?? accountValue, sel.riskPercent, sel.ugId))} notionale per trade
                     </motion.p>
                   )}
@@ -672,7 +668,7 @@ export function InteractiveSimulator() {
               {!isMobile && step3Ready && (
                 <motion.div variants={slideDown} initial="initial" animate="animate">
                   <button onClick={handleConfirmStep3}
-                    className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    className="w-full flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 active:scale-[0.99] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     Vedi i risultati <ArrowRight className="size-4" />
                   </button>
                 </motion.div>
@@ -686,28 +682,28 @@ export function InteractiveSimulator() {
           )}
 
         </AnimatePresence>
-      </motion.div>
+      </div>
 
       {/* Breadcrumb */}
       {step > 0 && step < 4 && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 flex items-center gap-2 flex-wrap">
           {sel.category && (
             <button onClick={() => navTo(0)}
-              className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary min-h-[36px]">
+              className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-muted/60 border border-border/50 hover:border-border min-h-[36px]">
               <ChevronLeft className="size-3" />{CATEGORIES.find(c => c.id === sel.category)?.label}
             </button>
           )}
           {step > 1 && sel.ugId && (
             <><span className="text-muted-foreground/30 text-xs">/</span>
             <button onClick={() => navTo(1)}
-              className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary min-h-[36px]">
+              className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-muted/60 border border-border/50 hover:border-border min-h-[36px]">
               <ChevronLeft className="size-3" />{step1Crumb}
             </button></>
           )}
           {step > 2 && sel.horizon && (
             <><span className="text-muted-foreground/30 text-xs">/</span>
             <button onClick={() => navTo(2)}
-              className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-secondary min-h-[36px]">
+              className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full bg-muted/60 border border-border/50 hover:border-border min-h-[36px]">
               <ChevronLeft className="size-3" />{HORIZONS.find(h => h.id === sel.horizon)?.label}
               {sel.tradesPerMonth && <span className="opacity-50"> · {sel.tradesPerMonth}/mese</span>}
             </button></>
@@ -719,13 +715,14 @@ export function InteractiveSimulator() {
 
   return (
     <>
-      {/* STEP 0 — sempre inline (trigger su mobile, continua su desktop) */}
-      <div ref={rootRef} className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
+      {/* STEP 0 inline — sempre visibile; su mobile sparisce quando sheet è aperto */}
+      <div className="relative w-full flex flex-col p-5 sm:p-6 xl:p-7">
         <AnimatePresence mode="wait">
-          {step === 0 ? (
+          {/* Su mobile: mostra step0 solo se sheet è chiuso */}
+          {(!isMobile || (isMobile && !sheetOpen)) && step === 0 && (
             <motion.div key="step0-inline" variants={fade} initial="initial" animate="animate" exit="exit" transition={spring}
               className="flex flex-col gap-4">
-              <p className="text-lg font-semibold tracking-tight text-foreground">
+              <p className="text-[17px] font-semibold tracking-tight text-foreground">
                 Cosa tradi principalmente?
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -735,44 +732,55 @@ export function InteractiveSimulator() {
                 ))}
               </div>
             </motion.div>
-          ) : (
-            // Su desktop: tutto inline dopo step 0
-            !isMobile && (
-              <motion.div key="desktop-inline" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="w-full">
-                {stepContent}
-              </motion.div>
-            )
           )}
+
+          {/* Desktop: step 1-4 inline */}
+          {!isMobile && step > 0 && (
+            <motion.div key="desktop-inline" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="w-full">
+              {stepContent}
+            </motion.div>
+          )}
+
+          {/* FIX: Mobile step>0 sheet chiuso — mini riepilogo SENZA overlay sul container,
+              renderizzato FUORI dal box dello step0 */}
         </AnimatePresence>
 
-        {/* Su mobile: se step > 0 e sheet è chiuso, mostra mini-riepilogo con tasto per riaprire */}
+        {/* FIX: Mini-riepilogo mobile — solo quando sheet è chiuso E step > 0.
+            Era il "pulsante top" sopra lo sheet: ora appare sotto le card step0
+            solo dopo che lo sheet è stato chiuso manualmente, permettendo di riaprirlo. */}
         {isMobile && step > 0 && !sheetOpen && (
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-            className="mt-3 flex items-center justify-between rounded-2xl border border-border/50 bg-background/60 px-4 py-3">
-            <div className="flex items-center gap-2">
-              {[sel.category && CATEGORIES.find(c => c.id === sel.category)?.label,
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.22, ease: EASING } }}
+            className="mt-3 flex items-center justify-between rounded-2xl border border-border bg-muted/40 px-4 py-3 gap-3"
+          >
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
+              {[
+                sel.category && CATEGORIES.find(c => c.id === sel.category)?.label,
                 step1Crumb || null,
-                sel.horizon || null,
+                sel.horizon ? HORIZONS.find(h => h.id === sel.horizon)?.label : null,
               ].filter(Boolean).map((s, i) => (
-                <span key={i} className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{s}</span>
+                <span key={i} className="font-mono text-[10px] uppercase tracking-wider text-foreground/70 truncate">{s}</span>
               ))}
             </div>
-            <button onClick={() => setSheetOpen(true)}
-              className="flex items-center gap-1.5 rounded-full bg-primary/10 text-primary px-3 py-1.5 font-mono text-[11px] font-medium">
-              Continua <ArrowRight className="size-3" />
+            <button
+              onClick={() => setSheetOpen(true)}
+              className="shrink-0 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3.5 py-2 font-semibold text-xs min-h-[36px] hover:bg-primary/90 active:bg-primary/80 transition-colors"
+            >
+              Continua <ArrowRight className="size-3.5" />
             </button>
           </motion.div>
         )}
       </div>
 
-      {/* BOTTOM SHEET — solo mobile, step 1+ */}
+      {/* BOTTOM SHEET — mobile, step 1+ */}
       {isMobile && (
         <BottomSheet
           open={sheetOpen}
-          onClose={() => { setSheetOpen(false); }}
+          onClose={() => setSheetOpen(false)}
           footer={sheetFooter}
-          title={PROMPTS[step] ?? undefined}
+          title={step === 0 ? 'Ricomincia' : (PROMPTS[step] ?? undefined)}
         >
           {stepContent}
         </BottomSheet>
@@ -797,15 +805,15 @@ function ResultView({ result, sel, onReset }: { result: SimResult; sel: Simulato
       exit={{ opacity: 0, transition: { duration: 0.1 } }} className="w-full space-y-3">
 
       <motion.div variants={badgeReveal} initial="initial" animate="animate"
-        className={cn('flex items-center gap-3 rounded-2xl border px-4 py-4', cfg.bgClass)}>
+        className={cn('flex items-center gap-3 rounded-2xl border px-4 py-4', cfg.bgClass, cfg.borderClass)}>
         <Icon className={cn('size-5 shrink-0', cfg.colorClass)} />
-        <div>
-          <p className={cn('font-mono text-[11px] font-semibold uppercase tracking-[0.18em]', cfg.colorClass)}>{cfg.label}</p>
-          <p className="text-xs text-muted-foreground/70">{result.primaryIssue}</p>
+        <div className="min-w-0">
+          <p className={cn('font-mono text-[11px] font-bold uppercase tracking-[0.18em]', cfg.colorClass)}>{cfg.label}</p>
+          <p className="text-xs text-muted-foreground/80 mt-0.5 leading-5">{result.primaryIssue}</p>
         </div>
-        <div className="ml-auto text-right">
+        <div className="ml-auto text-right shrink-0">
           <p className={cn('font-mono text-xl font-bold tabular-nums', cfg.colorClass)}>{result.totalDragBps} bps</p>
-          <p className="font-mono text-xs text-muted-foreground/60 tabular-nums">≈ {result.totalDragEur}€/mese</p>
+          <p className="font-mono text-xs text-muted-foreground/70 tabular-nums mt-0.5">≈ {result.totalDragEur}€/mese</p>
         </div>
       </motion.div>
 
@@ -816,27 +824,27 @@ function ResultView({ result, sel, onReset }: { result: SimResult; sel: Simulato
           { label: 'Notionale',    value: formatAccountSize(result.notionale) },
         ].map(({ label, value }, i) => (
           <motion.div key={label} variants={statReveal(i + 1)} initial="initial" animate="animate"
-            className="rounded-2xl border border-border/50 bg-background/60 px-3 py-3 text-center">
+            className="rounded-2xl border border-border bg-muted/30 px-3 py-3 text-center">
             <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">{label}</p>
-            <p className="mt-1 font-mono text-sm font-semibold text-foreground tabular-nums">{value}</p>
+            <p className="mt-1 font-mono text-sm font-bold text-foreground tabular-nums">{value}</p>
           </motion.div>
         ))}
       </div>
 
-      <motion.p variants={revealVariant(300)} initial="initial" animate="animate"
+      <motion.p variants={revealVariant(280)} initial="initial" animate="animate"
         className="font-mono text-[10px] text-muted-foreground/50 text-center tracking-wide">
         {result.tradesPerMonth}/mese · {HORIZON_HOLDING[sel.horizon!]}gg · {result.spreadBps} bps/trade · {formatAccountSize(result.notionale)} notionale
       </motion.p>
 
-      <motion.div variants={revealVariant(380)} initial="initial" animate="animate"
-        className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/30 px-4 py-3.5">
+      <motion.div variants={revealVariant(360)} initial="initial" animate="animate"
+        className="flex items-start gap-3 rounded-2xl border border-border bg-muted/20 px-4 py-3.5">
         <ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" />
         <p className="text-sm leading-6 text-muted-foreground">
-          <span className="font-medium text-foreground">Cosa fare: </span>{result.suggestion}
+          <span className="font-semibold text-foreground">Cosa fare: </span>{result.suggestion}
         </p>
       </motion.div>
 
-      <motion.div variants={revealVariant(460)} initial="initial" animate="animate"
+      <motion.div variants={revealVariant(440)} initial="initial" animate="animate"
         className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex gap-2 flex-wrap">
           {[CATEGORIES.find(c => c.id === sel.category)?.label, assetLabel, sel.horizon,
@@ -844,11 +852,12 @@ function ResultView({ result, sel, onReset }: { result: SimResult; sel: Simulato
             sel.accountSize   ? formatAccountSize(sel.accountSize) : null,
             sel.riskPercent   ? `${sel.riskPercent}% rischio`      : null,
           ].filter(Boolean).map(s => (
-            <span key={s} className="rounded-full border border-border/50 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{s}</span>
+            <span key={s} className="rounded-full border border-border/60 bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80">{s}</span>
           ))}
         </div>
+        {/* FIX: "Ricomincia" non chiude lo sheet — navTo(0) gestisce il reset dentro lo sheet */}
         <button onClick={onReset}
-          className="flex items-center gap-1.5 rounded-full border border-border/50 bg-background px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground min-h-[36px]">
+          className="flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors min-h-[36px]">
           <RotateCcw className="size-3" /> Ricomincia
         </button>
       </motion.div>
@@ -868,14 +877,14 @@ function OptionCard({ icon: Icon, title, description, onClick, selected = false 
       className={cn(
         'group relative flex flex-col items-start justify-between p-4 text-left transition-all duration-200 border rounded-2xl min-h-[80px]',
         selected
-          ? 'border-primary/70 bg-primary/10'
-          : 'bg-background/60 border-border/50 hover:border-primary/60 hover:bg-accent/30 hover:shadow-md hover:-translate-y-0.5',
+          ? 'border-primary bg-primary/8 shadow-sm'
+          : 'bg-background border-border hover:border-primary/60 hover:bg-accent/20 hover:shadow-sm hover:-translate-y-0.5',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
       )}>
-      <Icon className={cn('mb-3 size-5 stroke-[1.5] transition-colors duration-200', selected ? 'text-primary' : 'text-muted-foreground group-hover:text-primary')} />
+      <Icon className={cn('mb-2.5 size-[18px] stroke-[1.6] transition-colors duration-200', selected ? 'text-primary' : 'text-foreground/50 group-hover:text-primary')} />
       <div>
-        <p className="text-sm font-semibold leading-5 text-foreground">{title}</p>
-        {description && <p className="mt-0.5 text-[10px] text-muted-foreground">{description}</p>}
+        <p className="text-[13px] font-semibold leading-5 text-foreground">{title}</p>
+        {description && <p className="mt-0.5 text-[10px] text-muted-foreground/70 leading-4">{description}</p>}
       </div>
     </button>
   );
@@ -885,11 +894,11 @@ function AssetPill({ label, selected, onClick }: { label: string; selected: bool
   return (
     <button onClick={onClick}
       className={cn(
-        'rounded-xl border px-3 py-3 text-center font-mono text-xs font-semibold tracking-wide transition-all duration-200 min-h-[48px]',
+        'rounded-xl border px-3 py-3 text-center font-mono text-xs font-bold tracking-wide transition-all duration-200 min-h-[48px]',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         selected
-          ? 'border-primary/70 bg-primary/10 text-primary'
-          : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:-translate-y-0.5 hover:shadow-sm',
+          ? 'border-primary bg-primary/10 text-primary shadow-sm'
+          : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground hover:-translate-y-0.5 hover:shadow-sm',
       )}>{label}</button>
   );
 }
@@ -898,15 +907,15 @@ function UGCard({ label, desc, onClick }: { label: string; desc: string; onClick
   return (
     <button onClick={onClick}
       className={cn(
-        'group flex items-center justify-between w-full px-4 py-4 text-left transition-all duration-200 min-h-[64px]',
-        'bg-background/60 border border-border/50 rounded-2xl hover:border-primary/60 hover:bg-accent/30 hover:shadow-md',
+        'group flex items-center justify-between w-full px-4 py-4 text-left transition-all duration-200 min-h-[60px]',
+        'bg-background border border-border rounded-2xl hover:border-primary/60 hover:bg-accent/20 hover:shadow-sm',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
       )}>
       <div>
-        <p className="text-sm font-semibold text-foreground">{label}</p>
-        <p className="mt-0.5 text-[11px] text-muted-foreground">{desc}</p>
+        <p className="text-[13px] font-semibold text-foreground">{label}</p>
+        <p className="mt-0.5 text-[11px] text-muted-foreground/70">{desc}</p>
       </div>
-      <ArrowRight className="size-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200 shrink-0 ml-3" />
+      <ArrowRight className="size-4 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200 shrink-0 ml-3" />
     </button>
   );
 }
@@ -914,7 +923,7 @@ function UGCard({ label, desc, onClick }: { label: string; desc: string; onClick
 function ProfileSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2.5">
-      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">{label}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60 font-semibold">{label}</p>
       {children}
     </div>
   );
@@ -924,11 +933,11 @@ function PresetPill({ label, selected, onClick }: { label: string; selected: boo
   return (
     <button onClick={onClick}
       className={cn(
-        'rounded-full border px-4 py-2 font-mono text-sm font-semibold transition-all duration-200 min-h-[44px]',
+        'rounded-full border px-4 py-2 font-mono text-sm font-bold transition-all duration-200 min-h-[44px]',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         selected
-          ? 'border-primary/70 bg-primary/10 text-primary'
-          : 'border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',
+          ? 'border-primary bg-primary/10 text-primary shadow-sm'
+          : 'border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground',
       )}>{label}</button>
   );
 }
