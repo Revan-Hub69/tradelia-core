@@ -37,6 +37,12 @@ const SIZING_MODES = [
   { id: 'euro' as const, label: 'Euro' },
 ];
 
+const FREQ_MODES = [
+  { id: 'per_day' as const, label: '/giorno' },
+  { id: 'per_week' as const, label: '/settimana' },
+  { id: 'per_month' as const, label: '/mese' },
+];
+
 // ── Helpers ───────────────────────────────────────────────────────────────
 
 function fmtEUR(n: number): string {
