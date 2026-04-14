@@ -940,13 +940,7 @@ function StepContent(p: StepContentProps) {
                       </div>
                     );
                   })()}
-                </motion.div>
-              )}
-
-              {!p.isMobile && p.step3Ready && (
-                <motion.div variants={slideUp} initial="initial" animate="animate">
-                  <CtaButton onClick={p.onConfirmStep3}>Vedi i risultati <ArrowRight size={16} /></CtaButton>
-                </motion.div>
+</motion.div>
               )}
             </motion.div>
           )}
