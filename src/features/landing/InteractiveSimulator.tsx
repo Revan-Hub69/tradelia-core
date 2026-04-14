@@ -846,7 +846,7 @@ function StepContent(p: StepContentProps) {
                             alignItems: 'center',
                             gap: '4px',
                           }}>
-                            <span>💡</span>
+                            <span style={{ opacity: 0.8 }}>Consiglio:</span>
                             <span>Range tipico per questo conto: <strong style={{ color: 'hsl(var(--foreground))', opacity: 0.8 }}>{formatAccountSize(suggestions.min)} – {formatAccountSize(suggestions.max)}</strong></span>
                           </div>
                         );
