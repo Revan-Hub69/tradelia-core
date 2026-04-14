@@ -867,13 +867,32 @@ export function InteractiveSimulator() {
 
   // ── handlers ──────────────────────────────────────────────
 
-  // Scroll to top when step changes
+  // Scroll to center simulator in viewport on step change (desktop)
   const scrollToContent = () => {
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Get the simulator container
+      const container = document.querySelector('.simulator-container');
+      if (!container) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      
+      const rect = container.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const containerHeight = rect.height;
+      
+      // Calculate center position
+      const targetTop = window.scrollY + rect.top - (viewportHeight - containerHeight) / 2;
+      
+      window.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: 'smooth'
+      });
+      
+      // Also scroll sheet content to top if exists
       const scrollEl = document.querySelector('[data-sheet-content]');
       if (scrollEl) scrollEl.scrollTop = 0;
-    }, 50);
+    }, 80);
   };
 
   const handleCategory = (id: CategoryId) => {
@@ -997,7 +1016,7 @@ export function InteractiveSimulator() {
   // ── render ────────────────────────────────────────────────
 
   return (
-    <div className="w-full" style={{ padding: '20px 16px 20px', maxWidth: '480px' }}>
+    <div className="w-full simulator-container" style={{ padding: '20px 16px 20px', maxWidth: '480px' }}>
 
       {/* Step 0 — sempre inline (mobile + desktop) */}
       <AnimatePresence mode="wait">
