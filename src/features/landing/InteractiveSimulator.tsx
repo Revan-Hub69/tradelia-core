@@ -202,15 +202,20 @@ function useIsMobile() {
 // ---------------------------------------------------------------------------
 
 function BottomSheet({
-  open, onClose, children, footer, stepLabel,
+  open, onClose, children, footer, stepLabel, step = 0,
 }: {
   open:       boolean;
   onClose:    () => void;
   children:   React.ReactNode;
   footer?:    React.ReactNode;
   stepLabel?: string;
+  step?:      number;
 }) {
   const y          = useMotionValue(0);
+  
+  // SOTA 2026: Height adapts to content/step - less empty space
+  const SHEIGHT = step >= 4 ? 85 : step >= 3 ? 75 : step >= 2 ? 70 : step >= 1 ? 65 : 55;
+  
   // Backdrop va da 1 a 0 man mano che si trascina verso il basso
   const bgOpacity  = useTransform(y, [0, DISMISS_Y * 2], [1, 0]);
   // Sheet scala leggermente in basso durante il drag per feedback fisico
@@ -311,8 +316,8 @@ function BottomSheet({
                 '0 -2px 8px rgba(0,0,0,0.08)',
                 '0 0 96px rgba(59,130,246,0.06)',
               ].join(', '),
-              height:    '85dvh',
-              maxHeight: '85dvh',
+              height:    `${SHEIGHT}dvh`,
+              maxHeight: `${SHEIGHT}dvh`,
               /* GPU */
               transform:  'translateZ(0)',
               willChange: 'transform',
@@ -332,6 +337,7 @@ function BottomSheet({
                 scrollbarColor: 'rgba(0,0,0,0.12) transparent',
                 paddingInline: '20px',
                 paddingBottom: '12px',
+                minHeight: step >= 4 ? '0' : step >= 2 ? '200px' : '120px',
               }}
             >
               {children}
@@ -1022,6 +1028,7 @@ export function InteractiveSimulator() {
           onClose={() => setSheetOpen(false)}
           footer={sheetFooter}
           stepLabel={step < 4 ? STEP_PROMPTS[step] : undefined}
+          step={step}
         >
           <StepContent {...sharedProps} />
         </BottomSheet>
