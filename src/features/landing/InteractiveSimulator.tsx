@@ -803,13 +803,9 @@ function StepContent(p: StepContentProps) {
                 <p style={{ fontSize: '9px', color: 'hsl(var(--muted-foreground))', opacity: 0.45, marginTop: '-4px', marginBottom: '4px' }}>
                   Serve per calcolare costi di spread e commissioni
                 </p>
-                <div className="grid grid-cols-5 gap-1.5">
-                  {RISK_PERCENT_STEPS.map(r => (
-                    <RiskBtn key={r} value={r} selected={p.sel.riskPercent === r} onClick={() => p.onRisk(r)} />
-                  ))}
-                </div>
+                
                 {/* Size Mode Selector */}
-              <div className="flex gap-2" style={{ marginBottom: '8px' }}>
+                <div className="flex gap-2" style={{ marginBottom: '8px' }}>
                 {SIZE_MODES.map(mode => (
                   <button
                     key={mode.id}
@@ -890,6 +886,8 @@ function StepContent(p: StepContentProps) {
                       </button>
                     ))}
                   </div>
+                </motion.div>
+
                 {/* Show exposure result */}
               {((p.sel.sizeMode === 'amount' && p.sel.riskPercent) || (p.sel.sizeMode === 'lots' && p.sel.positionSize) || p.sel.sizeMode === 'auto') && p.sel.ugId && (
                 <motion.div key="notionale" variants={slideUp} initial="initial" animate="animate" exit="exit"
@@ -925,26 +923,24 @@ function StepContent(p: StepContentProps) {
                       {formatAccountSize(p.sel.accountSize ? Math.round(p.sel.accountSize * (p.sel.riskPercent ?? 2) / 100) : 0)}
                     </span>
                   </div>
-                      {/* Suggestion box - subtle, non-prescriptive */}
-                      {(() => {
-                        const suggestions = getPositionSuggestions(p.sel.accountSize ?? p.accountValue);
-                        return (
-                          <div style={{
-                            fontSize: '10px',
-                            color: 'hsl(var(--muted-foreground))',
-                            opacity: 0.6,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                          }}>
-                            <span style={{ opacity: 0.8 }}>Consiglio:</span>
-                            <span>Range tipico per questo conto: <strong style={{ color: 'hsl(var(--foreground))', opacity: 0.8 }}>{formatAccountSize(suggestions.min)} – {formatAccountSize(suggestions.max)}</strong></span>
-                          </div>
-                        );
-                      })()}
+                  {(() => {
+                    const suggestions = getPositionSuggestions(p.sel.accountSize ?? p.accountValue);
+                    return (
+                      <div style={{
+                        fontSize: '10px',
+                        color: 'hsl(var(--muted-foreground))',
+                        opacity: 0.6,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}>
+                        <span style={{ opacity: 0.8 }}>Consiglio:</span>
+                        <span>Range tipico per questo conto: <strong style={{ color: 'hsl(var(--foreground))', opacity: 0.8 }}>{formatAccountSize(suggestions.min)} – {formatAccountSize(suggestions.max)}</strong></span>
+                      </div>
+                    );
+                  })()}
                 </motion.div>
-                )}
-              </AnimatePresence>
+              )}
 
               {!p.isMobile && p.step3Ready && (
                 <motion.div variants={slideUp} initial="initial" animate="animate">
