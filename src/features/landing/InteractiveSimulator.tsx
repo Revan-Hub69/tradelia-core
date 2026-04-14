@@ -244,21 +244,19 @@ function BottomSheet({
 }) {
   const y          = useMotionValue(0);
   
-  // SOTA 2026: Responsive heights based on viewport + content
-  // Use min-height with max to prevent too small/large
-  const getResponsiveHeight = () => {
-    const vh = window.innerHeight;
-    // Base on viewport height - use more on larger screens
-    const basePercent = vh > 800 ? 82 : vh > 600 ? 85 : 90;
-    // Adjust per step - results need more space
-    if (step >= 4) return basePercent;
-    if (step >= 3) return basePercent - 8;
-    if (step >= 2) return basePercent - 15;
-    if (step >= 1) return basePercent - 22;
-    return basePercent - 28; // Step 0 needs least
-  };
+  // SOTA 2026: Smart height that adapts to content - not fixed
+  // Use CSS calc with dvh for proper viewport calculation
+  // Min ensures content is never cramped, max prevents too tall
+  const baseHeight = {
+    0: 58, // Category selection - 5 items
+    1: 68, // Asset selection  
+    2: 72, // Horizon + trades
+    3: 78, // Account + risk
+    4: 88, // Results - needs most space
+  }[step] ?? 70;
   
-  const SHEIGHT = getResponsiveHeight();
+  // Use height that adapts: more height for earlier steps with scroll, max for results
+  const SHEIGHT = step >= 4 ? 88 : 90 - (step * 5); // 85 → 80 → 75 → 70
   
   // Backdrop va da 1 a 0 man mano che si trascina verso il basso
   const bgOpacity  = useTransform(y, [0, DISMISS_Y * 2], [1, 0]);
@@ -381,7 +379,7 @@ function BottomSheet({
                 scrollbarColor: 'rgba(0,0,0,0.12) transparent',
                 paddingInline: '20px',
                 paddingBottom: '12px',
-                minHeight: step >= 4 ? '0' : step >= 2 ? '200px' : '120px',
+                minHeight: step >= 4 ? '0px' : 'min(320px, 50dvh)',
               }}
             >
               {children}
