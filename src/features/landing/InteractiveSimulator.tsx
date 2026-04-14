@@ -468,7 +468,13 @@ function SheetChrome({ stepLabel, onClose }: { stepLabel?: string; onClose: () =
         </span>
       )}
 
-      {/* SOTA 2026 Close button — 44×44 touch target */}
+      {/* Focus-visible for accessibility */
+.sim-h:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* SOTA 2026 Close button — 44×44 touch target */}
       <button
         onClick={onClose}
         aria-label="Chiudi"
@@ -1261,17 +1267,44 @@ function OptionCard({ icon: Icon, title, desc, onClick, selected = false }: {
           : 'transparent',
         textAlign:      'left',
         cursor:         'pointer',
-        transition:     'border-color 160ms ease, background 160ms ease, transform 120ms ease, box-shadow 160ms ease',
+        transition:     'all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         minHeight:      '88px',
         outline:        'none',
         boxShadow:      selected
           ? '0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 16px hsl(var(--primary) / 0.12)'
-          : '0 2px 6px rgba(0,0,0,0.06)',
+          : '0 2px 6px rgba(0,0,0,0.06), 0 0 0 hsl(var(--border) / 0)',
         WebkitTapHighlightColor: 'transparent',
       }}
-      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.96)'; }}
-      onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
-      onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
+      onPointerDown={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.96) translateY(0)';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 0 1px hsl(var(--primary) / 0.2), 0 1px 4px hsl(var(--primary) / 0.08)'
+          : '0 1px 2px rgba(0,0,0,0.04)';
+      }}
+      onPointerUp={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1) translateY(-2px)';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 16px hsl(var(--primary) / 0.12)'
+          : '0 8px 24px rgba(0,0,0,0.12), 0 0 0 hsl(var(--primary) / 0.15)';
+      }}
+      onPointerLeave={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1) translateY(0)';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 16px hsl(var(--primary) / 0.12)'
+          : '0 2px 6px rgba(0,0,0,0.06)';
+      }}
+      onMouseEnter={e => {
+        if (!selected) {
+          (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)';
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.1), 0 0 0 hsl(var(--primary) / 0.08)';
+        }
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 0 1px hsl(var(--primary) / 0.2), 0 4px 16px hsl(var(--primary) / 0.12)'
+          : '0 2px 6px rgba(0,0,0,0.06)';
+      }}
     >
       <Icon
         size={20}
@@ -1318,14 +1351,41 @@ function Pill({ children, selected, onClick }: {
         letterSpacing:'0.03em',
         color:         selected ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
         cursor:        'pointer',
-        transition:    'all 160ms ease',
+        transition:    'all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         outline:       'none',
-        boxShadow:    selected ? '0 0 10px hsl(var(--primary) / 0.12)' : 'none',
+        boxShadow:    selected ? '0 0 10px hsl(var(--primary) / 0.12)' : '0 1px 3px rgba(0,0,0,0.04)',
         WebkitTapHighlightColor: 'transparent',
       }}
-      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.94)'; }}
-      onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
-      onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
+      onPointerDown={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.92)'; 
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 6px hsl(var(--primary) / 0.08)' 
+          : 'inset 0 1px 2px rgba(0,0,0,0.06)';
+      }}
+      onPointerUp={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; 
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 10px hsl(var(--primary) / 0.12)' 
+          : '0 4px 12px rgba(0,0,0,0.08)';
+      }}
+      onPointerLeave={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; 
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 10px hsl(var(--primary) / 0.12)' 
+          : '0 1px 3px rgba(0,0,0,0.04)';
+      }}
+      onMouseEnter={e => {
+        if (!selected) {
+          (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--muted) / 0.15)';
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
+        }
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLButtonElement).style.background = selected ? 'hsl(var(--primary) / 0.12)' : 'transparent';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = selected 
+          ? '0 0 10px hsl(var(--primary) / 0.12)' 
+          : '0 1px 3px rgba(0,0,0,0.04)';
+      }}
     >
       {children}
     </button>
@@ -1362,27 +1422,51 @@ function UGRow({ label, desc, onClick }: { label: string; desc: string; onClick:
         display:         'flex',
         alignItems:     'center',
         justifyContent: 'space-between',
-        width:          '100%',
-        padding:        '16px 18px',
-        borderRadius:   '18px',
-        border:         '1px solid hsl(var(--border))',
-        background:     'transparent',
-        textAlign:      'left',
-        cursor:         'pointer',
-        transition:     'border-color 160ms ease, background 160ms ease, transform 120ms ease',
-        outline:        'none',
-        boxShadow:     '0 2px 6px rgba(0,0,0,0.05)',
+        width:           '100%',
+        padding:         '16px 18px',
+        borderRadius:    '18px',
+        border:          '1px solid hsl(var(--border))',
+        background:      'transparent',
+        textAlign:       'left',
+        cursor:          'pointer',
+        transition:      'all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        outline:         'none',
+        boxShadow:       '0 2px 6px rgba(0,0,0,0.05)',
         WebkitTapHighlightColor: 'transparent',
       }}
-      onPointerDown={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.985)'; (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--muted) / 0.35'; }}
-      onPointerUp={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
-      onPointerLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+      onPointerDown={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.985)'; 
+        (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--muted) / 0.25)';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.04)';
+      }}
+      onPointerUp={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)'; 
+        (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--muted) / 0.1)';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(0,0,0,0.1)';
+      }}
+      onPointerLeave={e => { 
+        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; 
+        (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--muted) / 0.08)';
+        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(0,0,0,0.08), 0 0 0 hsl(var(--primary) / 0.06)';
+        (e.currentTarget as HTMLButtonElement).style.borderColor = 'hsl(var(--primary) / 0.4)';
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+        (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+        (e.currentTarget as HTMLButtonElement).style.borderColor = 'hsl(var(--border))';
+      }}
     >
       <div>
         <p style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--foreground))', lineHeight: '20px' }}>{label}</p>
         <p style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.7, marginTop: '3px', lineHeight: '15px' }}>{desc}</p>
       </div>
-      <ArrowRight size={16} style={{ color: 'hsl(var(--primary))', flexShrink: 0, marginLeft: '14px', opacity: 0.7 }} />
+      <ArrowRight size={16} style={{ color: 'hsl(var(--primary))', flexShrink: 0, marginLeft: '14px', opacity: 0.7, transition: 'opacity 160ms ease, transform 160ms ease' }} />
     </button>
   );
 }
