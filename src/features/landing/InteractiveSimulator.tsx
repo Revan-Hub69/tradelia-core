@@ -887,6 +887,7 @@ function StepContent(p: StepContentProps) {
                     ))}
                   </div>
                 </motion.div>
+              )}
 
                 {/* Show exposure result */}
               {((p.sel.sizeMode === 'amount' && p.sel.riskPercent) || (p.sel.sizeMode === 'lots' && p.sel.positionSize) || p.sel.sizeMode === 'auto') && p.sel.ugId && (
