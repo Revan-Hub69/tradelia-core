@@ -40,6 +40,7 @@ export const ACCOUNT_PRESETS: { value: AccountSizeStep; label: string }[] = [
   { value: 3_000,   label: '3k€'   },
   { value: 5_000,   label: '5k€'   },
   { value: 10_000,  label: '10k€'  },
+  { value: 25_000,  label: '25k€'  },
 ];
 
 export function snapToAccountStep(value: number): AccountSizeStep {

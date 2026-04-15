@@ -41,6 +41,18 @@ const SIZE_MODES: { id: TradeSizeMode; label: string; Icon: typeof DollarSign }[
 
 const LOT_STEPS = [0.001, 0.002, 0.003, 0.005, 0.007, 0.01, 0.015, 0.02, 0.03, 0.05, 0.07, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10, 15, 20] as const;
 
+function getLotPresets(accountSize: number): number[] {
+  if (accountSize <= 300)    return [0.001, 0.002, 0.005, 0.01];
+  if (accountSize <= 500)    return [0.005, 0.01, 0.02, 0.03];
+  if (accountSize <= 1000)   return [0.01, 0.02, 0.03, 0.05];
+  if (accountSize <= 3000)  return [0.02, 0.03, 0.05, 0.07, 0.1];
+  if (accountSize <= 5000)   return [0.03, 0.05, 0.07, 0.1, 0.15];
+  if (accountSize <= 10000) return [0.05, 0.1, 0.15, 0.2, 0.3];
+  if (accountSize <= 25000) return [0.1, 0.2, 0.3, 0.5, 0.75];
+  if (accountSize <= 50000) return [0.25, 0.5, 0.75, 1.0, 1.5];
+  return [0.5, 1.0, 1.5, 2.0, 3.0];
+}
+
 const UNDERLYING_GROUPS = [
   { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',         desc: 'EUR/USD, GBP/USD, USD/JPY...' },
   { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',          desc: 'EUR/GBP, AUD/JPY, GBP/CHF...' },
@@ -93,13 +105,12 @@ const ASSET_TO_UG: Record<string, UnderlyingGroupId> = Object.fromEntries(
 );
 
 const HORIZONS = [
-  { id: 'scalping', label: 'Scalping', icon: Zap,           desc: 'Many tickers / session' },
   { id: 'intraday', label: 'Intraday', icon: Clock,        desc: 'Chiudi in giornata' },
   { id: 'multiday', label: 'Multiday', icon: Calendar,     desc: '2–5 giorni'         },
   { id: 'swing',    label: 'Swing',    icon: CalendarDays, desc: 'Settimane / mesi'   },
 ] as const;
 type HorizonId = typeof HORIZONS[number]['id'];
-const HORIZON_HOLDING: Record<HorizonId, number> = { scalping: 0.1, intraday: 0.3, multiday: 3.5, swing: 15 };
+const HORIZON_HOLDING: Record<HorizonId, number> = { intraday: 0.3, multiday: 3.5, swing: 15 };
 
 // ---------------------------------------------------------------------------
 // COST MODEL
@@ -721,40 +732,11 @@ function StepContent(p: StepContentProps) {
                     <div className="flex flex-wrap gap-2">
                       {TRADES_PRESETS.map(pr => (
                         <Pill key={pr.value}
-                          selected={p.sel.tradesPerMonth === pr.value && !p.showTradesInput}
+                          selected={p.sel.tradesPerMonth === pr.value}
                           onClick={() => p.onTradesPreset(pr.value)}>
                           {pr.label}
                         </Pill>
                       ))}
-                      {p.showTradesInput ? (
-                        <div className="flex items-center gap-1">
-                          <input
-                            type="number"
-                            value={p.sel.tradesPerMonth ?? ''}
-                            onChange={e => {
-                              const v = parseInt(e.target.value) || 1;
-                              p.setTradesIdx(TRADES_PER_MONTH_STEPS.findIndex(x => x >= v) || 0);
-                              p.setSel(s => ({ ...s, tradesPerMonth: v as TradesPerMonthStep }));
-                            }}
-                            placeholder="50"
-                            className="w-16 px-2 py-1.5 rounded-lg border border-[hsl(var(--border))] bg-transparent font-mono text-sm"
-                            autoFocus
-                          />
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => p.setShowTradesInput(true)}
-                          style={{
-                            padding: '8px 14px',
-                            borderRadius: '10px',
-                            border: '1px solid hsl(var(--border))',
-                            fontSize: '13px',
-                            color: 'hsl(var(--foreground))',
-                          }}
-                        >
-                          altro
-                        </button>
-                      )}
                     </div>
                   </motion.div>
                 )}
@@ -778,43 +760,11 @@ function StepContent(p: StepContentProps) {
                 <div className="flex flex-wrap gap-2">
                   {ACCOUNT_PRESETS.map(pr => (
                     <Pill key={pr.value}
-                      selected={p.sel.accountSize === pr.value && !p.showAccountInput}
+                      selected={p.sel.accountSize === pr.value}
                       onClick={() => p.setSel(s => ({ ...s, accountSize: pr.value }))}>
                       {pr.label}
                     </Pill>
                   ))}
-                  {p.showAccountInput ? (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        value={p.accountValue}
-                        onChange={e => {
-                          const v = parseInt(e.target.value) || 0;
-                          p.setAccountIdx(ACCOUNT_SIZE_STEPS.findIndex(x => x >= v) ?? -1);
-                          p.setSel(s => ({ ...s, accountSize: (v >= 50 ? v : 50) as AccountSizeStep }));
-                        }}
-                        placeholder="5000"
-                        className="w-24 px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-transparent font-mono text-sm"
-                        autoFocus
-                      />
-                      <span className="text-sm text-[hsl(var(--muted-foreground))]">€</span>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => p.setShowAccountInput(true)}
-                      style={{
-                        padding: '8px 14px',
-                        borderRadius: '10px',
-                        border: '1px solid hsl(var(--border))',
-                        fontSize: '13px',
-                        fontWeight: 500,
-                        color: 'hsl(var(--foreground))',
-                        background: 'transparent',
-                      }}
-                    >
-                      altro...
-                    </button>
-                  )}
                 </div>
               </div>
 
@@ -827,61 +777,28 @@ function StepContent(p: StepContentProps) {
                   {p.sel.category === 'forex' ? 'Il margine richiesto per aprire la posizione' : 'Serve per calcolare costi di spread e commissioni'}
                 </p>
 
-                {/* FOREX: lot picker with inline input */}
+                {/* FOREX: lot picker using presets based on account */}
                 {p.sel.category === 'forex' && p.sel.accountSize && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex flex-wrap gap-1.5">
-                      {[0.01, 0.05, 0.1, 0.2, 0.5, 1, 2].map(lot => (
-                        <button
-                          key={lot}
-                          onClick={() => { p.setLotIdx(LOT_STEPS.indexOf(lot) || 5); p.setSel(s => ({ ...s, lotSize: lot })); }}
-                          style={{
-                            padding: '8px 12px',
-                            borderRadius: '8px',
-                            border: '1px solid hsl(var(--border))',
-                            background: p.sel.lotSize === lot ? 'hsl(var(--primary) / 0.15)' : 'transparent',
-                            fontSize: '12px',
-                            fontWeight: 600,
-                            fontFamily: 'var(--font-mono, monospace)',
-                            color: p.sel.lotSize === lot ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {lot} lot
-                        </button>
-                      ))}
-                      {p.showLotInput ? (
-                        <div className="flex items-center gap-1">
-                          <input
-                            type="number"
-                            step="0.001"
-                            value={p.sel.lotSize ?? ''}
-                            onChange={e => {
-                              const v = parseFloat(e.target.value) || 0.001;
-                              p.setSel(s => ({ ...s, lotSize: v }));
-                            }}
-                            placeholder="0.50"
-                            className="w-20 px-2 py-1.5 rounded-lg border border-[hsl(var(--border))] bg-transparent font-mono text-xs"
-                            autoFocus
-                          />
-                          <span className="text-xs text-[hsl(var(--muted-foreground))]">lot</span>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => p.setShowLotInput(true)}
-                          style={{
-                            padding: '8px 10px',
-                            borderRadius: '8px',
-                            border: '1px solid hsl(var(--border))',
-                            fontSize: '11px',
-                            color: 'hsl(var(--muted-foreground))',
-                            background: 'transparent',
-                          }}
-                        >
-                          custom
-                        </button>
-                      )}
-                    </div>
+                  <div className="flex flex-wrap gap-2">
+                    {getLotPresets(p.sel.accountSize).map(lot => (
+                      <button
+                        key={lot}
+                        onClick={() => p.setSel(s => ({ ...s, lotSize: lot }))}
+                        style={{
+                          padding: '10px 14px',
+                          borderRadius: '10px',
+                          border: '1px solid hsl(var(--border))',
+                          background: p.sel.lotSize === lot ? 'hsl(var(--primary) / 0.15)' : 'transparent',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          fontFamily: 'var(--font-mono, monospace)',
+                          color: p.sel.lotSize === lot ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {lot} lot
+                      </button>
+                    ))}
                   </div>
                 )}
 
