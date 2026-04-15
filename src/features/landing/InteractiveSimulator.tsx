@@ -39,6 +39,8 @@ const SIZE_MODES: { id: TradeSizeMode; label: string; Icon: typeof DollarSign }[
   { id: 'auto',  label: 'Auto',  Icon: Gauge },
 ];
 
+const LOT_STEPS = [0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10, 15, 20] as const;
+
 const UNDERLYING_GROUPS = [
   { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',         desc: 'EUR/USD, GBP/USD, USD/JPY...' },
   { id: 'ug_fx_cross',         categoryId: 'forex'       as CategoryId, label: 'Cross',          desc: 'EUR/GBP, AUD/JPY, GBP/CHF...' },
@@ -535,6 +537,8 @@ type StepContentProps = {
   accountValue:         AccountSizeStep;
   showTradesSlider:     boolean;
   showAccountSlider:    boolean;
+  showLotSlider:       boolean;
+  lotIdx:              number;
   isMobile:             boolean;
   step2Ready:           boolean;
   step3Ready:           boolean;
@@ -553,9 +557,11 @@ type StepContentProps = {
   setForexSub:          (s: ForexSubgroup) => void;
   setShowTradesSlider:  React.Dispatch<React.SetStateAction<boolean>>;
   setShowAccountSlider: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLotSlider:    React.Dispatch<React.SetStateAction<boolean>>;
   setSel:               React.Dispatch<React.SetStateAction<SimulatorState>>;
   setTradesIdx:         React.Dispatch<React.SetStateAction<number>>;
   setAccountIdx:        React.Dispatch<React.SetStateAction<number>>;
+  setLotIdx:           React.Dispatch<React.SetStateAction<number>>;
 };
 
 function StepContent(p: StepContentProps) {
@@ -812,7 +818,7 @@ function StepContent(p: StepContentProps) {
                     {getLotSizes(p.sel.accountSize, p.sel.ugId).map(lot => (
                       <button
                         key={lot}
-                        onClick={() => p.setSel(s => ({ ...s, lotSize: lot, positionSize: lotsToMargin(lot, s.ugId) }))}
+                        onClick={() => p.setSel(s => ({ ...s, lotSize: lot }))}
                         style={{
                           padding: '10px 14px',
                           borderRadius: '10px',
@@ -825,9 +831,33 @@ function StepContent(p: StepContentProps) {
                           cursor: 'pointer',
                         }}
                       >
-                        {lot} lot ({formatAccountSize(lotsToMargin(lot, p.sel.ugId))})
+                        {lot} lot
                       </button>
                     ))}
+                  </div>
+                )}
+
+                {/* FOREX: lot slider toggle */}
+                {p.sel.category === 'forex' && p.sel.accountSize && (
+                  <div className="flex flex-col gap-2">
+                    <SliderToggle
+                      active={showLotSlider}
+                      onClick={() => setShowLotSlider(v => !v)}
+                    />
+                    {showLotSlider && (
+                      <motion.div variants={slideUp} initial="initial" animate="animate" exit="exit"
+                        className="flex flex-col gap-2.5">
+                        <div style={{ padding: '0 4px', fontSize: '13px', fontFamily: 'var(--font-mono, monospace)', fontWeight: 600, color: 'hsl(var(--primary))' }}>
+                          {LOT_STEPS[lotIdx]} lotti
+                        </div>
+                        <StepSlider
+                          value={lotIdx}
+                          max={LOT_STEPS.length - 1}
+                          onChange={i => { setLotIdx(i); p.setSel(s => ({ ...s, lotSize: LOT_STEPS[i] })); }}
+                        />
+                        <SliderTicks labels={['mini', 'micro', 'small', 'std', 'large']} />
+                      </motion.div>
+                    )}
                   </div>
                 )}
 
@@ -957,6 +987,8 @@ export function InteractiveSimulator() {
   const [accountIdx,         setAccountIdx]         = useState(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
   const [showTradesSlider,   setShowTradesSlider]   = useState(false);
   const [showAccountSlider,  setShowAccountSlider]  = useState(false);
+  const [showLotSlider,     setShowLotSlider]     = useState(false);
+  const [lotIdx,            setLotIdx]            = useState(3); // default 0.1 lot
   const [direction,         setDirection]         = useState(0); // 1 = forward, -1 = back
 
   const isMobile     = useIsMobile();
@@ -1103,15 +1135,15 @@ export function InteractiveSimulator() {
   const sharedProps: StepContentProps = {
     step, sel, forexSub, filteredUGs: filteredUGs as typeof UNDERLYING_GROUPS[number][],
     tradesIdx, tradesValue, accountIdx, accountValue,
-    showTradesSlider, showAccountSlider,
+    showTradesSlider, showAccountSlider, showLotSlider, lotIdx,
     isMobile, step2Ready, step3Ready, result,
     onCategory: handleCategory, onForexAsset: handleForexAsset, onUG: handleUG,
     onHorizon: handleHorizon, onTradesPreset: handleTradesPreset,
     onAccountPreset: handleAccountPreset, onRisk: handleRisk,
     onConfirmStep2: handleConfirmStep2, onConfirmStep3: handleConfirmStep3,
     onReset: reset, onNavTo: navTo,
-    setForexSub, setShowTradesSlider, setShowAccountSlider,
-    setSel, setTradesIdx, setAccountIdx,
+    setForexSub, setShowTradesSlider, setShowAccountSlider, setShowLotSlider,
+    setSel, setTradesIdx, setAccountIdx, setLotIdx,
   };
 
   // ── render ────────────────────────────────────────────────
