@@ -32,13 +32,14 @@ export const ACCOUNT_SIZE_STEPS = [
 export type AccountSizeStep = typeof ACCOUNT_SIZE_STEPS[number];
 export const ACCOUNT_SIZE_DEFAULT: AccountSizeStep = 1_000;
 
-// Preset pill visibili per account size
+// Preset pill visibili per account size (retail-focused)
 export const ACCOUNT_PRESETS: { value: AccountSizeStep; label: string }[] = [
   { value: 200,     label: '200€'  },
+  { value: 500,     label: '500€'   },
   { value: 1_000,   label: '1k€'   },
+  { value: 3_000,   label: '3k€'   },
   { value: 5_000,   label: '5k€'   },
-  { value: 25_000,  label: '25k€'  },
-  { value: 100_000, label: '100k€' },
+  { value: 10_000,  label: '10k€'  },
 ];
 
 export function snapToAccountStep(value: number): AccountSizeStep {
