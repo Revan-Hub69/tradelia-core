@@ -15,7 +15,7 @@ import {
   TRADES_PER_MONTH_STEPS, TRADES_DEFAULT, TRADES_PRESETS,
   ACCOUNT_SIZE_STEPS, ACCOUNT_SIZE_DEFAULT, ACCOUNT_PRESETS,
   RISK_PERCENT_STEPS,
-  formatAccountSize, deriveNotional, getTradeSizePills, getLotSizes, deriveTradeSizeAuto, lotsToMargin,
+  formatAccountSize, deriveNotional, getTradeSizePills, deriveTradeSizeAuto, lotsToMargin,
   type TradesPerMonthStep, type AccountSizeStep, type RiskPercentStep,
   type TradeSizeMode,
 } from '@/data/simulator/trade-scales';
@@ -816,48 +816,6 @@ function StepContent(p: StepContentProps) {
                     </button>
                   )}
                 </div>
-
-                {/* Lot preview when account selected - shows BEFORE sizing selection */}
-                {p.sel.category === 'forex' && p.sel.accountSize && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      padding: '10px 12px',
-                      borderRadius: '10px',
-                      background: 'hsl(var(--muted) / 0.1)',
-                      border: '1px solid hsl(var(--border) / 0.3)',
-                      fontSize: '11px',
-                    }}
-                  >
-                    {(() => {
-                      const leverage = 30;
-                      const riskPct = p.sel.accountSize < 1000 ? 2 : p.sel.accountSize < 5000 ? 1.5 : 1;
-                      const riskAmount = p.sel.accountSize * riskPct / 100;
-                      const marginPerLot = 100000 / leverage;
-                      const suggestedLots = riskAmount / marginPerLot;
-                      const notional = suggestedLots * 100000;
-                      const marginNeeded = notional / leverage;
-                      return (
-                        <>
-                          <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.7 }}>
-                            {riskPct}% del capitale · leva {leverage}×
-                          </span>
-                          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', fontFamily: 'var(--font-mono, monospace)', fontSize: '12px' }}>
-                            <span>{suggestedLots.toFixed(3)} lotti</span>
-                            <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
-                            <span>{formatAccountSize(notional)} noz.</span>
-                            <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
-                            <span>{formatAccountSize(marginNeeded)} margine</span>
-                          </div>
-                        </>
-                      );
-                    })()}
-                  </motion.div>
-                )}
               </div>
 
               <div className="flex flex-col gap-2.5">
@@ -868,31 +826,6 @@ function StepContent(p: StepContentProps) {
                 <p style={{ fontSize: '9px', color: 'hsl(var(--muted-foreground))', opacity: 0.45, marginTop: '-4px', marginBottom: '4px' }}>
                   {p.sel.category === 'forex' ? 'Il margine richiesto per aprire la posizione' : 'Serve per calcolare costi di spread e commissioni'}
                 </p>
-
-                {/* FOREX: solo lotti con soglie basate su account */}
-                {p.sel.category === 'forex' && p.sel.accountSize && (
-                  <div className="grid grid-cols-4 gap-1.5">
-                    {getLotSizes(p.sel.accountSize, p.sel.ugId).map(lot => (
-                      <button
-                        key={lot}
-                        onClick={() => p.setSel(s => ({ ...s, lotSize: lot }))}
-                        style={{
-                          padding: '10px 14px',
-                          borderRadius: '10px',
-                          border: '1px solid hsl(var(--border))',
-                          background: p.sel.lotSize === lot ? 'hsl(var(--primary) / 0.1)' : 'transparent',
-                          fontSize: '13px',
-                          fontWeight: 600,
-                          fontFamily: 'var(--font-mono, monospace)',
-                          color: p.sel.lotSize === lot ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {lot} lot
-                      </button>
-                    ))}
-                  </div>
-                )}
 
                 {/* FOREX: lot picker with inline input */}
                 {p.sel.category === 'forex' && p.sel.accountSize && (
