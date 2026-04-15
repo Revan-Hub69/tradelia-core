@@ -166,17 +166,8 @@ type SimulatorState = {
   horizon?:        HorizonId;
   tradesPerMonth?: TradesPerMonthStep;
   accountSize?:    AccountSizeStep;
-  riskPercent?:   RiskPercentStep;
-  sizeMode?:      'amount' | 'lots' | 'auto';
-  positionSize?:  number; // in euros or lot units based on mode
+  riskPercent?:    RiskPercentStep;
 };
-
-// Size mode options
-const SIZE_MODES = [
-  { id: 'amount' as const, label: 'Importo', icon: '💰' },
-  { id: 'lots' as const, label: 'Lotti', icon: '📦' },
-  { id: 'auto' as const, label: 'Auto', icon: '🧠' },
-] as const;
 
 // ---------------------------------------------------------------------------
 // MOTION CONSTANTS
@@ -803,144 +794,72 @@ function StepContent(p: StepContentProps) {
                 <p style={{ fontSize: '9px', color: 'hsl(var(--muted-foreground))', opacity: 0.45, marginTop: '-4px', marginBottom: '4px' }}>
                   Serve per calcolare costi di spread e commissioni
                 </p>
-                
-                {/* Size Mode Selector */}
-                <div className="flex gap-2" style={{ marginBottom: '8px' }}>
-                {SIZE_MODES.map(mode => (
-                  <button
-                    key={mode.id}
-                    onClick={() => p.setSel(s => ({ ...s, sizeMode: mode.id }))}
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '6px',
-                      padding: '12px 14px',
-                      borderRadius: '12px',
-                      border: p.sel.sizeMode === mode.id
-                        ? '1.5px solid hsl(var(--primary) / 0.7)'
-                        : '1px solid hsl(var(--border))',
-                      background: p.sel.sizeMode === mode.id
-                        ? 'hsl(var(--primary) / 0.1)'
-                        : 'transparent',
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      color: p.sel.sizeMode === mode.id
-                        ? 'hsl(var(--primary))'
-                        : 'hsl(var(--muted-foreground))',
-                      cursor: 'pointer',
-                      transition: 'all 180ms ease',
-                    }}
-                  >
-                    <span>{mode.icon}</span>
-                    <span>{mode.label}</span>
-                  </button>
-                ))}
+                <div className="grid grid-cols-5 gap-1.5">
+                  {RISK_PERCENT_STEPS.map(r => (
+                    <RiskBtn key={r} value={r} selected={p.sel.riskPercent === r} onClick={() => p.onRisk(r)} />
+                  ))}
+                </div>
+                <AnimatePresence>
+                  {p.sel.riskPercent && p.sel.ugId && (
+                    <motion.div key="notionale" variants={slideUp} initial="initial" animate="animate" exit="exit"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        marginTop: '4px',
+                        padding: '12px',
+                        borderRadius: '12px',
+                        background: 'hsl(var(--muted) / 0.08)',
+                        border: '1px solid hsl(var(--border) / 0.3)',
+                      }}>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          color: 'hsl(var(--foreground))',
+                          letterSpacing: '0.02em',
+                        }}>
+                          Notionale indicativo
+                        </span>
+                        <span style={{
+                          fontFamily: 'var(--font-mono, monospace)',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          color: 'hsl(var(--primary))',
+                        }}>
+                          {formatAccountSize(deriveNotional(p.sel.accountSize ?? p.accountValue, p.sel.riskPercent, p.sel.ugId))}
+                        </span>
+                      </div>
+                      {/* Suggestion box - subtle, non-prescriptive */}
+                      {(() => {
+                        const suggestions = getPositionSuggestions(p.sel.accountSize ?? p.accountValue);
+                        return (
+                          <div style={{
+                            fontSize: '10px',
+                            color: 'hsl(var(--muted-foreground))',
+                            opacity: 0.6,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                          }}>
+                            <span style={{ opacity: 0.8 }}>Consiglio:</span>
+                            <span>Range tipico per questo conto: <strong style={{ color: 'hsl(var(--foreground))', opacity: 0.8 }}>{formatAccountSize(suggestions.min)} – {formatAccountSize(suggestions.max)}</strong></span>
+                          </div>
+                        );
+                      })()}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {/* Dynamic input based on mode */}
-              {p.sel.sizeMode === 'auto' && p.sel.accountSize && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  style={{
-                    padding: '14px 16px',
-                    borderRadius: '14px',
-                    background: 'hsl(var(--primary) / 0.06)',
-                    border: '1px solid hsl(var(--primary) / 0.15)',
-                  }}
-                >
-                  <div style={{ fontSize: '11px', fontWeight: 600, color: 'hsl(var(--foreground))', marginBottom: '4px' }}>
-                    Stima automatica
-                  </div>
-                  <div style={{ fontSize: '10px', color: 'hsl(var(--muted-foreground))', opacity: 0.6 }}>
-                    Basata su account da {formatAccountSize(p.sel.accountSize)} + profilo tipico
-                  </div>
+              {!p.isMobile && p.step3Ready && (
+                <motion.div variants={slideUp} initial="initial" animate="animate">
+                  <CtaButton onClick={p.onConfirmStep3}>Vedi i risultati <ArrowRight size={16} /></CtaButton>
                 </motion.div>
-              )}
-
-              {p.sel.sizeMode === 'lots' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <div className="flex flex-wrap gap-2">
-                    {[0.01, 0.1, 0.5, 1, 2].map(lot => (
-                      <button
-                        key={lot}
-                        onClick={() => p.setSel(s => ({ ...s, positionSize: lot }))}
-                        style={{
-                          padding: '10px 16px',
-                          borderRadius: '10px',
-                          border: '1px solid hsl(var(--border))',
-                          background: p.sel.positionSize === lot ? 'hsl(var(--primary) / 0.1)' : 'transparent',
-                          fontSize: '13px',
-                          fontWeight: 600,
-                          fontFamily: 'var(--font-mono, monospace)',
-                          color: p.sel.positionSize === lot ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {lot} lot
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-                {/* Show exposure result */}
-              {((p.sel.sizeMode === 'amount' && p.sel.riskPercent) || (p.sel.sizeMode === 'lots' && p.sel.positionSize) || p.sel.sizeMode === 'auto') && p.sel.ugId && (
-                <motion.div key="notionale" variants={slideUp} initial="initial" animate="animate" exit="exit"
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '6px',
-                    marginTop: '4px',
-                    padding: '12px',
-                    borderRadius: '12px',
-                    background: 'hsl(var(--muted) / 0.08)',
-                    border: '1px solid hsl(var(--border) / 0.3)',
-                  }}>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                    <span style={{
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      color: 'hsl(var(--foreground))',
-                      letterSpacing: '0.02em',
-                    }}>
-                      Esposizione per trade
-                    </span>
-                    <span style={{
-                      fontFamily: 'var(--font-mono, monospace)',
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      color: 'hsl(var(--primary))',
-                    }}>
-                      {formatAccountSize(p.sel.accountSize ? Math.round(p.sel.accountSize * (p.sel.riskPercent ?? 2) / 100) : 0)}
-                    </span>
-                  </div>
-                  {(() => {
-                    const suggestions = getPositionSuggestions(p.sel.accountSize ?? p.accountValue);
-                    return (
-                      <div style={{
-                        fontSize: '10px',
-                        color: 'hsl(var(--muted-foreground))',
-                        opacity: 0.6,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}>
-                        <span style={{ opacity: 0.8 }}>Consiglio:</span>
-                        <span>Range tipico per questo conto: <strong style={{ color: 'hsl(var(--foreground))', opacity: 0.8 }}>{formatAccountSize(suggestions.min)} – {formatAccountSize(suggestions.max)}</strong></span>
-                      </div>
-                    );
-                  })()}
-</motion.div>
               )}
             </motion.div>
           )}
