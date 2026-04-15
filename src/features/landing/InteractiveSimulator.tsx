@@ -1109,10 +1109,12 @@ export function InteractiveSimulator() {
   // ── derived ───────────────────────────────────────────────
 
   const step2Ready  = !!(sel.horizon && (sel.tradesPerMonth ?? tradesValue));
-  const step3Ready  = !!sel.riskPercent;
+  const step3Ready  = !!(sel.category === 'forex' ? sel.lotSize : sel.riskPercent);
   const notionale   = sel.ugId && sel.riskPercent
     ? deriveNotional(sel.accountSize ?? accountValue, sel.riskPercent, sel.ugId)
-    : null;
+    : sel.ugId && sel.lotSize
+      ? lotsToMargin(sel.lotSize, sel.ugId)
+      : null;
   const result: SimResult | null =
     step === 4 && sel.ugId && sel.horizon && sel.tradesPerMonth && notionale
       ? computeDrag(sel.ugId, sel.horizon, sel.tradesPerMonth, notionale)
