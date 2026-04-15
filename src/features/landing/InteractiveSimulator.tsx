@@ -1235,7 +1235,7 @@ export function InteractiveSimulator() {
     onAccountPreset: handleAccountPreset, onRisk: handleRisk,
     onConfirmStep2: handleConfirmStep2, onConfirmStep3: handleConfirmStep3,
     onReset: reset, onNavTo: navTo,
-    setForexSub, setShowTradesSlider, setShowAccountInput, setShowLotInput,
+    setForexSub, setShowTradesInput, setShowAccountInput, setShowLotInput,
     setSel, setTradesIdx, setAccountIdx, setLotIdx,
   };
 
