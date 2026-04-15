@@ -154,6 +154,9 @@ export type CostBreakdown = {
     slippage:   Range;
     total:      Range;
   };
+  // Monthly aggregated costs
+  monthlyCostEUR: number;
+  monthlyTrades: number;
 };
 
 // ── Feasibility ───────────────────────────────────────────────────────────
@@ -205,15 +208,26 @@ function calcFxCosts(params: {
   monthlyNotional: number;
   quoteCurrency:   string;
   accountCurrency: string;
+  tradesPerMonth:  number;
+  slippageMode:    'ideal' | 'good' | 'realistic' | 'volatile';
 }): CostBreakdown {
-  const { offer, underlying, exposure, lots, monthlyNotional, quoteCurrency, accountCurrency } = params;
+  const { offer, underlying, exposure, lots, monthlyNotional, quoteCurrency, accountCurrency, tradesPerMonth, slippageMode } = params;
   const pipVal        = pipValue(quoteCurrency, accountCurrency);
   const liquidityTier = underlying?.liquidityTier ?? 'tier2';
-  const regime        = DEFAULT_REGIME;
+  
+  // Slippage based on mode (not calculated, just assigned)
+  const slippagePips: Record<string, number> = {
+    ideal: 0,
+    good: 0.2,
+    realistic: 0.5,
+    volatile: 1.2,
+  };
 
-  const spreadBase = calcSpreadEUR(offer, underlying?.id, exposure);
-  const spreadR    = spreadToRange(spreadBase, regime);
+  // Spread can be min or avg (use avg by default for realism)
+  const spreadAvg = offer.spreadAvgBps ?? offer.spreadMinBps ?? 10;
+  const spreadR  = spreadToRange((spreadAvg / 10_000) * exposure, DEFAULT_REGIME);
 
+  // Tier-based commission
   const tierMult = commissionTierMultiplier(monthlyNotional);
   let commBase   = 0;
   if (offer.commissionPerLotEUR != null) {
@@ -221,13 +235,20 @@ function calcFxCosts(params: {
   } else if (offer.commissionPerLotUSD != null) {
     commBase = offer.commissionPerLotUSD * fxRate('USD', accountCurrency) * lots * tierMult;
   }
+  // Min commission - CRITICAL for small accounts
   if (offer.commissionMinPerTradeEUR != null) {
     commBase = Math.max(commBase, offer.commissionMinPerTradeEUR);
   }
   const commissionR = toRange(commBase);
-  const slippageR   = calcSlippageRange(lots, pipVal, liquidityTier, regime);
+  
+  // Slippage - based on mode selection
+  const slippageBase = slippagePips[slippageMode] * pipVal * lots;
+  const slippageR = toRange(slippageBase);
   const totalR      = sumRange([spreadR, commissionR, slippageR]);
   const totalEUR    = totalR.expected;
+
+  // Monthly aggregated cost
+  const monthlyCost = totalEUR * tradesPerMonth;
 
   return {
     spreadEUR:      spreadR.expected,
@@ -243,6 +264,8 @@ function calcFxCosts(params: {
     rollBps:        0,
     totalBps:       toBps(totalEUR,             exposure),
     range: { spread: spreadR, commission: commissionR, slippage: slippageR, total: totalR },
+    monthlyCostEUR: monthlyCost,
+    monthlyTrades: tradesPerMonth,
   };
 }
 
