@@ -109,32 +109,103 @@ export function getTradeSizePills(accountSize: number): number[] {
 }
 
 /**
+ * Leva媒体 per asset group (forex=30x, indici=20x, equity=10x, crypto=5x)
+ */
+export const AVG_LEVERAGE: Record<string, number> = {
+  ug_fx_core:          30,
+  ug_fx_cross:         20,
+  ug_fx_exotic:        10,
+  ug_index_us:        20,
+  ug_index_eu:         20,
+  ug_index_asia:       15,
+  ug_equity_us_large:  10,
+  ug_equity_us_mid:    10,
+  ug_equity_eu_large:  10,
+  ug_equity_asia:      10,
+  ug_commodity_metal:  20,
+  ug_commodity_energy: 15,
+  ug_crypto_major:     5,
+  ug_crypto_altcoin:   3,
+};
+
+/**
+ * Converti lotti → € notionale (per forex: 1 lotto = 100k€)
+ */
+export function lotsToNotional(lots: number, ugId?: string): number {
+  if (!ugId) return lots * 100_000;
+  if (ugId.startsWith('ug_fx')) return lots * 100_000;
+  if (ugId.startsWith('ug_index')) return lots * 50_000;
+  if (ugId.startsWith('ug_equity')) return lots * 10_000;
+  if (ugId.startsWith('ug_commodity')) return lots * 25_000;
+  if (ugId.startsWith('ug_crypto')) return lots * 10_000;
+  return lots * 100_000;
+}
+
+/**
+ * Converti € notionale → lotti
+ */
+export function notionalToLots(notional: number, ugId?: string): number {
+  if (!ugId) return notional / 100_000;
+  if (ugId.startsWith('ug_fx')) return notional / 100_000;
+  if (ugId.startsWith('ug_index')) return notional / 50_000;
+  if (ugId.startsWith('ug_equity')) return notional / 10_000;
+  if (ugId.startsWith('ug_commodity')) return notional / 25_000;
+  if (ugId.startsWith('ug_crypto')) return notional / 10_000;
+  return notional / 100_000;
+}
+
+/**
+ * Genera le pills di lotti contestuali al conto.
+ * 4 lotti calibrati su size account + leverage tipica.
+ */
+export function getLotSizes(accountSize: number, ugId?: string): number[] {
+  const leverage = AVG_LEVERAGE[ugId ?? 'ug_fx_core'];
+  const maxExposure = accountSize * leverage;
+  const baseLots = maxExposure / 100_000;
+  
+  if (baseLots <= 0.01) return [0.001, 0.002, 0.005, 0.01];
+  if (baseLots <= 0.05) return [0.005, 0.01, 0.02, 0.05];
+  if (baseLots <= 0.1)  return [0.01, 0.02, 0.05, 0.1];
+  if (baseLots <= 0.5)  return [0.05, 0.1, 0.2, 0.5];
+  if (baseLots <= 1)    return [0.1, 0.25, 0.5, 1];
+  if (baseLots <= 5)    return [0.5, 1, 2, 5];
+  if (baseLots <= 10)   return [1, 2.5, 5, 10];
+  return [2, 5, 10, 20];
+}
+
+/**
  * Stima automatica size in € quando l'utente sceglie mode Auto.
  * Profilo conservativo su conto piccolo, moderato/attivo su conto grande.
+ * Considera leverage per calcolare rischio reale.
  */
-export function deriveTradeSizeAuto(accountSize: number): {
+export function deriveTradeSizeAuto(accountSize: number, ugId?: string): {
   size: number;
+  lotSize: number;
   pct: number;
+  leverage: number;
   profile: 'conservative' | 'moderate' | 'active';
 } {
+  const leverage = AVG_LEVERAGE[ugId ?? 'ug_fx_core'];
+  let pct: number;
+  
   if (accountSize <= 500) {
-    const pct = 2;
-    return { size: Math.max(Math.round(accountSize * pct / 100), 10), pct, profile: 'conservative' };
+    pct = 2;
+  } else if (accountSize <= 2_000) {
+    pct = 3;
+  } else if (accountSize <= 10_000) {
+    pct = 5;
+  } else if (accountSize <= 50_000) {
+    pct = 4;
+  } else {
+    pct = 3;
   }
-  if (accountSize <= 2_000) {
-    const pct = 3;
-    return { size: Math.round(accountSize * pct / 100), pct, profile: 'conservative' };
-  }
-  if (accountSize <= 10_000) {
-    const pct = 5;
-    return { size: Math.round(accountSize * pct / 100), pct, profile: 'moderate' };
-  }
-  if (accountSize <= 50_000) {
-    const pct = 4;
-    return { size: Math.round(accountSize * pct / 100), pct, profile: 'moderate' };
-  }
-  const pct = 3;
-  return { size: Math.round(accountSize * pct / 100), pct, profile: 'active' };
+  
+  const size = Math.max(Math.round(accountSize * pct / 100), 10);
+  const lotSize = notionalToLots(size, ugId);
+  
+  const profile = pct <= 2 ? 'conservative' : pct <= 5 ? 'moderate' : 'active';
+  
+  return { size, lotSize, pct, leverage, profile };
 }
 
 /**

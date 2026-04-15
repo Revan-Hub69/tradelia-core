@@ -15,7 +15,7 @@ import {
   TRADES_PER_MONTH_STEPS, TRADES_DEFAULT, TRADES_PRESETS,
   ACCOUNT_SIZE_STEPS, ACCOUNT_SIZE_DEFAULT, ACCOUNT_PRESETS,
   RISK_PERCENT_STEPS,
-  formatAccountSize, deriveNotional, getTradeSizePills, deriveTradeSizeAuto,
+  formatAccountSize, deriveNotional, getTradeSizePills, getLotSizes, deriveTradeSizeAuto, lotsToNotional,
   type TradesPerMonthStep, type AccountSizeStep, type RiskPercentStep,
   type TradeSizeMode,
 } from '@/data/simulator/trade-scales';
@@ -168,15 +168,16 @@ function getPositionSuggestions(accountSize: number): { min: number; max: number
 // ---------------------------------------------------------------------------
 
 type SimulatorState = {
-  category?:     CategoryId;
-  ugId?:         UnderlyingGroupId;
-  assetId?:      string;
-  horizon?:      HorizonId;
+  category?:      CategoryId;
+  ugId?:          UnderlyingGroupId;
+  assetId?:       string;
+  horizon?:       HorizonId;
   tradesPerMonth?: TradesPerMonthStep;
-  accountSize?:  AccountSizeStep;
-  riskPercent?:   RiskPercentStep;
-  sizeMode?:     TradeSizeMode;
+  accountSize?:   AccountSizeStep;
+  riskPercent?:  RiskPercentStep;
+  sizeMode?:      TradeSizeMode;
   positionSize?: number;
+  lotSize?:       number;
 };
 
 // ---------------------------------------------------------------------------
@@ -864,6 +865,63 @@ function StepContent(p: StepContentProps) {
                     ))}
                   </div>
                 )}
+                
+                {p.sel.sizeMode === 'lots' && p.sel.accountSize && (
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {getLotSizes(p.sel.accountSize, p.sel.ugId).map(lot => (
+                      <button
+                        key={lot}
+                        onClick={() => p.setSel(s => ({ ...s, positionSize: lotsToNotional(lot, s.ugId), lotSize: lot }))}
+                        style={{
+                          padding: '10px 14px',
+                          borderRadius: '10px',
+                          border: '1px solid hsl(var(--border))',
+                          background: p.sel.lotSize === lot ? 'hsl(var(--primary) / 0.1)' : 'transparent',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          fontFamily: 'var(--font-mono, monospace)',
+                          color: p.sel.lotSize === lot ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {lot} lot
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {p.sel.sizeMode === 'auto' && p.sel.accountSize && (() => {
+                  const auto = deriveTradeSizeAuto(p.sel.accountSize, p.sel.ugId);
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        padding: '14px 16px',
+                        borderRadius: '14px',
+                        background: 'hsl(var(--primary) / 0.06)',
+                        border: '1px solid hsl(var(--primary) / 0.15)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: 'hsl(var(--foreground))' }}>
+                          Stima automatica
+                        </span>
+                        <span style={{ fontSize: '10px', color: 'hsl(var(--muted-foreground))', opacity: 0.6, textTransform: 'capitalize' }}>
+                          {auto.profile}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '18px', fontWeight: 700, color: 'hsl(var(--primary))' }}>
+                          {formatAccountSize(auto.size)}
+                        </span>
+                        <span style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.6 }}>
+                          {auto.lotSize.toFixed(2)} lotti × {auto.leverage}×
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })()}
 
                 {/* Exposure display */}
                 {p.sel.positionSize && p.sel.ugId && (
