@@ -54,6 +54,17 @@ export type TradingSession = 'london' | 'new_york' | 'tokyo' | 'sydney' | 'overl
 // 'variable'       → dipende dal contesto tassi corrente
 export type CarryDirection = 'positive_long' | 'negative_long' | 'variable';
 
+// ── Futures contracts CME disponibili per coppia ─────────────
+//
+// Ticker CME ufficiali FX Futures:
+//   micro = prefisso 'M'  (es. M6E = Euro Micro, 12.500 EUR)
+//   mini  = prefisso 'E7' (es. E7  = Euro Mini,  62.500 EUR — non tutti i broker)
+//   full  = standard      (es. 6E  = Euro Full,  125.000 EUR)
+//
+// Array vuoto → nessun futures CME dedicato per questa coppia
+// (minor e exotic non hanno contratti CME liquidi dedicati)
+export type CmeFxTicker = string; // es. 'M6E', '6E', 'E7', '6B', '6J', ...
+
 // ── Entità sottostante ───────────────────────────────────────
 export type Underlying = {
   id:                    UnderlyingId;
@@ -92,6 +103,23 @@ export type Underlying = {
   // Leva massima ESMA per questo sottostante
   maxLeverageESMA:       number;
 
+  /**
+   * Ticker CME FX Futures disponibili per questa coppia.
+   * Usato dal motore e dal frontend per:
+   *   - determinare se il toggle CFD/Futures è abilitato
+   *   - filtrare le offerte futures_std compatibili
+   *   - mostrare i ticker all'utente nel pannello futures
+   *
+   * Array vuoto → futures non disponibili per questa coppia
+   * (minor e exotic in genere non hanno contratti CME liquidi)
+   *
+   * Ordine convenzionale: [micro, mini?, full]
+   *   micro = 'M' prefix (12.500 unità base tipico)
+   *   mini  = 'E7' / 'M6B' dove disponibile (62.500 unità base)
+   *   full  = ticker standard (125.000 unità base)
+   */
+  futuresContracts:     CmeFxTicker[];
+
   // Nota editoriale per il frontend
   notes:                 string;
 };
@@ -123,6 +151,8 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 0.5,         // slippage tipico 0.5 bps
     minTradeSize: 1000,
     maxLeverageESMA: 30,
+    // CME: M6E (micro 12.500), E7 (mini 62.500), 6E (full 125.000)
+    futuresContracts: ['M6E', 'E7', '6E'],
     notes: 'Coppia più liquida al mondo. Spread minimo, slippage quasi nullo in sessione London/NY. Default per Forex Major.',
   },
 
@@ -146,7 +176,9 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 0.8,
     minTradeSize: 1000,
     maxLeverageESMA: 30,
-    notes: 'Alta volatilità intradav. Spread leggermente più ampio di EUR/USD. Molto attiva in sessione London.',
+    // CME: M6B (micro 6.250 GBP), 6B (full 62.500 GBP)
+    futuresContracts: ['M6B', '6B'],
+    notes: 'Alta volatilità intraday. Spread leggermente più ampio di EUR/USD. Molto attiva in sessione London.',
   },
 
   usdjpy: {
@@ -169,6 +201,8 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 0.5,
     minTradeSize: 1000,
     maxLeverageESMA: 30,
+    // CME: M6J (micro 1.250.000 JPY), 6J (full 12.500.000 JPY)
+    futuresContracts: ['M6J', '6J'],
     notes: 'Unica major attiva anche in sessione Tokyo. Carry positivo rende interessante per swing/position. Attenzione a interventi BoJ.',
   },
 
@@ -192,6 +226,8 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 0.8,
     minTradeSize: 1000,
     maxLeverageESMA: 30,
+    // CME: 6S (full 125.000 CHF) — nessun micro/mini liquido
+    futuresContracts: ['6S'],
     notes: 'Valuta rifugio CHF — movimenti bruschi su risk-off. Correlazione inversa con EUR/USD.',
   },
 
@@ -215,6 +251,8 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 0.8,
     minTradeSize: 1000,
     maxLeverageESMA: 30,
+    // CME: M6A (micro 10.000 AUD), 6A (full 100.000 AUD)
+    futuresContracts: ['M6A', '6A'],
     notes: 'Commodity currency — correlata a prezzi metalli e risk appetite globale. Attiva in sessione Asia-Pacific.',
   },
 
@@ -238,6 +276,8 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 1.0,
     minTradeSize: 1000,
     maxLeverageESMA: 30,
+    // CME: M6C (micro 10.000 CAD), 6C (full 100.000 CAD)
+    futuresContracts: ['M6C', '6C'],
     notes: 'Fortemente correlata al prezzo del petrolio WTI. Spread leggermente più ampio vs EUR/USD.',
   },
 
@@ -261,10 +301,14 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 1.0,
     minTradeSize: 1000,
     maxLeverageESMA: 30,
+    // CME: 6N (full 100.000 NZD) — nessun micro/mini liquido
+    futuresContracts: ['6N'],
     notes: 'Simile a AUD/USD. Minore liquidità — spread leggermente più ampio. Mossa da dati economia NZ e risk sentiment.',
   },
 
   // ── FOREX MINOR ────────────────────────────────────────────
+  // Nessuna minor ha contratti CME FX dedicati con liquidità retail adeguata.
+  // futuresContracts: [] per tutte le minor.
 
   eurgbp: {
     id: 'eurgbp',
@@ -286,6 +330,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 1.0,
     minTradeSize: 1000,
     maxLeverageESMA: 20,
+    futuresContracts: [],
     notes: 'Default per Forex Minor. Bassa volatilità — range stretto tipico. Molto attiva in sessione London.',
   },
 
@@ -309,6 +354,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 1.2,
     minTradeSize: 1000,
     maxLeverageESMA: 20,
+    futuresContracts: [],
     notes: 'Alta volatilità tra le minor. Ottima per scalping in sessione Tokyo/London overlap. Carry positivo per long.',
   },
 
@@ -332,6 +378,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 2.0,
     minTradeSize: 1000,
     maxLeverageESMA: 20,
+    futuresContracts: [],
     notes: '"The Beast" — volatilità altissima per una minor. Spread più ampio. Fortissimi movimenti su news BoJ/BoE. Non adatta a capital piccoli senza stop stretto.',
   },
 
@@ -355,6 +402,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 1.5,
     minTradeSize: 1000,
     maxLeverageESMA: 20,
+    futuresContracts: [],
     notes: 'Bassa volatilità in condizioni normali. Rischio gap estremo su eventi geopolitici (flash crash Jan 2015).',
   },
 
@@ -378,6 +426,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 2.0,
     minTradeSize: 1000,
     maxLeverageESMA: 20,
+    futuresContracts: [],
     notes: 'Spread relativamente ampio. Correlata indirettamente al petrolio tramite CAD.',
   },
 
@@ -401,6 +450,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 2.0,
     minTradeSize: 1000,
     maxLeverageESMA: 20,
+    futuresContracts: [],
     notes: 'Spread ampio. Attiva in Asia-Pacific per la componente AUD. Meno adatta a scalping.',
   },
 
@@ -424,10 +474,13 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 2.0,
     minTradeSize: 1000,
     maxLeverageESMA: 20,
+    futuresContracts: [],
     notes: 'Carry trade classico. Alta sensibilità a risk sentiment e prezzi commodity. Attiva in sessione Asia.',
   },
 
   // ── FOREX EXOTIC ───────────────────────────────────────────
+  // Nessun exotic ha contratti CME FX retail liquidi.
+  // futuresContracts: [] per tutti gli exotic.
 
   usdtry: {
     id: 'usdtry',
@@ -449,6 +502,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 25.0,
     minTradeSize: 1000,
     maxLeverageESMA: 10,
+    futuresContracts: [],
     notes: 'Default per Forex Exotic. Spread ampio, overnight proibitivo per swing. Solo intraday.',
   },
 
@@ -472,6 +526,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 20.0,
     minTradeSize: 1000,
     maxLeverageESMA: 10,
+    futuresContracts: [],
     notes: 'Più liquida di USD/TRY tra gli exotic. Mossa da politica Banxico, relazioni USA-Messico, prezzi petrolio.',
   },
 
@@ -495,6 +550,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 30.0,
     minTradeSize: 1000,
     maxLeverageESMA: 10,
+    futuresContracts: [],
     notes: 'Alta volatilità. Spread molto ampio. Correlata a prezzi oro e platinum. Rischio politico ZA.',
   },
 
@@ -518,6 +574,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 30.0,
     minTradeSize: 1000,
     maxLeverageESMA: 10,
+    futuresContracts: [],
     notes: 'Spread e overnight tra i più alti disponibili. Solo scalping con uscita intraday.',
   },
 
@@ -541,6 +598,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 5.0,
     minTradeSize: 1000,
     maxLeverageESMA: 10,
+    futuresContracts: [],
     notes: 'Meno volatile degli altri exotic. SGD gestita attivamente da MAS. Spread contenuto per un exotic.',
   },
 
@@ -564,6 +622,7 @@ export const UNDERLYINGS: Record<UnderlyingId, Underlying> = {
     estimatedSlippageBps: 2.0,
     minTradeSize: 1000,
     maxLeverageESMA: 10,
+    futuresContracts: [],
     notes: 'Volatilità quasi nulla per il currency board. Usata per arbitraggio istituzionale, non per retail trading direzionale.',
   },
 };
@@ -579,3 +638,9 @@ export const FX_DEFAULT_UNDERLYING: Partial<Record<UnderlyingGroupId, Underlying
   ug_fx_minor:  'eurgbp',
   ug_fx_exotic: 'usdtry',
 };
+
+// ── Helper: underlying supporta futures ─────────────────────
+// Usato dal frontend per abilitare/disabilitare il toggle CFD/Futures
+export function hasFuturesContracts(underlyingId: UnderlyingId): boolean {
+  return UNDERLYINGS[underlyingId].futuresContracts.length > 0;
+}
