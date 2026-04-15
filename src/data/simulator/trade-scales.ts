@@ -129,29 +129,48 @@ export const AVG_LEVERAGE: Record<string, number> = {
 };
 
 /**
- * Converti lotti → € notionale (per forex: 1 lotto = 100k€)
+ * Notionale per 1 lotto per asset group
+ */
+export const NOTIONAL_PER_LOT: Record<string, number> = {
+  ug_fx_core:          100_000,
+  ug_fx_cross:        100_000,
+  ug_fx_exotic:        100_000,
+  ug_index_us:        50_000,
+  ug_index_eu:        50_000,
+  ug_index_asia:      50_000,
+  ug_equity_us_large: 10_000,
+  ug_equity_us_mid:   10_000,
+  ug_equity_eu_large: 10_000,
+  ug_equity_asia:     10_000,
+  ug_commodity_metal: 25_000,
+  ug_commodity_energy: 25_000,
+  ug_crypto_major:   10_000,
+  ug_crypto_altcoin: 10_000,
+};
+
+/**
+ * Converti lotti → € margine richiesto (notionale / leva)
+ */
+export function lotsToMargin(lots: number, ugId?: string): number {
+  const notional = NOTIONAL_PER_LOT[ugId ?? 'ug_fx_core'] * lots;
+  const leverage = AVG_LEVERAGE[ugId ?? 'ug_fx_core'];
+  return Math.round(notional / leverage);
+}
+
+/**
+ * Converti lotti → € notionale (per display)
  */
 export function lotsToNotional(lots: number, ugId?: string): number {
-  if (!ugId) return lots * 100_000;
-  if (ugId.startsWith('ug_fx')) return lots * 100_000;
-  if (ugId.startsWith('ug_index')) return lots * 50_000;
-  if (ugId.startsWith('ug_equity')) return lots * 10_000;
-  if (ugId.startsWith('ug_commodity')) return lots * 25_000;
-  if (ugId.startsWith('ug_crypto')) return lots * 10_000;
-  return lots * 100_000;
+  const notionalPerLot = NOTIONAL_PER_LOT[ugId ?? 'ug_fx_core'];
+  return Math.round(notionalPerLot * lots);
 }
 
 /**
  * Converti € notionale → lotti
  */
 export function notionalToLots(notional: number, ugId?: string): number {
-  if (!ugId) return notional / 100_000;
-  if (ugId.startsWith('ug_fx')) return notional / 100_000;
-  if (ugId.startsWith('ug_index')) return notional / 50_000;
-  if (ugId.startsWith('ug_equity')) return notional / 10_000;
-  if (ugId.startsWith('ug_commodity')) return notional / 25_000;
-  if (ugId.startsWith('ug_crypto')) return notional / 10_000;
-  return notional / 100_000;
+  const notionalPerLot = NOTIONAL_PER_LOT[ugId ?? 'ug_fx_core'];
+  return notional / notionalPerLot;
 }
 
 /**

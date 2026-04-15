@@ -15,7 +15,7 @@ import {
   TRADES_PER_MONTH_STEPS, TRADES_DEFAULT, TRADES_PRESETS,
   ACCOUNT_SIZE_STEPS, ACCOUNT_SIZE_DEFAULT, ACCOUNT_PRESETS,
   RISK_PERCENT_STEPS,
-  formatAccountSize, deriveNotional, getTradeSizePills, getLotSizes, deriveTradeSizeAuto, lotsToNotional,
+  formatAccountSize, deriveNotional, getTradeSizePills, getLotSizes, deriveTradeSizeAuto, lotsToMargin,
   type TradesPerMonthStep, type AccountSizeStep, type RiskPercentStep,
   type TradeSizeMode,
 } from '@/data/simulator/trade-scales';
@@ -871,7 +871,7 @@ function StepContent(p: StepContentProps) {
                     {getLotSizes(p.sel.accountSize, p.sel.ugId).map(lot => (
                       <button
                         key={lot}
-                        onClick={() => p.setSel(s => ({ ...s, positionSize: lotsToNotional(lot, s.ugId), lotSize: lot }))}
+                        onClick={() => p.setSel(s => ({ ...s, lotSize: lot, positionSize: lotsToMargin(lot, s.ugId) }))}
                         style={{
                           padding: '10px 14px',
                           borderRadius: '10px',
@@ -884,7 +884,7 @@ function StepContent(p: StepContentProps) {
                           cursor: 'pointer',
                         }}
                       >
-                        {lot} lot
+                        {lot} lot ({formatAccountSize(lotsToMargin(lot, p.sel.ugId))})
                       </button>
                     ))}
                   </div>
@@ -905,7 +905,7 @@ function StepContent(p: StepContentProps) {
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <span style={{ fontSize: '11px', fontWeight: 600, color: 'hsl(var(--foreground))' }}>
-                          Stima automatica
+                          Margine stimato
                         </span>
                         <span style={{ fontSize: '10px', color: 'hsl(var(--muted-foreground))', opacity: 0.6, textTransform: 'capitalize' }}>
                           {auto.profile}
@@ -916,7 +916,7 @@ function StepContent(p: StepContentProps) {
                           {formatAccountSize(auto.size)}
                         </span>
                         <span style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.6 }}>
-                          {auto.lotSize.toFixed(2)} lotti × {auto.leverage}×
+                          {auto.lotSize.toFixed(2)} lotti ({auto.leverage}×)
                         </span>
                       </div>
                     </motion.div>
