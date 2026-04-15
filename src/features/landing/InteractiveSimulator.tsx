@@ -536,7 +536,7 @@ type StepContentProps = {
   accountIdx:           number;
   accountValue:         AccountSizeStep;
   showTradesSlider:     boolean;
-  showAccountSlider:    boolean;
+  showAccountInput:    boolean;
   showLotSlider:       boolean;
   lotIdx:              number;
   isMobile:             boolean;
@@ -556,7 +556,7 @@ type StepContentProps = {
   onNavTo:              (t: number) => void;
   setForexSub:          (s: ForexSubgroup) => void;
   setShowTradesSlider:  React.Dispatch<React.SetStateAction<boolean>>;
-  setShowAccountSlider: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowAccountInput:  React.Dispatch<React.SetStateAction<boolean>>;
   setShowLotSlider:    React.Dispatch<React.SetStateAction<boolean>>;
   setSel:               React.Dispatch<React.SetStateAction<SimulatorState>>;
   setTradesIdx:         React.Dispatch<React.SetStateAction<number>>;
@@ -777,30 +777,73 @@ function StepContent(p: StepContentProps) {
                 <div className="flex flex-wrap gap-2">
                   {ACCOUNT_PRESETS.map(pr => (
                     <Pill key={pr.value}
-                      selected={p.sel.accountSize === pr.value && !p.showAccountSlider}
-                      onClick={() => p.onAccountPreset(pr.value)}>
+                      selected={p.sel.accountSize === pr.value && !p.showAccountInput}
+                      onClick={() => p.setSel(s => ({ ...s, accountSize: pr.value }))}>
                       {pr.label}
                     </Pill>
                   ))}
-                  <SliderToggle
-                    active={p.showAccountSlider}
-                    onClick={() => { p.setShowAccountSlider(v => !v); p.setSel(s => ({ ...s, accountSize: undefined })); }}
-                  />
-                </div>
-                <AnimatePresence>
-                  {p.showAccountSlider && (
-                    <motion.div variants={slideUp} initial="initial" animate="animate" exit="exit"
-                      className="flex flex-col gap-2.5">
-                      <SliderDisplay value={formatAccountSize(p.accountValue)} unit="sul conto" />
-                      <StepSlider
-                        value={p.accountIdx}
-                        max={ACCOUNT_SIZE_STEPS.length - 1}
-                        onChange={i => { p.setAccountIdx(i); p.setSel(s => ({ ...s, accountSize: ACCOUNT_SIZE_STEPS[i] })); }}
+                  {p.showAccountInput ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={p.accountValue}
+                        onChange={e => {
+                          const v = parseInt(e.target.value) || 0;
+                          p.setAccountIdx(ACCOUNT_SIZE_STEPS.findIndex(x => x >= v) ?? -1);
+                          p.setSel(s => ({ ...s, accountSize: (v >= 50 ? v : 50) as AccountSizeStep }));
+                        }}
+                        placeholder="5000"
+                        className="w-24 px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-transparent font-mono text-sm"
+                        autoFocus
                       />
-                      <SliderTicks labels={['50€', 'micro', 'retail', 'pro', '500k+']} />
-                    </motion.div>
+                      <span className="text-sm text-[hsl(var(--muted-foreground))]">€</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => p.setShowAccountInput(true)}
+                      style={{
+                        padding: '8px 14px',
+                        borderRadius: '10px',
+                        border: '1px solid hsl(var(--border))',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        color: 'hsl(var(--foreground))',
+                        background: 'transparent',
+                      }}
+                    >
+                      altro...
+                    </button>
                   )}
-                </AnimatePresence>
+                </div>
+
+                {/* Lot preview when account selected - shows BEFORE sizing selection */}
+                {p.sel.category === 'forex' && p.sel.accountSize && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
+                      background: 'hsl(var(--muted) / 0.1)',
+                      border: '1px solid hsl(var(--border) / 0.3)',
+                      fontSize: '11px',
+                    }}
+                  >
+                    <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.7 }}>
+                      Profilo suggerito al {p.sel.accountSize >= 5000 ? '2%' : '3%'} risk
+                    </span>
+                    <div style={{ display: 'flex', gap: '12px', fontFamily: 'var(--font-mono, monospace)', fontSize: '12px' }}>
+                      <span>{(p.sel.accountSize * (p.sel.accountSize >= 5000 ? 2 : 3) / 100 / 30).toFixed(2)} lotti</span>
+                      <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
+                      <span>{formatAccountSize(p.sel.accountSize * (p.sel.accountSize >= 5000 ? 2 : 3) / 100)} nozionale</span>
+                      <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
+                      <span>~{formatAccountSize(Math.round(p.sel.accountSize * (p.sel.accountSize >= 5000 ? 2 : 3) / 100 / 30))} margine</span>
+                    </div>
+                  </motion.div>
+                )}
               </div>
 
               <div className="flex flex-col gap-2.5">
@@ -986,7 +1029,7 @@ export function InteractiveSimulator() {
   const [tradesIdx,          setTradesIdx]          = useState(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
   const [accountIdx,         setAccountIdx]         = useState(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
   const [showTradesSlider,   setShowTradesSlider]   = useState(false);
-  const [showAccountSlider,  setShowAccountSlider]  = useState(false);
+  const [showAccountInput, setShowAccountInput]  = useState(false);
   const [showLotSlider,     setShowLotSlider]     = useState(false);
   const [lotIdx,            setLotIdx]            = useState(3); // default 0.1 lot
   const [direction,         setDirection]         = useState(0); // 1 = forward, -1 = back
@@ -1062,7 +1105,7 @@ export function InteractiveSimulator() {
   const handleAccountPreset = (v: AccountSizeStep) => {
     setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(v));
     setSel(p => ({ ...p, accountSize: v }));
-    setShowAccountSlider(false);
+    setShowAccountInput(false);
   };
 
   const handleConfirmStep2 = () => {
@@ -1080,7 +1123,7 @@ export function InteractiveSimulator() {
     if (t >= step) return;
     setDirection(t < step ? -1 : 1);
     setShowTradesSlider(false);
-    setShowAccountSlider(false);
+    setShowAccountInput(false);
     if (t <= 0) {
       setSel({}); setForexSub('major');
       setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
@@ -1101,7 +1144,7 @@ export function InteractiveSimulator() {
     setSel({}); setForexSub('major');
     setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
     setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
-    setShowTradesSlider(false); setShowAccountSlider(false);
+    setShowTradesSlider(false); setShowAccountInput(false);
     setStep(0);
     // sheetOpen invariato — step0 mostrato dentro lo sheet
   };
@@ -1137,14 +1180,14 @@ export function InteractiveSimulator() {
   const sharedProps: StepContentProps = {
     step, sel, forexSub, filteredUGs: filteredUGs as typeof UNDERLYING_GROUPS[number][],
     tradesIdx, tradesValue, accountIdx, accountValue,
-    showTradesSlider, showAccountSlider, showLotSlider, lotIdx,
+    showTradesSlider, showAccountInput, showLotSlider, lotIdx,
     isMobile, step2Ready, step3Ready, result,
     onCategory: handleCategory, onForexAsset: handleForexAsset, onUG: handleUG,
     onHorizon: handleHorizon, onTradesPreset: handleTradesPreset,
     onAccountPreset: handleAccountPreset, onRisk: handleRisk,
     onConfirmStep2: handleConfirmStep2, onConfirmStep3: handleConfirmStep3,
     onReset: reset, onNavTo: navTo,
-    setForexSub, setShowTradesSlider, setShowAccountSlider, setShowLotSlider,
+    setForexSub, setShowTradesSlider, setShowAccountInput, setShowLotSlider,
     setSel, setTradesIdx, setAccountIdx, setLotIdx,
   };
 
