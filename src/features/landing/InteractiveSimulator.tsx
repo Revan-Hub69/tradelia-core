@@ -39,7 +39,7 @@ const SIZE_MODES: { id: TradeSizeMode; label: string; Icon: typeof DollarSign }[
   { id: 'auto',  label: 'Auto',  Icon: Gauge },
 ];
 
-const LOT_STEPS = [0.01, 0.02, 0.03, 0.05, 0.07, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10, 15, 20] as const;
+const LOT_STEPS = [0.001, 0.002, 0.003, 0.005, 0.007, 0.01, 0.015, 0.02, 0.03, 0.05, 0.07, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10, 15, 20] as const;
 
 const UNDERLYING_GROUPS = [
   { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',         desc: 'EUR/USD, GBP/USD, USD/JPY...' },
@@ -93,12 +93,13 @@ const ASSET_TO_UG: Record<string, UnderlyingGroupId> = Object.fromEntries(
 );
 
 const HORIZONS = [
+  { id: 'scalping', label: 'Scalping', icon: Zap,           desc: 'Many tickers / session' },
   { id: 'intraday', label: 'Intraday', icon: Clock,        desc: 'Chiudi in giornata' },
   { id: 'multiday', label: 'Multiday', icon: Calendar,     desc: '2–5 giorni'         },
   { id: 'swing',    label: 'Swing',    icon: CalendarDays, desc: 'Settimane / mesi'   },
 ] as const;
 type HorizonId = typeof HORIZONS[number]['id'];
-const HORIZON_HOLDING: Record<HorizonId, number> = { intraday: 0.3, multiday: 3.5, swing: 15 };
+const HORIZON_HOLDING: Record<HorizonId, number> = { scalping: 0.1, intraday: 0.3, multiday: 3.5, swing: 15 };
 
 // ---------------------------------------------------------------------------
 // COST MODEL
@@ -535,9 +536,10 @@ type StepContentProps = {
   tradesValue:          TradesPerMonthStep;
   accountIdx:           number;
   accountValue:         AccountSizeStep;
-  showTradesSlider:     boolean;
+  showTradesInput:     boolean;
   showAccountInput:    boolean;
-  showLotSlider:       boolean;
+showLotInput:
+  boolean;
   lotIdx:              number;
   isMobile:             boolean;
   step2Ready:           boolean;
@@ -555,7 +557,7 @@ type StepContentProps = {
   onReset:              () => void;
   onNavTo:              (t: number) => void;
   setForexSub:          (s: ForexSubgroup) => void;
-  setShowTradesSlider:  React.Dispatch<React.SetStateAction<boolean>>;
+  setShowTradesInput:  React.Dispatch<React.SetStateAction<boolean>>;
   setShowAccountInput:  React.Dispatch<React.SetStateAction<boolean>>;
   setShowLotSlider:    React.Dispatch<React.SetStateAction<boolean>>;
   setSel:               React.Dispatch<React.SetStateAction<SimulatorState>>;
@@ -719,42 +721,41 @@ function StepContent(p: StepContentProps) {
                     <div className="flex flex-wrap gap-2">
                       {TRADES_PRESETS.map(pr => (
                         <Pill key={pr.value}
-                          selected={p.sel.tradesPerMonth === pr.value && !p.showTradesSlider}
+                          selected={p.sel.tradesPerMonth === pr.value && !p.showTradesInput}
                           onClick={() => p.onTradesPreset(pr.value)}>
                           {pr.label}
                         </Pill>
                       ))}
-                      <SliderToggle
-                        active={p.showTradesSlider}
-                        onClick={() => { p.setShowTradesSlider(v => !v); p.setSel(s => ({ ...s, tradesPerMonth: undefined })); }}
-                      />
-                    </div>
-                    <AnimatePresence>
-                      {p.showTradesSlider && (
-                        <motion.div variants={slideUp} initial="initial" animate="animate" exit="exit"
-                          className="flex flex-col gap-2.5">
-                          <SliderDisplay value={String(p.tradesValue)} unit="trade / mese">
-                            {p.tradesValue >= 200 && (
-                              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                className="ml-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-mono text-[10px]"
-                                style={{
-                                  background: 'hsl(var(--warning, 45 100% 50%) / 0.1)',
-                                  color: 'hsl(var(--warning, 45 100% 40%))',
-                                  border: '1px solid hsl(var(--warning, 45 100% 50%) / 0.2)',
-                                }}>
-                                <Zap size={11} /> Alta freq.
-                              </motion.span>
-                            )}
-                          </SliderDisplay>
-                          <StepSlider
-                            value={p.tradesIdx}
-                            max={TRADES_PER_MONTH_STEPS.length - 1}
-                            onChange={i => { p.setTradesIdx(i); p.setSel(s => ({ ...s, tradesPerMonth: TRADES_PER_MONTH_STEPS[i] })); }}
+                      {p.showTradesInput ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            value={p.sel.tradesPerMonth ?? ''}
+                            onChange={e => {
+                              const v = parseInt(e.target.value) || 1;
+                              p.setTradesIdx(TRADES_PER_MONTH_STEPS.findIndex(x => x >= v) || 0);
+                              p.setSel(s => ({ ...s, tradesPerMonth: v as TradesPerMonthStep }));
+                            }}
+                            placeholder="50"
+                            className="w-16 px-2 py-1.5 rounded-lg border border-[hsl(var(--border))] bg-transparent font-mono text-sm"
+                            autoFocus
                           />
-                          <SliderTicks labels={['1', 'swing', 'intraday', 'scalping', '500']} />
-                        </motion.div>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => p.setShowTradesInput(true)}
+                          style={{
+                            padding: '8px 14px',
+                            borderRadius: '10px',
+                            border: '1px solid hsl(var(--border))',
+                            fontSize: '13px',
+                            color: 'hsl(var(--foreground))',
+                          }}
+                        >
+                          altro
+                        </button>
                       )}
-                    </AnimatePresence>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -832,16 +833,29 @@ function StepContent(p: StepContentProps) {
                       fontSize: '11px',
                     }}
                   >
-                    <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.7 }}>
-                      Profilo suggerito al {p.sel.accountSize >= 5000 ? '2%' : '3%'} risk
-                    </span>
-                    <div style={{ display: 'flex', gap: '12px', fontFamily: 'var(--font-mono, monospace)', fontSize: '12px' }}>
-                      <span>{(p.sel.accountSize * (p.sel.accountSize >= 5000 ? 2 : 3) / 100 / 30).toFixed(2)} lotti</span>
-                      <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
-                      <span>{formatAccountSize(p.sel.accountSize * (p.sel.accountSize >= 5000 ? 2 : 3) / 100)} nozionale</span>
-                      <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
-                      <span>~{formatAccountSize(Math.round(p.sel.accountSize * (p.sel.accountSize >= 5000 ? 2 : 3) / 100 / 30))} margine</span>
-                    </div>
+                    {(() => {
+                      const leverage = 30;
+                      const riskPct = p.sel.accountSize < 1000 ? 2 : p.sel.accountSize < 5000 ? 1.5 : 1;
+                      const riskAmount = p.sel.accountSize * riskPct / 100;
+                      const marginPerLot = 100000 / leverage;
+                      const suggestedLots = riskAmount / marginPerLot;
+                      const notional = suggestedLots * 100000;
+                      const marginNeeded = notional / leverage;
+                      return (
+                        <>
+                          <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.7 }}>
+                            {riskPct}% del capitale · leva {leverage}×
+                          </span>
+                          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', fontFamily: 'var(--font-mono, monospace)', fontSize: '12px' }}>
+                            <span>{suggestedLots.toFixed(3)} lotti</span>
+                            <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
+                            <span>{formatAccountSize(notional)} noz.</span>
+                            <span style={{ color: 'hsl(var(--muted-foreground))', opacity: 0.5 }}>·</span>
+                            <span>{formatAccountSize(marginNeeded)} margine</span>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </motion.div>
                 )}
               </div>
@@ -880,27 +894,61 @@ function StepContent(p: StepContentProps) {
                   </div>
                 )}
 
-                {/* FOREX: lot slider */}
+                {/* FOREX: lot picker with inline input */}
                 {p.sel.category === 'forex' && p.sel.accountSize && (
                   <div className="flex flex-col gap-2">
-                    <SliderToggle
-                      active={p.showLotSlider}
-                      onClick={() => p.setShowLotSlider(v => !v)}
-                    />
-                    {p.showLotSlider && (
-                      <motion.div variants={slideUp} initial="initial" animate="animate" exit="exit"
-                        className="flex flex-col gap-2.5">
-                        <div style={{ padding: '0 4px', fontSize: '13px', fontFamily: 'var(--font-mono, monospace)', fontWeight: 600, color: 'hsl(var(--primary))' }}>
-                          {LOT_STEPS[p.lotIdx]} lotti
+                    <div className="flex flex-wrap gap-1.5">
+                      {[0.01, 0.05, 0.1, 0.2, 0.5, 1, 2].map(lot => (
+                        <button
+                          key={lot}
+                          onClick={() => { p.setLotIdx(LOT_STEPS.indexOf(lot) || 5); p.setSel(s => ({ ...s, lotSize: lot })); }}
+                          style={{
+                            padding: '8px 12px',
+                            borderRadius: '8px',
+                            border: '1px solid hsl(var(--border))',
+                            background: p.sel.lotSize === lot ? 'hsl(var(--primary) / 0.15)' : 'transparent',
+                            fontSize: '12px',
+                            fontWeight: 600,
+                            fontFamily: 'var(--font-mono, monospace)',
+                            color: p.sel.lotSize === lot ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          {lot} lot
+                        </button>
+                      ))}
+                      {p.showLotInput ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            step="0.001"
+                            value={p.sel.lotSize ?? ''}
+                            onChange={e => {
+                              const v = parseFloat(e.target.value) || 0.001;
+                              p.setSel(s => ({ ...s, lotSize: v }));
+                            }}
+                            placeholder="0.50"
+                            className="w-20 px-2 py-1.5 rounded-lg border border-[hsl(var(--border))] bg-transparent font-mono text-xs"
+                            autoFocus
+                          />
+                          <span className="text-xs text-[hsl(var(--muted-foreground))]">lot</span>
                         </div>
-                        <StepSlider
-                          value={p.lotIdx}
-                          max={LOT_STEPS.length - 1}
-                          onChange={i => { p.setLotIdx(i); p.setSel(s => ({ ...s, lotSize: LOT_STEPS[i] })); }}
-                        />
-                        <SliderTicks labels={['mini', 'micro', 'small', 'std', 'large']} />
-                      </motion.div>
-                    )}
+                      ) : (
+                        <button
+                          onClick={() => p.setShowLotInput(true)}
+                          style={{
+                            padding: '8px 10px',
+                            borderRadius: '8px',
+                            border: '1px solid hsl(var(--border))',
+                            fontSize: '11px',
+                            color: 'hsl(var(--muted-foreground))',
+                            background: 'transparent',
+                          }}
+                        >
+                          custom
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -1028,9 +1076,9 @@ export function InteractiveSimulator() {
   const [sheetOpen,          setSheetOpen]          = useState(false);
   const [tradesIdx,          setTradesIdx]          = useState(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
   const [accountIdx,         setAccountIdx]         = useState(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
-  const [showTradesSlider,   setShowTradesSlider]   = useState(false);
+  const [showTradesInput,    setShowTradesInput]    = useState(false);
   const [showAccountInput, setShowAccountInput]  = useState(false);
-  const [showLotSlider,     setShowLotSlider]     = useState(false);
+  const [showLotInput,      setShowLotInput]      = useState(false);
   const [lotIdx,            setLotIdx]            = useState(3); // default 0.1 lot
   const [direction,         setDirection]         = useState(0); // 1 = forward, -1 = back
 
@@ -1100,7 +1148,7 @@ export function InteractiveSimulator() {
   const handleTradesPreset = (v: TradesPerMonthStep) => {
     setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(v));
     setSel(p => ({ ...p, tradesPerMonth: v }));
-    setShowTradesSlider(false);
+    setShowTradesInput(false);
   };
   const handleAccountPreset = (v: AccountSizeStep) => {
     setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(v));
@@ -1122,7 +1170,7 @@ export function InteractiveSimulator() {
   const navTo = (t: number) => {
     if (t >= step) return;
     setDirection(t < step ? -1 : 1);
-    setShowTradesSlider(false);
+    setShowTradesInput(false);
     setShowAccountInput(false);
     if (t <= 0) {
       setSel({}); setForexSub('major');
@@ -1144,7 +1192,7 @@ export function InteractiveSimulator() {
     setSel({}); setForexSub('major');
     setTradesIdx(TRADES_PER_MONTH_STEPS.indexOf(TRADES_DEFAULT));
     setAccountIdx(ACCOUNT_SIZE_STEPS.indexOf(ACCOUNT_SIZE_DEFAULT));
-    setShowTradesSlider(false); setShowAccountInput(false);
+    setShowTradesInput(false); setShowAccountInput(false);
     setStep(0);
     // sheetOpen invariato — step0 mostrato dentro lo sheet
   };
@@ -1180,14 +1228,14 @@ export function InteractiveSimulator() {
   const sharedProps: StepContentProps = {
     step, sel, forexSub, filteredUGs: filteredUGs as typeof UNDERLYING_GROUPS[number][],
     tradesIdx, tradesValue, accountIdx, accountValue,
-    showTradesSlider, showAccountInput, showLotSlider, lotIdx,
+    showTradesInput, showAccountInput, showLotInput, lotIdx,
     isMobile, step2Ready, step3Ready, result,
     onCategory: handleCategory, onForexAsset: handleForexAsset, onUG: handleUG,
     onHorizon: handleHorizon, onTradesPreset: handleTradesPreset,
     onAccountPreset: handleAccountPreset, onRisk: handleRisk,
     onConfirmStep2: handleConfirmStep2, onConfirmStep3: handleConfirmStep3,
     onReset: reset, onNavTo: navTo,
-    setForexSub, setShowTradesSlider, setShowAccountInput, setShowLotSlider,
+    setForexSub, setShowTradesSlider, setShowAccountInput, setShowLotInput,
     setSel, setTradesIdx, setAccountIdx, setLotIdx,
   };
 
