@@ -841,19 +841,19 @@ function StepContent(p: StepContentProps) {
                 {p.sel.category === 'forex' && p.sel.accountSize && (
                   <div className="flex flex-col gap-2">
                     <SliderToggle
-                      active={showLotSlider}
-                      onClick={() => setShowLotSlider(v => !v)}
+                      active={p.showLotSlider}
+                      onClick={() => p.setShowLotSlider(v => !v)}
                     />
-                    {showLotSlider && (
+                    {p.showLotSlider && (
                       <motion.div variants={slideUp} initial="initial" animate="animate" exit="exit"
                         className="flex flex-col gap-2.5">
                         <div style={{ padding: '0 4px', fontSize: '13px', fontFamily: 'var(--font-mono, monospace)', fontWeight: 600, color: 'hsl(var(--primary))' }}>
-                          {LOT_STEPS[lotIdx]} lotti
+                          {LOT_STEPS[p.lotIdx]} lotti
                         </div>
                         <StepSlider
-                          value={lotIdx}
+                          value={p.lotIdx}
                           max={LOT_STEPS.length - 1}
-                          onChange={i => { setLotIdx(i); p.setSel(s => ({ ...s, lotSize: LOT_STEPS[i] })); }}
+                          onChange={i => { p.setLotIdx(i); p.setSel(s => ({ ...s, lotSize: LOT_STEPS[i] })); }}
                         />
                         <SliderTicks labels={['mini', 'micro', 'small', 'std', 'large']} />
                       </motion.div>
