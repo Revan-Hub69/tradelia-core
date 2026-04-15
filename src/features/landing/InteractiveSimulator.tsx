@@ -837,7 +837,7 @@ function StepContent(p: StepContentProps) {
                   </div>
                 )}
 
-                {/* FOREX: lot slider toggle */}
+                {/* FOREX: lot slider */}
                 {p.sel.category === 'forex' && p.sel.accountSize && (
                   <div className="flex flex-col gap-2">
                     <SliderToggle
