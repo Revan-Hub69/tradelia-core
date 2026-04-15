@@ -14,8 +14,9 @@ import {
   TRADES_PER_MONTH_STEPS, TRADES_DEFAULT, TRADES_PRESETS,
   ACCOUNT_SIZE_STEPS, ACCOUNT_SIZE_DEFAULT, ACCOUNT_PRESETS,
   RISK_PERCENT_STEPS,
-  formatAccountSize, deriveNotional,
+  formatAccountSize, deriveNotional, getTradeSizePills, deriveTradeSizeAuto,
   type TradesPerMonthStep, type AccountSizeStep, type RiskPercentStep,
+  type TradeSizeMode,
 } from '@/data/simulator/trade-scales';
 
 // ---------------------------------------------------------------------------
@@ -30,6 +31,12 @@ const CATEGORIES = [
   { id: 'crypto',      label: 'Crypto',    icon: Coins,     desc: 'Major & Altcoin'         },
 ] as const;
 type CategoryId = typeof CATEGORIES[number]['id'];
+
+const SIZE_MODES: { id: TradeSizeMode; label: string; icon: string }[] = [
+  { id: 'amount', label: 'Importo', icon: '€' },
+  { id: 'lots',  label: 'Lotti', icon: '📊' },
+  { id: 'auto',  label: 'Auto',  icon: '⚡' },
+];
 
 const UNDERLYING_GROUPS = [
   { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',         desc: 'EUR/USD, GBP/USD, USD/JPY...' },
@@ -160,13 +167,15 @@ function getPositionSuggestions(accountSize: number): { min: number; max: number
 // ---------------------------------------------------------------------------
 
 type SimulatorState = {
-  category?:       CategoryId;
-  ugId?:           UnderlyingGroupId;
-  assetId?:        string;
-  horizon?:        HorizonId;
+  category?:     CategoryId;
+  ugId?:         UnderlyingGroupId;
+  assetId?:      string;
+  horizon?:      HorizonId;
   tradesPerMonth?: TradesPerMonthStep;
-  accountSize?:    AccountSizeStep;
-  riskPercent?:    RiskPercentStep;
+  accountSize?:  AccountSizeStep;
+  riskPercent?:   RiskPercentStep;
+  sizeMode?:     TradeSizeMode;
+  positionSize?: number;
 };
 
 // ---------------------------------------------------------------------------
@@ -794,66 +803,97 @@ function StepContent(p: StepContentProps) {
                 <p style={{ fontSize: '9px', color: 'hsl(var(--muted-foreground))', opacity: 0.45, marginTop: '-4px', marginBottom: '4px' }}>
                   Serve per calcolare costi di spread e commissioni
                 </p>
-                <div className="grid grid-cols-5 gap-1.5">
-                  {RISK_PERCENT_STEPS.map(r => (
-                    <RiskBtn key={r} value={r} selected={p.sel.riskPercent === r} onClick={() => p.onRisk(r)} />
+                
+                {/* Size Mode Selector */}
+                <div className="flex gap-2" style={{ marginBottom: '8px' }}>
+                  {SIZE_MODES.map(mode => (
+                    <button
+                      key={mode.id}
+                      onClick={() => p.setSel(s => ({ ...s, sizeMode: mode.id }))}
+                      style={{
+                        flex: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        padding: '12px 14px',
+                        borderRadius: '12px',
+                        border: p.sel.sizeMode === mode.id
+                          ? '1.5px solid hsl(var(--primary) / 0.7)'
+                          : '1px solid hsl(var(--border))',
+                        background: p.sel.sizeMode === mode.id
+                          ? 'hsl(var(--primary) / 0.1)'
+                          : 'transparent',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        color: p.sel.sizeMode === mode.id
+                          ? 'hsl(var(--primary))'
+                          : 'hsl(var(--muted-foreground))',
+                        cursor: 'pointer',
+                        transition: 'all 180ms ease',
+                      }}
+                    >
+                      <span>{mode.icon}</span>
+                      <span>{mode.label}</span>
+                    </button>
                   ))}
                 </div>
-                <AnimatePresence>
-                  {p.sel.riskPercent && p.sel.ugId && (
-                    <motion.div key="notionale" variants={slideUp} initial="initial" animate="animate" exit="exit"
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '6px',
-                        marginTop: '4px',
-                        padding: '12px',
-                        borderRadius: '12px',
-                        background: 'hsl(var(--muted) / 0.08)',
-                        border: '1px solid hsl(var(--border) / 0.3)',
-                      }}>
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                        <span style={{
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          color: 'hsl(var(--foreground))',
-                          letterSpacing: '0.02em',
-                        }}>
-                          Notionale indicativo
-                        </span>
-                        <span style={{
-                          fontFamily: 'var(--font-mono, monospace)',
+
+                {/* Dynamic input based on mode */}
+                {p.sel.sizeMode === 'amount' && p.sel.accountSize && (
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {getTradeSizePills(p.sel.accountSize).map(size => (
+                      <button
+                        key={size}
+                        onClick={() => p.setSel(s => ({ ...s, positionSize: size }))}
+                        style={{
+                          padding: '10px 14px',
+                          borderRadius: '10px',
+                          border: '1px solid hsl(var(--border))',
+                          background: p.sel.positionSize === size ? 'hsl(var(--primary) / 0.1)' : 'transparent',
                           fontSize: '13px',
-                          fontWeight: 700,
-                          color: 'hsl(var(--primary))',
-                        }}>
-                          {formatAccountSize(deriveNotional(p.sel.accountSize ?? p.accountValue, p.sel.riskPercent, p.sel.ugId))}
-                        </span>
-                      </div>
-                      {/* Suggestion box - subtle, non-prescriptive */}
-                      {(() => {
-                        const suggestions = getPositionSuggestions(p.sel.accountSize ?? p.accountValue);
-                        return (
-                          <div style={{
-                            fontSize: '10px',
-                            color: 'hsl(var(--muted-foreground))',
-                            opacity: 0.6,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                          }}>
-                            <span style={{ opacity: 0.8 }}>Consiglio:</span>
-                            <span>Range tipico per questo conto: <strong style={{ color: 'hsl(var(--foreground))', opacity: 0.8 }}>{formatAccountSize(suggestions.min)} – {formatAccountSize(suggestions.max)}</strong></span>
-                          </div>
-                        );
-                      })()}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                          fontWeight: 600,
+                          fontFamily: 'var(--font-mono, monospace)',
+                          color: p.sel.positionSize === size ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {formatAccountSize(size)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Exposure display */}
+                {p.sel.positionSize && p.sel.ugId && (
+                  <motion.div key="notionale" variants={slideUp} initial="initial" animate="animate"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '12px',
+                      borderRadius: '12px',
+                      background: 'hsl(var(--muted) / 0.08)',
+                      border: '1px solid hsl(var(--border) / 0.3)',
+                    }}>
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      color: 'hsl(var(--foreground))',
+                      letterSpacing: '0.02em',
+                    }}>
+                      Esposizione stimata
+                    </span>
+                    <span style={{
+                      fontFamily: 'var(--font-mono, monospace)',
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: 'hsl(var(--primary))',
+                    }}>
+                      {formatAccountSize(p.sel.positionSize)}
+                    </span>
+                  </motion.div>
+                )}
               </div>
 
               {!p.isMobile && p.step3Ready && (
