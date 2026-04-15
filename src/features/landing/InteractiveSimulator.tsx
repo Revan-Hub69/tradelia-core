@@ -800,73 +800,14 @@ function StepContent(p: StepContentProps) {
               <div className="flex flex-col gap-2.5">
                 <SectionLabel>Dimensione operazione</SectionLabel>
                 <p style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.6, marginTop: '-8px', marginBottom: '2px' }}>
-                  Quanto è grande una singola operazione che apri?
+                  {p.sel.category === 'forex' ? 'Quanti lotti usi per operazione?' : 'Quanto è grande una singola operazione che apri?'}
                 </p>
                 <p style={{ fontSize: '9px', color: 'hsl(var(--muted-foreground))', opacity: 0.45, marginTop: '-4px', marginBottom: '4px' }}>
-                  Serve per calcolare costi di spread e commissioni
+                  {p.sel.category === 'forex' ? 'Il margine richiesto per aprire la posizione' : 'Serve per calcolare costi di spread e commissioni'}
                 </p>
-                
-                {/* Size Mode Selector */}
-                <div className="flex gap-2" style={{ marginBottom: '8px' }}>
-                  {SIZE_MODES.map(mode => (
-                    <button
-                      key={mode.id}
-                      onClick={() => p.setSel(s => ({ ...s, sizeMode: mode.id }))}
-                      style={{
-                        flex: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        padding: '12px 14px',
-                        borderRadius: '12px',
-                        border: p.sel.sizeMode === mode.id
-                          ? '1.5px solid hsl(var(--primary) / 0.7)'
-                          : '1px solid hsl(var(--border))',
-                        background: p.sel.sizeMode === mode.id
-                          ? 'hsl(var(--primary) / 0.1)'
-                          : 'transparent',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        color: p.sel.sizeMode === mode.id
-                          ? 'hsl(var(--primary))'
-                          : 'hsl(var(--foreground))',
-                        cursor: 'pointer',
-                        transition: 'all 180ms ease',
-                      }}
-                    >
-                      <mode.Icon size={16} />
-                      <span>{mode.label}</span>
-                    </button>
-                  ))}
-                </div>
 
-                {/* Dynamic input based on mode */}
-                {p.sel.sizeMode === 'amount' && p.sel.accountSize && (
-                  <div className="grid grid-cols-4 gap-1.5">
-                    {getTradeSizePills(p.sel.accountSize).map(size => (
-                      <button
-                        key={size}
-                        onClick={() => p.setSel(s => ({ ...s, positionSize: size }))}
-                        style={{
-                          padding: '10px 14px',
-                          borderRadius: '10px',
-                          border: '1px solid hsl(var(--border))',
-                          background: p.sel.positionSize === size ? 'hsl(var(--primary) / 0.1)' : 'transparent',
-                          fontSize: '13px',
-                          fontWeight: 600,
-                          fontFamily: 'var(--font-mono, monospace)',
-                          color: p.sel.positionSize === size ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {formatAccountSize(size)}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                
-                {p.sel.sizeMode === 'lots' && p.sel.accountSize && (
+                {/* FOREX: solo lotti con soglie basate su account */}
+                {p.sel.category === 'forex' && p.sel.accountSize && (
                   <div className="grid grid-cols-4 gap-1.5">
                     {getLotSizes(p.sel.accountSize, p.sel.ugId).map(lot => (
                       <button
@@ -890,38 +831,42 @@ function StepContent(p: StepContentProps) {
                   </div>
                 )}
 
-                {p.sel.sizeMode === 'auto' && p.sel.accountSize && (() => {
-                  const auto = deriveTradeSizeAuto(p.sel.accountSize, p.sel.ugId);
-                  return (
-                    <motion.div
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      style={{
-                        padding: '14px 16px',
-                        borderRadius: '14px',
-                        background: 'hsl(var(--primary) / 0.06)',
-                        border: '1px solid hsl(var(--primary) / 0.15)',
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 600, color: 'hsl(var(--foreground))' }}>
-                          Margine stimato
-                        </span>
-                        <span style={{ fontSize: '10px', color: 'hsl(var(--muted-foreground))', opacity: 0.6, textTransform: 'capitalize' }}>
-                          {auto.profile}
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '18px', fontWeight: 700, color: 'hsl(var(--primary))' }}>
-                          {formatAccountSize(auto.size)}
-                        </span>
-                        <span style={{ fontSize: '11px', color: 'hsl(var(--muted-foreground))', opacity: 0.6 }}>
-                          {auto.lotSize.toFixed(2)} lotti ({auto.leverage}×)
-                        </span>
-                      </div>
-                    </motion.div>
-                  );
-                })()}
+                {/* NON-FOREX: size mode selector */}
+                {p.sel.category !== 'forex' && (
+                  <div className="flex gap-2" style={{ marginBottom: '8px' }}>
+                    {SIZE_MODES.map(mode => (
+                      <button
+                        key={mode.id}
+                        onClick={() => p.setSel(s => ({ ...s, sizeMode: mode.id }))}
+                        style={{
+                          flex: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          padding: '12px 14px',
+                          borderRadius: '12px',
+                          border: p.sel.sizeMode === mode.id
+                            ? '1.5px solid hsl(var(--primary) / 0.7)'
+                            : '1px solid hsl(var(--border))',
+                          background: p.sel.sizeMode === mode.id
+                            ? 'hsl(var(--primary) / 0.1)'
+                            : 'transparent',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          color: p.sel.sizeMode === mode.id
+                            ? 'hsl(var(--primary))'
+                            : 'hsl(var(--foreground))',
+                          cursor: 'pointer',
+                          transition: 'all 180ms ease',
+                        }}
+                      >
+                        <mode.Icon size={16} />
+                        <span>{mode.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* Exposure display */}
                 {p.sel.positionSize && p.sel.ugId && (
