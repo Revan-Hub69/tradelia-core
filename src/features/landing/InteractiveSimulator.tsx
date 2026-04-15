@@ -549,8 +549,7 @@ type StepContentProps = {
   accountValue:         AccountSizeStep;
   showTradesInput:     boolean;
   showAccountInput:    boolean;
-showLotInput:
-  boolean;
+  showLotInput:       boolean;
   lotIdx:              number;
   isMobile:             boolean;
   step2Ready:           boolean;
@@ -570,7 +569,7 @@ showLotInput:
   setForexSub:          (s: ForexSubgroup) => void;
   setShowTradesInput:  React.Dispatch<React.SetStateAction<boolean>>;
   setShowAccountInput:  React.Dispatch<React.SetStateAction<boolean>>;
-  setShowLotSlider:    React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLotInput:    React.Dispatch<React.SetStateAction<boolean>>;
   setSel:               React.Dispatch<React.SetStateAction<SimulatorState>>;
   setTradesIdx:         React.Dispatch<React.SetStateAction<number>>;
   setAccountIdx:        React.Dispatch<React.SetStateAction<number>>;
