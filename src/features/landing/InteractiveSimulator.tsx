@@ -8,6 +8,7 @@ import {
   Clock, Calendar, CalendarDays,
   ArrowRight, RotateCcw, TrendingDown, AlertTriangle, CheckCircle2,
   ChevronLeft, Zap, SlidersHorizontal, X,
+  DollarSign, TrendingUp, Gauge,
 } from 'lucide-react';
 import { cn } from '@/utils/Helpers';
 import {
@@ -32,10 +33,10 @@ const CATEGORIES = [
 ] as const;
 type CategoryId = typeof CATEGORIES[number]['id'];
 
-const SIZE_MODES: { id: TradeSizeMode; label: string; icon: string }[] = [
-  { id: 'amount', label: 'Importo', icon: '€' },
-  { id: 'lots',  label: 'Lotti', icon: '📊' },
-  { id: 'auto',  label: 'Auto',  icon: '⚡' },
+const SIZE_MODES: { id: TradeSizeMode; label: string; Icon: typeof DollarSign }[] = [
+  { id: 'amount', label: 'Importo', Icon: DollarSign },
+  { id: 'lots',  label: 'Lotti', Icon: TrendingUp },
+  { id: 'auto',  label: 'Auto',  Icon: Gauge },
 ];
 
 const UNDERLYING_GROUPS = [
@@ -828,12 +829,12 @@ function StepContent(p: StepContentProps) {
                         fontWeight: 600,
                         color: p.sel.sizeMode === mode.id
                           ? 'hsl(var(--primary))'
-                          : 'hsl(var(--muted-foreground))',
+                          : 'hsl(var(--foreground))',
                         cursor: 'pointer',
                         transition: 'all 180ms ease',
                       }}
                     >
-                      <span>{mode.icon}</span>
+                      <mode.Icon size={16} />
                       <span>{mode.label}</span>
                     </button>
                   ))}
