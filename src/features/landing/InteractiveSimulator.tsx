@@ -39,7 +39,7 @@ const SIZE_MODES: { id: TradeSizeMode; label: string; Icon: typeof DollarSign }[
   { id: 'auto',  label: 'Auto',  Icon: Gauge },
 ];
 
-const LOT_STEPS = [0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10, 15, 20] as const;
+const LOT_STEPS = [0.01, 0.02, 0.03, 0.05, 0.07, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10, 15, 20] as const;
 
 const UNDERLYING_GROUPS = [
   { id: 'ug_fx_core',          categoryId: 'forex'       as CategoryId, label: 'Major',         desc: 'EUR/USD, GBP/USD, USD/JPY...' },
