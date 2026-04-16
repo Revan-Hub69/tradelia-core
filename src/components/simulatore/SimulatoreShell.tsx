@@ -276,7 +276,6 @@ export function SimulatoreShell() {
   const [freqMode,      setFreqMode]      = useState<FreqMode>('per_day');
   const [freqValue,     setFreqValue]     = useState<number>(1);
   const [activeProfile, setActiveProfile] = useState<TradingProfile | null>(null);
-  const [slippageMode, setSlippageMode] = useState<'ideal' | 'good' | 'realistic' | 'volatile'>('realistic');
 
   // Derived values for backward compatibility
   const assetClass = selectedAsset ? getAssetClassFromId(selectedAsset) : null;
@@ -335,11 +334,11 @@ export function SimulatoreShell() {
       activeProfile,
     };
 
-    const engineInput = deriveEngineInput(userInput, { slippageMode });
+    const engineInput = deriveEngineInput(userInput);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { sizingResult: _sr, ...cleanInput } = engineInput;
     setEngineInput(cleanInput);
-  }, [assetClass, underlying, capital, sizingMode, sizingValue, freqMode, freqValue, activeProfile, slippageMode, hasMinParams, setEngineInput]);
+  }, [assetClass, underlying, capital, sizingMode, sizingValue, freqMode, freqValue, activeProfile, hasMinParams, setEngineInput]);
 
     // ── Handler per selezione asset ────────────────────────────────────────
     const handleAssetSelect = useCallback((assetId: string | null) => {
