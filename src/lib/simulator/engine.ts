@@ -366,6 +366,8 @@ export type EngineInput = {
   lotSize:          number;
   tradesPerMonth:   number;
   accountCurrency?: string;  // default 'EUR'
+  /** Execution quality for slippage calculation */
+  slippageMode:    'ideal' | 'good' | 'realistic' | 'volatile';
 };
 
 export type BrokerMeta = {
@@ -471,10 +473,12 @@ export function runEngine({
         offer,
         underlying,
         exposure,
-        lots,
+        lots: lots,
         monthlyNotional: estMonthlyNotional,
         quoteCurrency:   quoteCcy,
         accountCurrency,
+        tradesPerMonth,
+        slippageMode,
       });
     }
 
