@@ -45,7 +45,15 @@ function fxRate(from: string, to: string): number {
   return (FX_RATE_TO_EUR[from] ?? 1) / (FX_RATE_TO_EUR[to] ?? 1);
 }
 
-function pipValue(quoteCurrency: string, accountCurrency = 'EUR'): number {
+// ── Pip value per lot (dynamic based on size) ──────────────────────────
+function pipValue(lots: number, quoteCurrency: string, accountCurrency = 'EUR'): number {
+  const pipSize = quoteCurrency === 'JPY' ? 0.01 : 0.0001;
+  const actualSize = lots * LOT_SIZE;
+  return pipSize * actualSize * fxRate(quoteCurrency, accountCurrency);
+}
+
+// ── Simplified pip value for display (standard lot) ────────────────────────
+function displayPipValue(quoteCurrency: string, accountCurrency = 'EUR'): number {
   const pipSize = quoteCurrency === 'JPY' ? 0.01 : 0.0001;
   return pipSize * LOT_SIZE * fxRate(quoteCurrency, accountCurrency);
 }
@@ -211,41 +219,46 @@ function calcFxCosts(params: {
   tradesPerMonth:  number;
   slippageMode:    'ideal' | 'good' | 'realistic' | 'volatile';
 }): CostBreakdown {
-  const { offer, underlying, exposure, lots, monthlyNotional, quoteCurrency, accountCurrency, tradesPerMonth, slippageMode } = params;
-  const pipVal        = pipValue(quoteCurrency, accountCurrency);
+  const { offer, underlying, exposure, lots: totalLots, monthlyNotional, quoteCurrency, accountCurrency, tradesPerMonth, slippageMode } = params;
+  
+  // Pip value dynamically based on actual lot size (not just standard)
+  const pipVal = pipValue(totalLots, quoteCurrency, accountCurrency);
   const liquidityTier = underlying?.liquidityTier ?? 'tier2';
   
-  // Slippage based on mode (not calculated, just assigned)
-  const slippagePips: Record<string, number> = {
-    ideal: 0,
-    good: 0.2,
-    realistic: 0.5,
-    volatile: 1.2,
-  };
+  // Slippage: base latency + market stress multiplier
+  const baseSlippagePips: Record<string, number> = { ideal: 0, good: 0.1, realistic: 0.3, volatile: 0.8 };
+  const stressMultiplier: Record<string, number> = { ideal: 1, good: 1.2, realistic: 1.5, volatile: 2.5 };
+  const slippagePips = baseSlippagePips[slippageMode] * stressMultiplier[slippageMode];
 
-  // Spread can be min or avg (use avg by default for realism)
-  const spreadAvg = offer.spreadAvgBps ?? offer.spreadMinBps ?? 10;
-  const spreadR  = spreadToRange((spreadAvg / 10_000) * exposure, DEFAULT_REGIME);
+  // Spread: use avg by default for realism (not min marketing)
+  const spreadType: 'min' | 'avg' = 'avg';
+  const spreadPips = spreadType === 'min' ? (offer.spreadMinBps ?? 5) : (offer.spreadAvgBps ?? 10);
+  const spreadR = spreadToRange((spreadPips / 10_000) * exposure, DEFAULT_REGIME);
 
-  // Tier-based commission
+  // Commission: use totalLots consistently + commission type (RT vs per_side)
+  const commissionType = offer.commissionType ?? 'round_turn';
   const tierMult = commissionTierMultiplier(monthlyNotional);
-  let commBase   = 0;
+  let commBase = 0;
   if (offer.commissionPerLotEUR != null) {
-    commBase = offer.commissionPerLotEUR * lots * tierMult;
+    commBase = offer.commissionPerLotEUR * totalLots * tierMult;
   } else if (offer.commissionPerLotUSD != null) {
-    commBase = offer.commissionPerLotUSD * fxRate('USD', accountCurrency) * lots * tierMult;
+    commBase = offer.commissionPerLotUSD * fxRate('USD', accountCurrency) * totalLots * tierMult;
   }
   // Min commission - CRITICAL for small accounts
   if (offer.commissionMinPerTradeEUR != null) {
     commBase = Math.max(commBase, offer.commissionMinPerTradeEUR);
   }
+  // If per_side, double the commission (open + close)
+  if (commissionType === 'per_side') {
+    commBase = commBase * 2;
+  }
   const commissionR = toRange(commBase);
   
-  // Slippage - based on mode selection
-  const slippageBase = slippagePips[slippageMode] * pipVal * lots;
+  // Slippage based on mode selection
+  const slippageBase = slippagePips * pipVal;
   const slippageR = toRange(slippageBase);
-  const totalR      = sumRange([spreadR, commissionR, slippageR]);
-  const totalEUR    = totalR.expected;
+  const totalR = sumRange([spreadR, commissionR, slippageR]);
+  const totalEUR = totalR.expected;
 
   // Monthly aggregated cost
   const monthlyCost = totalEUR * tradesPerMonth;
