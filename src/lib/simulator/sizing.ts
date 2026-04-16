@@ -199,6 +199,7 @@ export function deriveEngineInput(
     pipValueEUR?:     number;
     minLotSize?:      number;
     esmaMaxLeverage?: number;
+    slippageMode?:    'ideal' | 'good' | 'realistic' | 'volatile';
   },
 ): EngineInput & { sizingResult: SizingResult; tradesPerMonth: number } {
   const profile        = input.activeProfile ? PROFILE_PRESETS[input.activeProfile] : null;
@@ -222,7 +223,7 @@ export function deriveEngineInput(
     capital:        input.capital,
     lotSize:        sizingResult.lotSize,
     tradesPerMonth,
-    // restituiti per debug/UI — non fanno parte di EngineInput base
+    slippageMode:   options?.slippageMode ?? 'realistic',
     sizingResult,
   };
 }
