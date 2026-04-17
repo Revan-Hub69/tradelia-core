@@ -10,6 +10,7 @@ type LogoProps = {
   href?: string;
   className?: string;
   asChild?: boolean;
+  dark?: boolean;
 };
 
 /**
@@ -18,7 +19,7 @@ type LogoProps = {
  * Wordmark con gradient diagonale sharp 45°
  * Usa le CSS var del tema — light e dark corretti automaticamente.
  */
-export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChild = false }: LogoProps) => {
+export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChild = false, dark = false }: LogoProps) => {
   const sizes = {
     sm: { icon: 'size-6', text: 'text-lg', gap: 'gap-2' },
     md: { icon: 'size-7', text: 'text-xl', gap: 'gap-2.5' },
@@ -52,8 +53,9 @@ export const Logo = ({ isTextHidden = false, size = 'md', href, className, asChi
           <span
             className={cn(`font-bold tracking-tight leading-none ${text}`)}
             style={{
-              background:
-                'linear-gradient(45deg, hsl(var(--foreground)) 50%, hsl(var(--primary)) 50%)',
+              background: dark
+                ? 'linear-gradient(45deg, #e2e8f0 50%, hsl(var(--primary)) 50%)'
+                : 'linear-gradient(45deg, hsl(var(--foreground)) 50%, hsl(var(--primary)) 50%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',

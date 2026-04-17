@@ -28,7 +28,7 @@ export const LandingFooter = () => {
 
           {/* Col 1 — Platform identity */}
           <div className="md:col-span-2 lg:col-span-1">
-            <Logo href="/" />
+            <Logo href="/" dark />
             <p className="mt-4 max-w-xs text-sm leading-7 text-slate-400">
               {t('platform_description')}
             </p>
