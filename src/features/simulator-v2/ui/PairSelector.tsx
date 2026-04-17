@@ -11,6 +11,7 @@ import {
   PAIR_CATEGORIES,
   type PairCategory,
 } from '../data/forex-pairs';
+import { CurrencyFlag } from './CurrencyFlag';
 
 type PairSelectorProps = {
   value: string | null;
@@ -100,9 +101,9 @@ export function PairSelector({ value, onSelect, className }: PairSelectorProps) 
                 )}
               >
                 {/* Flags */}
-                <div className="flex items-center -space-x-1 text-2xl leading-none">
-                  <span className="drop-shadow-sm">{pair.baseFlag}</span>
-                  <span className="drop-shadow-sm">{pair.quoteFlag}</span>
+                <div className="flex items-center -space-x-1">
+                  <CurrencyFlag code={pair.base} size="md" />
+                  <CurrencyFlag code={pair.quote} size="md" />
                 </div>
 
                 {/* Symbol + name */}

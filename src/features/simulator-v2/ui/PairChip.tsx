@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 import { cn } from '@/utils/Helpers';
 
 import { FOREX_PAIRS, type ForexPair } from '../data/forex-pairs';
+import { CurrencyFlag } from './CurrencyFlag';
 import { PairSelector } from './PairSelector';
 
 type PairChipProps = {
@@ -50,9 +51,9 @@ export function PairChip({ value, onSelect }: PairChipProps) {
       >
         {pair && (
           <>
-            <span className="flex items-center text-base leading-none -space-x-0.5">
-              <span>{pair.baseFlag}</span>
-              <span>{pair.quoteFlag}</span>
+            <span className="flex items-center -space-x-1">
+              <CurrencyFlag code={pair.base} size="sm" />
+              <CurrencyFlag code={pair.quote} size="sm" />
             </span>
             <span className="font-mono text-xs font-semibold tracking-tight text-foreground">
               {pair.symbol}
