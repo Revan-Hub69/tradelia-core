@@ -52,7 +52,7 @@ const initialState: SimulatorState = {
 };
 
 // Mock results for UI development
-const MOCK_RESULTS: MockResult[] = [
+export const MOCK_RESULTS: MockResult[] = [
   {
     id: '1',
     rank: 1,

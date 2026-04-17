@@ -6,6 +6,7 @@ import {
   Gauge,
   Repeat,
   Sparkles,
+  Wallet,
   X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -22,14 +23,16 @@ type WizardProps = {
   onClose: () => void;
 };
 
+const CAPITAL_PRESETS = [1000, 2500, 5000, 10000, 25000, 50000];
 const LOTS_PRESETS = [0.01, 0.1, 0.5, 1, 2, 5];
 const TRADES_PRESETS = [5, 10, 20, 50, 100];
 
 export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
+  const [capital, setCapital] = useState<number>(10000);
   const [lotSize, setLotSize] = useState<number>(0.1);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
 
-  const canSubmit = lotSize > 0 && tradesPerMonth > 0;
+  const canSubmit = capital > 0 && lotSize > 0 && tradesPerMonth > 0;
   const defaultPair = assetId === 'forex' ? DEFAULT_FOREX_PAIR : null;
 
   const handleSubmit = () => {
@@ -39,7 +42,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
     onSubmit({
       assetId,
       pairSymbol: defaultPair?.symbol,
-      capital: 10000,
+      capital,
       tradesPerMonth,
       lotSize,
     });
@@ -74,12 +77,12 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6">
+      <div className="flex-1 space-y-6 overflow-y-auto p-6">
         {/* Pair context chip */}
         {defaultPair && (
           <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-popover/60 p-4 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <div className="flex items-center text-2xl leading-none -space-x-1">
+              <div className="flex items-center -space-x-1 text-2xl leading-none">
                 <span>{defaultPair.baseFlag}</span>
                 <span>{defaultPair.quoteFlag}</span>
               </div>
@@ -98,10 +101,37 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           </div>
         )}
 
+        {/* Account size */}
+        <InputCard
+          icon={Wallet}
+          accent="emerald"
+          label="Dimensione account"
+          hint="Il capitale totale del tuo conto trading"
+        >
+          <div className="mb-4 flex items-baseline gap-2">
+            <span className="text-2xl font-bold text-muted-foreground">€</span>
+            <input
+              type="number"
+              value={capital}
+              onChange={e => setCapital(Number(e.target.value))}
+              className="w-full border-0 bg-transparent text-3xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
+              min={100}
+              step={100}
+              aria-label="Dimensione account in euro"
+            />
+          </div>
+          <PresetChips
+            values={CAPITAL_PRESETS}
+            value={capital}
+            onSelect={setCapital}
+            format={v => `€${v.toLocaleString('it-IT')}`}
+          />
+        </InputCard>
+
         {/* Lot size */}
         <InputCard
           icon={Gauge}
-          accent="emerald"
+          accent="teal"
           label="Dimensione posizione"
           hint="Quanto è grande in media un tuo trade (in lotti standard)"
         >
@@ -128,7 +158,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
         {/* Trades per month */}
         <InputCard
           icon={Repeat}
-          accent="teal"
+          accent="emerald"
           label="Trade al mese"
           hint="Quante operazioni esegui mediamente in un mese"
         >

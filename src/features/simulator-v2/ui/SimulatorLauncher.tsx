@@ -3,10 +3,10 @@
 import '@/features/simulator-v2/styles/tokens.css';
 
 import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
-import { useSimulatorState } from '../state/useSimulatorState';
 import { type AssetId, AssetSelector } from './AssetSelector';
 import { SimulatorShell } from './SimulatorShell';
 
@@ -15,10 +15,16 @@ type SimulatorLauncherProps = {
 };
 
 export function SimulatorLauncher({ className }: SimulatorLauncherProps) {
-  const { state, open, close } = useSimulatorState();
+  const [selectedAsset, setSelectedAsset] = useState<AssetId | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleAssetSelect = (assetId: AssetId) => {
-    open(assetId);
+    setSelectedAsset(assetId);
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
   };
 
   return (
@@ -54,7 +60,11 @@ export function SimulatorLauncher({ className }: SimulatorLauncherProps) {
       </div>
 
       {/* Simulator Shell */}
-      <SimulatorShell isOpen={state.isOpen} onClose={close} />
+      <SimulatorShell
+        isOpen={isOpen}
+        onClose={handleClose}
+        assetId={selectedAsset}
+      />
     </div>
   );
 }

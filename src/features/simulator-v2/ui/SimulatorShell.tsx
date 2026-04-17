@@ -1,30 +1,42 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { BottomSheet } from '../layout/BottomSheet';
 import { Drawer } from '../layout/Drawer';
-import { useSimulatorState } from '../state/useSimulatorState';
+import type { MockResult, SimulatorInput } from '../state/useSimulatorState';
+import { MOCK_RESULTS } from '../state/useSimulatorState';
+import type { AssetId } from './AssetSelector';
 import { CompareView } from './CompareView';
 import { DetailView } from './DetailView';
 import { Wizard } from './Wizard';
 
+type ShellState = 'wizard' | 'results_compare' | 'results_detail';
+
 type SimulatorShellProps = {
   isOpen: boolean;
   onClose: () => void;
+  assetId: AssetId | null;
 };
 
-export function SimulatorShell({ isOpen, onClose }: SimulatorShellProps) {
+export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const {
-    state,
-    submitWizard,
-    selectBroker,
-    backToCompare,
-    getSelectedBroker,
-  } = useSimulatorState();
+  const [view, setView] = useState<ShellState>('wizard');
+  const [, setInput] = useState<SimulatorInput | null>(null);
+  const [results, setResults] = useState<MockResult[] | null>(null);
+  const [selectedBrokerId, setSelectedBrokerId] = useState<string | null>(null);
+
+  // Reset state every time shell opens
+  useEffect(() => {
+    if (isOpen) {
+      setView('wizard');
+      setInput(null);
+      setResults(null);
+      setSelectedBrokerId(null);
+    }
+  }, [isOpen]);
 
   // Lock body scroll when open
   useEffect(() => {
@@ -38,35 +50,55 @@ export function SimulatorShell({ isOpen, onClose }: SimulatorShellProps) {
     };
   }, [isOpen]);
 
-  // Render content based on current state
+  const handleSubmit = useCallback((nextInput: SimulatorInput) => {
+    setInput(nextInput);
+    setResults(MOCK_RESULTS);
+    setView('results_compare');
+  }, []);
+
+  const handleSelectBroker = useCallback((brokerId: string) => {
+    setSelectedBrokerId(brokerId);
+    setView('results_detail');
+  }, []);
+
+  const handleBackToCompare = useCallback(() => {
+    setSelectedBrokerId(null);
+    setView('results_compare');
+  }, []);
+
+  const getSelectedBroker = () => {
+    if (!selectedBrokerId || !results) {
+      return null;
+    }
+    return results.find(r => r.id === selectedBrokerId) ?? null;
+  };
+
   const renderContent = () => {
-    if (!state.selectedAsset) {
+    if (!assetId) {
       return null;
     }
 
-    switch (state.currentState) {
+    switch (view) {
       case 'wizard':
         return (
           <Wizard
-            assetId={state.selectedAsset}
-            onSubmit={submitWizard}
+            assetId={assetId}
+            onSubmit={handleSubmit}
             onClose={onClose}
           />
         );
-
       case 'results_compare':
-        if (!state.results) {
+        if (!results) {
           return null;
         }
         return (
           <CompareView
-            results={state.results}
-            onSelectBroker={selectBroker}
-            onBack={() => {}}
+            results={results}
+            onSelectBroker={handleSelectBroker}
+            onBack={() => setView('wizard')}
             onClose={onClose}
           />
         );
-
       case 'results_detail': {
         const broker = getSelectedBroker();
         if (!broker) {
@@ -75,12 +107,11 @@ export function SimulatorShell({ isOpen, onClose }: SimulatorShellProps) {
         return (
           <DetailView
             broker={broker}
-            onBack={backToCompare}
+            onBack={handleBackToCompare}
             onClose={onClose}
           />
         );
       }
-
       default:
         return null;
     }
@@ -89,7 +120,7 @@ export function SimulatorShell({ isOpen, onClose }: SimulatorShellProps) {
   const content = (
     <AnimatePresence mode="wait">
       <motion.div
-        key={state.currentState}
+        key={view}
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
