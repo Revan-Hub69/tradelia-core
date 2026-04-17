@@ -1,9 +1,8 @@
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function SimulatoreLink() {
-  const { locale } = useRouter();
+  const locale = useLocale();
   const t = useTranslations();
 
   return (

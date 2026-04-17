@@ -1,8 +1,0 @@
-{
-  "title": "Flow Radar",
-  "description": "Detects statistically relevant activity and anomalies in order flow data. Contextualises spikes rather than merely listing them.",
-  "feature1": "Anomaly detection with z-score threshold",
-  "feature2": "Flow context: direction, size, timing",
-  "feature3": "Signal filtering — noise suppression built in",
-  "cta_waitlist": "Join Waitlist"
-}

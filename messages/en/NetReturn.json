@@ -1,8 +1,0 @@
-{
-  "title": "Net Return Model",
-  "description": "Simulates the real outcome of an accumulation plan after broker fees, fund costs, and compounding. Compare gross vs net capital across brokers on the same ETF.",
-  "feature1": "Real broker fee schedule applied per period",
-  "feature2": "Gross vs net capital comparison",
-  "feature3": "Cost drag visualised over the full horizon",
-  "cta": "Run Net Return Model"
-}

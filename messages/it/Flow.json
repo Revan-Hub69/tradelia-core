@@ -1,8 +1,0 @@
-{
-  "title": "Flow Radar",
-  "description": "Individua attività statisticamente rilevanti e anomalie nel flusso ordini. Contestualizza i picchi invece di limitarsi a rilevarli.",
-  "feature1": "Rilevamento anomalie con soglia z-score",
-  "feature2": "Contesto del flusso: direzione, dimensione, timing",
-  "feature3": "Filtraggio segnali — riduzione del rumore integrata",
-  "cta_waitlist": "Unisciti alla waitlist"
-}

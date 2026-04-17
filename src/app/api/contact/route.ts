@@ -11,8 +11,6 @@ import {
   type Locale,
 } from '@/lib/email-templates';
 import { getClientIp, rateLimit } from '@/lib/rate-limit';
-import { db } from '@/lib/DB';
-import { supportTicketsSchema } from '@/models/Schema';
 import { contactFormSchema } from '@/types/contact';
 import { AppConfig } from '@/utils/AppConfig';
 
@@ -54,28 +52,6 @@ export async function POST(request: Request) {
     const acceptLanguage = request.headers.get('accept-language');
     const locale: Locale = detectLocale(acceptLanguage);
     const ticketId = generateTicketId();
-
-    if (process.env.DATABASE_URL) {
-      try {
-        await db.insert(supportTicketsSchema).values({
-          id: ticketId,
-          status: 'open',
-          priority: 'medium',
-          userName: data.name,
-          userEmail: data.email,
-          userPhone: data.phone,
-          userLocale: locale,
-          inquiryType: data.inquiryType,
-          subject: data.subject,
-          message: data.message,
-          source: 'contact_form',
-          userAgent: request.headers.get('user-agent') || undefined,
-          ipAddress: ip,
-        });
-      } catch (dbError) {
-        console.error('DB error:', dbError);
-      }
-    }
 
     if (smtpHost && smtpUser && smtpPass) {
       try {
