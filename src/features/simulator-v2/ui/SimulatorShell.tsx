@@ -28,7 +28,6 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
   const [results, setResults] = useState<BrokerResult[] | null>(null);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string | null>(null);
 
-  // Reset state every time shell opens
   useEffect(() => {
     if (isOpen) {
       setView('wizard');
@@ -38,7 +37,6 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
     }
   }, [isOpen]);
 
-  // Lock body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';

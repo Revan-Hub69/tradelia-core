@@ -3,13 +3,13 @@
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
+  Calculator,
   Gauge,
   Repeat,
-  Sparkles,
   Wallet,
   X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
@@ -24,10 +24,29 @@ type WizardProps = {
   onClose: () => void;
 };
 
-// Retail-realistic presets (2026 aggregated market data)
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
-const LOTS_PRESETS = [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2];
 const TRADES_PRESETS = [5, 10, 20, 50, 100];
+
+/**
+ * Lot presets scale with account size.
+ * Rationale: a €100 account trading 2 lots = €200k notional = blowup.
+ * Industry rule of thumb: risk ≤ 2% per trade, so size scales ~linearly with capital.
+ */
+function getLotPresets(capital: number): number[] {
+  if (capital < 250) {
+    return [0.01, 0.02, 0.05];
+  }
+  if (capital < 1000) {
+    return [0.01, 0.05, 0.1, 0.2];
+  }
+  if (capital < 5000) {
+    return [0.05, 0.1, 0.25, 0.5, 1];
+  }
+  if (capital < 25000) {
+    return [0.1, 0.25, 0.5, 1, 2, 5];
+  }
+  return [0.5, 1, 2, 5, 10];
+}
 
 export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
   const isForex = assetId === 'forex';
@@ -37,6 +56,8 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
   const [capital, setCapital] = useState<number>(1000);
   const [lotSize, setLotSize] = useState<number>(0.1);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
+
+  const lotPresets = useMemo(() => getLotPresets(capital), [capital]);
 
   const canSubmit
     = capital >= 10 && lotSize >= 0.001 && tradesPerMonth > 0;
@@ -56,102 +77,78 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
 
   return (
     <div className="flex h-full flex-col bg-card text-foreground">
-      {/* Header */}
-      <div className="relative border-b border-border/60 px-6 pb-5 pt-6">
+      {/* Header — compact */}
+      <div className="relative flex items-center justify-between border-b border-border/60 px-5 py-3">
+        <div className="flex items-center gap-2.5">
+          <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Forex Simulator
+          </p>
+          {isForex && (
+            <>
+              <span className="text-muted-foreground/30">·</span>
+              <PairChip value={pairSymbol} onSelect={setPairSymbol} label="su" />
+            </>
+          )}
+        </div>
+
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label="Chiudi"
         >
-          <X className="size-5" />
+          <X className="size-4" />
         </button>
-
-        <div className="flex items-center gap-2">
-          <span className="inline-flex size-2 rounded-full bg-primary shadow-[0_0_12px_hsl(var(--primary))]" />
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Forex Cost Simulator
-          </p>
-        </div>
-
-        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
-          Simula i costi reali del forex
-        </h2>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Spread, commissioni e funding aggregati da tariffari broker pubblici.
-          Imposta il tuo scenario e confronta i broker eleggibili.
-        </p>
-
-        {/* Pair chip inline */}
-        {isForex && (
-          <div className="mt-5">
-            <PairChip value={pairSymbol} onSelect={setPairSymbol} />
-          </div>
-        )}
       </div>
 
       {/* Content */}
-      <div className="flex-1 space-y-5 overflow-y-auto px-6 py-6">
+      <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
         {/* Account size */}
         <InputCard
           icon={Wallet}
           accent="emerald"
           label="Dimensione account"
-          hint="Il capitale totale del tuo conto trading"
+          hint="Il capitale del tuo conto trading"
         >
-          <div className="mb-4 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-muted-foreground">€</span>
-            <input
-              type="number"
-              value={capital}
-              onChange={e => setCapital(Number(e.target.value))}
-              className="w-full border-0 bg-transparent text-3xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
-              min={10}
-              step={10}
-              aria-label="Dimensione account in euro"
-            />
-          </div>
+          <EditableAmount
+            prefix="€"
+            value={capital}
+            onChange={setCapital}
+            min={10}
+            step={10}
+          />
           <PresetChips
             values={CAPITAL_PRESETS}
             value={capital}
             onSelect={setCapital}
             format={v => `€${v >= 1000 ? `${v / 1000}k` : v}`}
           />
-          <p className="mt-3 text-[11px] text-muted-foreground/70">
-            Il capitale filtra i broker che potresti realmente aprire (ogni
-            broker ha un deposito minimo).
-          </p>
         </InputCard>
 
-        {/* Lot size */}
+        {/* Lot size — adaptive to account */}
         <InputCard
           icon={Gauge}
           accent="teal"
           label="Dimensione posizione"
-          hint="Grandezza media di un tuo trade"
+          hint={`Lotti per trade · ${formatLotLabel(lotSize)}`}
         >
-          <div className="mb-4 flex items-baseline gap-2">
-            <input
-              type="number"
-              value={lotSize}
-              onChange={e => setLotSize(Number(e.target.value))}
-              className="w-full border-0 bg-transparent text-3xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
-              min={0.001}
-              step={0.01}
-              aria-label="Dimensione posizione in lotti"
-            />
-            <span className="text-sm font-medium text-muted-foreground">
-              {formatLotLabel(lotSize)}
-            </span>
-          </div>
+          <EditableAmount
+            suffix="lot"
+            value={lotSize}
+            onChange={setLotSize}
+            min={0.001}
+            step={0.01}
+            decimals={3}
+          />
           <PresetChips
-            values={LOTS_PRESETS}
+            values={lotPresets}
             value={lotSize}
             onSelect={setLotSize}
             format={v => String(v)}
           />
-          <p className="mt-3 text-[11px] text-muted-foreground/70">
-            1 micro lot = 1.000 unità · 1 mini = 10.000 · 1 standard = 100.000
+          <p className="mt-2.5 text-[11px] text-muted-foreground/70">
+            Preset calibrati sul tuo capitale · puoi digitare qualsiasi valore
           </p>
         </InputCard>
 
@@ -160,22 +157,16 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           icon={Repeat}
           accent="emerald"
           label="Trade al mese"
-          hint="Quante operazioni esegui mediamente"
+          hint="Frequenza operativa media"
         >
-          <div className="mb-4 flex items-baseline gap-2">
-            <input
-              type="number"
-              value={tradesPerMonth}
-              onChange={e => setTradesPerMonth(Number(e.target.value))}
-              className="w-full border-0 bg-transparent text-3xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
-              min={1}
-              max={500}
-              aria-label="Numero trade al mese"
-            />
-            <span className="text-sm font-medium text-muted-foreground">
-              / mese
-            </span>
-          </div>
+          <EditableAmount
+            suffix="/mese"
+            value={tradesPerMonth}
+            onChange={setTradesPerMonth}
+            min={1}
+            max={500}
+            step={1}
+          />
           <PresetChips
             values={TRADES_PRESETS}
             value={tradesPerMonth}
@@ -194,21 +185,17 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           whileHover={canSubmit ? { scale: 1.01 } : {}}
           whileTap={canSubmit ? { scale: 0.99 } : {}}
           className={cn(
-            'group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-semibold transition-all',
+            'group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all',
             'bg-primary text-primary-foreground shadow-lg shadow-primary/20',
             'hover:shadow-xl hover:shadow-primary/30',
             'disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
           )}
         >
-          <Sparkles className="size-4" />
-          Vedi broker eleggibili
+          <Calculator className="size-4" />
+          Calcola stima
           <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
         </motion.button>
-        <p className="mt-2 text-center text-[11px] text-muted-foreground/70">
-          Gratuito · nessuna registrazione · dati aggregati da tariffari
-          pubblici
-        </p>
       </div>
     </div>
   );
@@ -219,15 +206,15 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
 
 function formatLotLabel(lot: number): string {
   if (lot < 0.01) {
-    return 'nano lot';
+    return 'nano';
   }
   if (lot < 0.1) {
-    return 'micro lot';
+    return 'micro';
   }
   if (lot < 1) {
-    return 'mini lot';
+    return 'mini';
   }
-  return 'standard lot';
+  return 'standard';
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -243,23 +230,78 @@ type InputCardProps = {
 
 function InputCard({ icon: Icon, accent, label, hint, children }: InputCardProps) {
   return (
-    <div className="rounded-xl border border-border/60 bg-popover/40 p-5 backdrop-blur-sm transition-colors hover:border-border">
-      <div className="mb-4 flex items-center gap-3">
+    <div className="rounded-xl border border-border/60 bg-popover/40 p-4">
+      <div className="mb-3 flex items-center gap-2.5">
         <div
           className={cn(
-            'flex size-10 items-center justify-center rounded-xl',
+            'flex size-8 items-center justify-center rounded-lg',
             accent === 'emerald' && 'bg-primary/10 text-primary',
             accent === 'teal' && 'bg-accent/10 text-accent',
           )}
         >
-          <Icon className="size-5" />
+          <Icon className="size-4" />
         </div>
-        <div>
-          <p className="text-sm font-semibold text-foreground">{label}</p>
-          <p className="text-xs text-muted-foreground">{hint}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold text-foreground">{label}</p>
+          <p className="truncate text-[11px] text-muted-foreground">{hint}</p>
         </div>
       </div>
       {children}
+    </div>
+  );
+}
+
+type EditableAmountProps = {
+  value: number;
+  onChange: (v: number) => void;
+  prefix?: string;
+  suffix?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  decimals?: number;
+};
+
+function EditableAmount({
+  value,
+  onChange,
+  prefix,
+  suffix,
+  min,
+  max,
+  step,
+  decimals,
+}: EditableAmountProps) {
+  return (
+    <div
+      className={cn(
+        'mb-3 flex items-baseline gap-2 border-b-2 border-border pb-1.5 transition-colors',
+        'focus-within:border-primary',
+      )}
+    >
+      {prefix && (
+        <span className="text-xl font-semibold text-muted-foreground">
+          {prefix}
+        </span>
+      )}
+      <input
+        type="number"
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
+        min={min}
+        max={max}
+        step={step}
+        inputMode="decimal"
+      />
+      {suffix && (
+        <span className="text-xs font-medium text-muted-foreground">
+          {suffix}
+        </span>
+      )}
+      <span className="hidden text-[10px] uppercase tracking-wider text-muted-foreground/60 group-focus-within:block">
+        editable
+      </span>
     </div>
   );
 }
@@ -280,7 +322,7 @@ function PresetChips<T>({ values, value, onSelect, format }: PresetChipsProps<T>
           type="button"
           onClick={() => onSelect(v)}
           className={cn(
-            'rounded-lg px-3 py-1.5 text-xs font-medium transition-all',
+            'rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
             value === v
               ? 'bg-primary text-primary-foreground shadow-sm'
