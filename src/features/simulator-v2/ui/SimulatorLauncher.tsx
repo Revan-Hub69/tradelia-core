@@ -50,7 +50,7 @@ export function SimulatorLauncher({ className }: SimulatorLauncherProps) {
       {/* Footnote with enhanced styling */}
       <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground/80">
         <ArrowRight className="size-3.5 text-primary transition-transform duration-300 group-hover:translate-x-1" />
-        <span className="font-medium">Wizard · confronto broker · breakdown costi</span>
+        <span className="font-medium">Dati di mercato rilevati · confronto · breakdown costi</span>
       </div>
 
       {/* Simulator Shell */}

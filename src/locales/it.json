@@ -6,11 +6,11 @@
   "TradeHero": {
     "eyebrow": "Tradelia · Simulatore costi operativi",
     "title": "Quanto ti costa davvero operare sui mercati",
-    "subtitle": "Inserisci asset, capitale, leva e orizzonte: il motore calcola spread, commissioni, funding e qualità di esecuzione sui tariffari broker e ordina i più efficienti per il tuo scenario operativo.",
+    "subtitle": "Inserisci asset, capitale, leva e orizzonte: il motore calcola spread, commissioni, funding e qualità di esecuzione su dati di mercato rilevati e ordina i più efficienti per il tuo scenario operativo.",
     "simulator_label": "Motore",
     "cta": "Avvia simulazione",
     "cta_note": "Gratuito, senza registrazione",
-    "trust": "Strumento informativo · Non è consulenza finanziaria · Basato su tariffari broker pubblici"
+    "trust": "Strumento informativo · Non è consulenza finanziaria · Basato su dati di mercato rilevati"
   },
   "HowItWorks": {
     "eyebrow": "Come funziona",
@@ -21,7 +21,7 @@
     "step1_desc": "Inserisci capitale, leva, orizzonte temporale (scalping, intraday, multi-day, lungo termine) e strategia operativa (breakout, momentum, pullback, carry).",
     "step2_tag": "Calcolo",
     "step2_title": "Analisi su dati reali misurati",
-    "step2_desc": "Il simulatore applica spread, commissioni, rollover e theta decay da database misurato — non medie generiche. Classifica automaticamente strumenti e broker per efficienza nel tuo scenario.",
+    "step2_desc": "Il simulatore applica spread, commissioni e funding da dati di mercato rilevati in tempo reale — non medie generiche. Classifica automaticamente strumenti per efficienza nel tuo scenario.",
     "step3_tag": "Output",
     "step3_title": "Classifiche e impatto sul capitale",
     "step3_desc": "Tabella dinamica con costi totali e indice di efficienza. I grafici mostrano quanto pesano davvero i costi sul tuo capitale nel tempo."

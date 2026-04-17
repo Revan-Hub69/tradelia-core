@@ -28,6 +28,7 @@ type Asset = {
   icon: React.ElementType;
   color: string;
   gradient: string;
+  available: boolean;
 };
 
 const ASSETS: Asset[] = [
@@ -38,6 +39,7 @@ const ASSETS: Asset[] = [
     icon: Globe,
     color: 'text-[#10b981]',
     gradient: 'from-[#10b981]/20 to-[#14b8a6]/5',
+    available: true,
   },
   {
     id: 'indices',
@@ -46,6 +48,7 @@ const ASSETS: Asset[] = [
     icon: BarChart3,
     color: 'text-[#3b82f6]',
     gradient: 'from-[#3b82f6]/20 to-[#06b6d4]/5',
+    available: false,
   },
   {
     id: 'equities',
@@ -54,6 +57,7 @@ const ASSETS: Asset[] = [
     icon: Building2,
     color: 'text-[#8b5cf6]',
     gradient: 'from-[#8b5cf6]/20 to-[#06b6d4]/5',
+    available: false,
   },
   {
     id: 'commodities',
@@ -62,6 +66,7 @@ const ASSETS: Asset[] = [
     icon: Wheat,
     color: 'text-[#f59e0b]',
     gradient: 'from-[#f59e0b]/20 to-[#ef4444]/5',
+    available: false,
   },
   {
     id: 'crypto',
@@ -70,6 +75,7 @@ const ASSETS: Asset[] = [
     icon: Coins,
     color: 'text-[#ef4444]',
     gradient: 'from-[#ef4444]/20 to-[#8b5cf6]/5',
+    available: false,
   },
 ];
 
@@ -92,23 +98,26 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
         <motion.button
           key={asset.id}
           type="button"
-          onClick={() => onSelect(asset.id)}
+          onClick={() => asset.available && onSelect(asset.id)}
+          disabled={!asset.available}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.05, duration: 0.3 }}
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={asset.available ? { scale: 1.02, y: -2 } : {}}
+          whileTap={asset.available ? { scale: 0.98 } : {}}
           className={cn(
             'group relative flex flex-col items-center gap-3 rounded-xl p-4',
             'border border-border/60 bg-card/80',
-            'hover:border-primary/30 hover:bg-popover',
+            asset.available && 'hover:border-primary/30 hover:bg-popover',
+            !asset.available && 'cursor-not-allowed opacity-60',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
             'transition-all duration-300 ease-out',
             'backdrop-blur-sm',
-            'shadow-sm hover:shadow-lg hover:shadow-primary/5',
+            asset.available && 'shadow-sm hover:shadow-lg hover:shadow-primary/5',
           )}
-          aria-label={`Seleziona ${asset.label} - ${asset.desc}`}
+          aria-label={asset.available ? `Seleziona ${asset.label} - ${asset.desc}` : `${asset.label} - In arrivo`}
           role="radio"
+          aria-disabled={!asset.available}
         >
           {/* Icon container with premium hover glow */}
           <div
@@ -149,13 +158,27 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
           </motion.div>
 
           {/* Card glow effect - premium iOS 26 style */}
-          <div
-            className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-all duration-500 group-hover:opacity-100"
-            style={{
-              background: `radial-gradient(140px circle at 50% 30%, ${asset.id === 'forex' ? 'rgba(16, 185, 129, 0.12)' : asset.id === 'indices' ? 'rgba(59, 130, 246, 0.12)' : asset.id === 'equities' ? 'rgba(139, 92, 246, 0.12)' : asset.id === 'commodities' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)'}, transparent 70%)`,
-            }}
-            aria-hidden="true"
-          />
+          {asset.available && (
+            <div
+              className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-all duration-500 group-hover:opacity-100"
+              style={{
+                background: `radial-gradient(140px circle at 50% 30%, ${asset.id === 'forex' ? 'rgba(16, 185, 129, 0.12)' : asset.id === 'indices' ? 'rgba(59, 130, 246, 0.12)' : asset.id === 'equities' ? 'rgba(139, 92, 246, 0.12)' : asset.id === 'commodities' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)'}, transparent 70%)`,
+              }}
+              aria-hidden="true"
+            />
+          )}
+
+          {/* Coming Soon overlay for unavailable assets */}
+          {!asset.available && (
+            <div
+              className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/40 backdrop-blur-[2px]"
+              aria-hidden="true"
+            >
+              <span className="rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground shadow-lg">
+                In arrivo
+              </span>
+            </div>
+          )}
         </motion.button>
       ))}
     </div>

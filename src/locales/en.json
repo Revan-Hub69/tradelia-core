@@ -6,11 +6,11 @@
   "TradeHero": {
     "eyebrow": "Tradelia · Trading Cost Simulator",
     "title": "How much trading really costs you",
-    "subtitle": "Enter asset, capital, leverage and horizon: the engine applies spread, commissions, funding and execution quality from real broker fee schedules and ranks the most efficient ones for your scenario.",
+    "subtitle": "Enter asset, capital, leverage and horizon: the engine applies spread, commissions, funding and execution quality from real measured market data and ranks the most efficient ones for your scenario.",
     "simulator_label": "Engine",
     "cta": "Run Simulation",
     "cta_note": "Free, no sign-up required",
-    "trust": "Informational tool · Not financial advice · Based on public broker fee schedules"
+    "trust": "Informational tool · Not financial advice · Based on real measured market data"
   },
   "HowItWorks": {
     "eyebrow": "How it works",
@@ -21,7 +21,7 @@
     "step1_desc": "Enter capital, leverage, time horizon (scalping, intraday, multi-day, long-term) and trading strategy (breakout, momentum, pullback, carry).",
     "step2_tag": "Calculation",
     "step2_title": "Analysis on real measured data",
-    "step2_desc": "The simulator applies spreads, commissions, rollover, and theta decay from a measured database — not generic averages. Instruments and brokers are automatically ranked by efficiency for your scenario.",
+    "step2_desc": "The simulator applies spreads, commissions and funding from real-time measured market data — not generic averages. Instruments are automatically ranked by efficiency for your scenario.",
     "step3_tag": "Output",
     "step3_title": "Rankings and cost impact on capital",
     "step3_desc": "Dynamic table with total costs and efficiency index. Charts show how much costs actually weigh on your capital over time."
