@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Calculator,
   Gauge,
+  Pencil,
   Repeat,
   Wallet,
   X,
@@ -28,26 +29,28 @@ const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
 const TRADES_PRESETS = [5, 10, 20, 50, 100];
 
 /**
- * Lot presets scale with account size.
- * Rationale: a €100 account trading 2 lots = €200k notional = blowup.
- * Industry rule of thumb: risk ≤ 2% per trade, so size scales ~linearly with capital.
+ * Lot presets balanced with account size.
+ * Rule: max preset should allow ~10% of account at 100:1 leverage (micro) or
+ * reflect realistic retail position sizing (0.01-0.5 lot typical).
  */
 function getLotPresets(capital: number): number[] {
-  if (capital < 100) {
-    return [0.001, 0.005, 0.01, 0.02];
+  if (capital < 500) {
+    // Cent/micro accounts - nano lots
+    return [0.001, 0.005, 0.01, 0.02, 0.05];
   }
-  if (capital < 250) {
-    return [0.001, 0.01, 0.02, 0.05];
-  }
-  if (capital < 1000) {
-    return [0.01, 0.05, 0.1, 0.2];
+  if (capital < 2000) {
+    // Small retail - micro lots
+    return [0.01, 0.02, 0.05, 0.1, 0.2];
   }
   if (capital < 5000) {
-    return [0.05, 0.1, 0.25, 0.5, 1];
+    // Mid retail - mini/micro mix
+    return [0.05, 0.1, 0.2, 0.5, 1];
   }
-  if (capital < 25000) {
-    return [0.1, 0.25, 0.5, 1, 2, 5];
+  if (capital < 20000) {
+    // Standard retail
+    return [0.1, 0.25, 0.5, 1, 2];
   }
+  // Pro/large accounts
   return [0.5, 1, 2, 5, 10];
 }
 
@@ -157,9 +160,6 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             onSelect={v => setLotSize(v)}
             format={v => String(v)}
           />
-          <p className="mt-2.5 text-[11px] text-muted-foreground/70">
-            Preset calibrati sul tuo capitale · puoi digitare qualsiasi valore
-          </p>
         </InputCard>
 
         {/* Trades per month */}
@@ -285,7 +285,7 @@ function EditableAmount({
   return (
     <div
       className={cn(
-        'mb-3 flex items-baseline gap-2 border-b-2 border-border pb-1.5 transition-colors',
+        'group mb-3 flex items-baseline gap-2 border-b-2 border-border pb-1.5 transition-colors',
         'focus-within:border-primary',
       )}
     >
@@ -309,9 +309,7 @@ function EditableAmount({
           {suffix}
         </span>
       )}
-      <span className="hidden text-[10px] uppercase tracking-wider text-muted-foreground/60 group-focus-within:block">
-        editable
-      </span>
+      <Pencil className="size-3.5 text-muted-foreground/50 group-focus-within:text-primary" />
     </div>
   );
 }
