@@ -1,7 +1,6 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -62,16 +61,7 @@ function DrawerContent({
               'shadow-2xl shadow-black/50',
             )}
           >
-            {/* Close button */}
-            <button
-              type="button"
-              onClick={onClose}
-              className="absolute right-4 top-4 z-10 rounded-lg p-2 transition-colors hover:bg-accent"
-            >
-              <X className="size-5 text-muted-foreground" />
-            </button>
-
-            {/* Content */}
+            {/* Content — inner views provide their own close button */}
             <div className="h-full overflow-hidden">
               {children}
             </div>

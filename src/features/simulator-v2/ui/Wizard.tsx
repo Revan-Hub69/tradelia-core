@@ -33,8 +33,11 @@ const TRADES_PRESETS = [5, 10, 20, 50, 100];
  * Industry rule of thumb: risk ≤ 2% per trade, so size scales ~linearly with capital.
  */
 function getLotPresets(capital: number): number[] {
+  if (capital < 100) {
+    return [0.001, 0.005, 0.01, 0.02];
+  }
   if (capital < 250) {
-    return [0.01, 0.02, 0.05];
+    return [0.001, 0.01, 0.02, 0.05];
   }
   if (capital < 1000) {
     return [0.01, 0.05, 0.1, 0.2];
@@ -78,32 +81,39 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
   return (
     <div className="flex h-full flex-col bg-card text-foreground">
       {/* Header — compact */}
-      <div className="relative flex items-center justify-between border-b border-border/60 px-5 py-3">
-        <div className="flex items-center gap-2.5">
-          <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Forex Simulator
-          </p>
-          {isForex && (
-            <>
-              <span className="text-muted-foreground/30">·</span>
-              <PairChip value={pairSymbol} onSelect={setPairSymbol} label="su" />
-            </>
-          )}
+      <div className="border-b border-border/60">
+        <div className="flex items-center justify-between px-5 py-2.5">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              Forex Simulator
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Chiudi"
+          >
+            <X className="size-4" />
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          aria-label="Chiudi"
-        >
-          <X className="size-4" />
-        </button>
+        {isForex && (
+          <div className="border-t border-border/40 bg-popover/30 px-5 py-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Coppia
+              </span>
+              <PairChip value={pairSymbol} onSelect={setPairSymbol} />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
+      <div className="flex-1 space-y-4 overflow-y-auto p-5">
         {/* Account size */}
         <InputCard
           icon={Wallet}
@@ -118,10 +128,10 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             min={10}
             step={10}
           />
-          <PresetChips
+          <PresetChips<number>
             values={CAPITAL_PRESETS}
             value={capital}
-            onSelect={setCapital}
+            onSelect={v => setCapital(v)}
             format={v => `€${v >= 1000 ? `${v / 1000}k` : v}`}
           />
         </InputCard>
@@ -141,10 +151,10 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             step={0.01}
             decimals={3}
           />
-          <PresetChips
+          <PresetChips<number>
             values={lotPresets}
             value={lotSize}
-            onSelect={setLotSize}
+            onSelect={v => setLotSize(v)}
             format={v => String(v)}
           />
           <p className="mt-2.5 text-[11px] text-muted-foreground/70">
@@ -167,10 +177,10 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             max={500}
             step={1}
           />
-          <PresetChips
+          <PresetChips<number>
             values={TRADES_PRESETS}
             value={tradesPerMonth}
-            onSelect={setTradesPerMonth}
+            onSelect={v => setTradesPerMonth(v)}
             format={v => String(v)}
           />
         </InputCard>

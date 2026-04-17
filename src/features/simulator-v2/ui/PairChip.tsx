@@ -1,9 +1,8 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { ChevronDown } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
@@ -16,29 +15,17 @@ type PairChipProps = {
   label?: string;
 };
 
-export function PairChip({ value, onSelect, label = 'Simula su' }: PairChipProps) {
+/**
+ * PairChip: clickable chip that reveals an inline collapsible PairSelector.
+ * No modal, no portal — just an expanding section that slides down under
+ * the chip. This avoids all positioning issues and is the standard pattern
+ * for contextual selectors inside drawers/sheets.
+ */
+export function PairChip({ value, onSelect }: PairChipProps) {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const pair: ForexPair | undefined = FOREX_PAIRS.find(p => p.symbol === value);
-
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [open]);
 
   const handleSelect = (symbol: string) => {
     onSelect(symbol);
@@ -46,79 +33,24 @@ export function PairChip({ value, onSelect, label = 'Simula su' }: PairChipProps
     triggerRef.current?.focus();
   };
 
-  const modal = (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setOpen(false)}
-            className="fixed inset-0 z-[200] bg-background/70 backdrop-blur-sm"
-            aria-hidden="true"
-          />
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Seleziona coppia forex"
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className={cn(
-              'fixed left-1/2 top-1/2 z-[201] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2',
-              'rounded-2xl border border-border bg-card p-5 shadow-2xl',
-              'max-h-[calc(100vh-2rem)] overflow-y-auto',
-            )}
-          >
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h3 className="text-base font-semibold text-foreground">
-                  Scegli coppia
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  18 coppie disponibili
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                aria-label="Chiudi"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-
-            <PairSelector value={value} onSelect={handleSelect} />
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  );
-
   return (
-    <>
+    <div className="w-full">
       <button
         ref={triggerRef}
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => setOpen(v => !v)}
         className={cn(
-          'group inline-flex items-center gap-2 rounded-full border px-2.5 py-1 transition-all',
-          'border-border/60 bg-popover/60 backdrop-blur-sm',
-          'hover:border-primary/40 hover:bg-popover',
+          'group inline-flex items-center gap-2 rounded-full border px-3 py-1 transition-all',
+          open
+            ? 'border-primary bg-primary/10 shadow-sm shadow-primary/20'
+            : 'border-border/60 bg-popover/60 hover:border-primary/40 hover:bg-popover',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         )}
-        aria-haspopup="dialog"
         aria-expanded={open}
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-          {label}
-        </span>
         {pair && (
           <>
-            <span className="flex items-center text-sm leading-none -space-x-0.5">
+            <span className="flex items-center text-base leading-none -space-x-0.5">
               <span>{pair.baseFlag}</span>
               <span>{pair.quoteFlag}</span>
             </span>
@@ -127,10 +59,29 @@ export function PairChip({ value, onSelect, label = 'Simula su' }: PairChipProps
             </span>
           </>
         )}
-        <ChevronDown className="size-3 text-muted-foreground" />
+        <ChevronDown
+          className={cn(
+            'size-3.5 text-muted-foreground transition-transform duration-200',
+            open && 'rotate-180 text-primary',
+          )}
+        />
       </button>
 
-      {mounted && createPortal(modal, document.body)}
-    </>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.2, 0, 0.2, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="mt-3 rounded-xl border border-border/60 bg-popover/60 p-3 backdrop-blur-sm">
+              <PairSelector value={value} onSelect={handleSelect} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
