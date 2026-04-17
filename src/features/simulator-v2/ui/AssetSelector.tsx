@@ -100,23 +100,34 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
           whileTap={{ scale: 0.98 }}
           className={cn(
             'group relative flex flex-col items-center gap-3 rounded-xl p-4',
-            'border border-border/60 bg-card',
-            'hover:border-border hover:bg-popover',
+            'border border-border/60 bg-card/80',
+            'hover:border-primary/30 hover:bg-popover',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-            'transition-all duration-200 ease-out',
+            'transition-all duration-300 ease-out',
             'backdrop-blur-sm',
+            'shadow-sm hover:shadow-lg hover:shadow-primary/5',
           )}
           aria-label={`Seleziona ${asset.label} - ${asset.desc}`}
           role="radio"
         >
-          {/* Icon container */}
+          {/* Icon container with premium hover glow */}
           <div
             className={cn(
-              'rounded-lg bg-muted p-3',
-              'transition-colors duration-200 group-hover:bg-secondary',
+              'relative rounded-xl bg-muted p-3',
+              'transition-all duration-300 ease-out',
+              'group-hover:bg-secondary group-hover:scale-110',
+              'group-hover:shadow-lg',
             )}
           >
-            <asset.icon className={cn('size-6', asset.color)} />
+            <asset.icon className={cn('size-6 transition-transform duration-300 group-hover:scale-105', asset.color)} />
+            {/* Subtle glow on icon hover */}
+            <div
+              className="pointer-events-none absolute inset-0 rounded-xl opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-50"
+              style={{
+                background: `radial-gradient(circle at center, ${asset.id === 'forex' ? 'rgba(16, 185, 129, 0.4)' : asset.id === 'indices' ? 'rgba(59, 130, 246, 0.4)' : asset.id === 'equities' ? 'rgba(139, 92, 246, 0.4)' : asset.id === 'commodities' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(239, 68, 68, 0.4)'}, transparent 70%)`,
+              }}
+              aria-hidden="true"
+            />
           </div>
 
           {/* Label */}
@@ -137,11 +148,11 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
             <ArrowRight className="size-4 text-muted-foreground/70 transition-colors group-hover:text-muted-foreground" />
           </motion.div>
 
-          {/* Glow effect - SOTA 2026 brand glow */}
+          {/* Card glow effect - premium iOS 26 style */}
           <div
-            className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-all duration-500 group-hover:opacity-100"
             style={{
-              background: `radial-gradient(120px circle at 50% 50%, ${asset.id === 'forex' ? 'rgba(16, 185, 129, 0.15)' : asset.id === 'indices' ? 'rgba(59, 130, 246, 0.15)' : asset.id === 'equities' ? 'rgba(139, 92, 246, 0.15)' : asset.id === 'commodities' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)'}, transparent 60%)`,
+              background: `radial-gradient(140px circle at 50% 30%, ${asset.id === 'forex' ? 'rgba(16, 185, 129, 0.12)' : asset.id === 'indices' ? 'rgba(59, 130, 246, 0.12)' : asset.id === 'equities' ? 'rgba(139, 92, 246, 0.12)' : asset.id === 'commodities' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)'}, transparent 70%)`,
             }}
             aria-hidden="true"
           />

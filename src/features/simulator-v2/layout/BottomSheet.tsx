@@ -3,6 +3,7 @@
 import type { PanInfo } from 'framer-motion';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { cn } from '@/utils/Helpers';
 
@@ -12,15 +13,15 @@ type BottomSheetProps = {
   children: React.ReactNode;
 };
 
-export function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
+function BottomSheetContent({ isOpen, onClose, children }: BottomSheetProps) {
   const [dragY, setDragY] = useState(0);
 
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
- onClose();
-}
+        onClose();
+      }
     };
 
     if (isOpen) {
@@ -52,7 +53,7 @@ export function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-md"
           />
 
           {/* Sheet */}
@@ -67,15 +68,15 @@ export function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
             className={cn(
-              'fixed bottom-0 left-0 right-0 z-50',
+              'fixed bottom-0 left-0 right-0 z-[101]',
               'h-[90vh] rounded-t-3xl',
-              'bg-slate-900 border-t border-white/10',
+              'bg-card border-t border-border',
               'shadow-2xl shadow-black/50',
             )}
           >
             {/* Handle */}
             <div className="flex justify-center pb-1 pt-3">
-              <div className="h-1.5 w-12 rounded-full bg-slate-600" />
+              <div className="h-1.5 w-12 rounded-full bg-muted" />
             </div>
 
             {/* Content */}
@@ -87,4 +88,18 @@ export function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
       )}
     </AnimatePresence>
   );
+}
+
+export function BottomSheet(props: BottomSheetProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return createPortal(<BottomSheetContent {...props} />, document.body);
 }

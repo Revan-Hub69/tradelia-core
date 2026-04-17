@@ -1,12 +1,12 @@
 {
   "Index": {
-    "meta_title": "Tradelia | CFD Operational Friction Simulator",
-    "meta_description": "Measure the real costs of your CFD trading across forex, indices, equities, commodities and crypto. Spreads, commissions, funding and execution quality quantified on your scenario."
+    "meta_title": "Tradelia | Trading Cost Simulator",
+    "meta_description": "Measure the real friction of your trading across forex, indices, equities, commodities and crypto. Spreads, commissions, funding and execution quality quantified for your trading scenario."
   },
   "TradeHero": {
-    "eyebrow": "Tradelia · Operational Friction Simulator",
-    "title": "How much your CFD trading really costs you",
-    "subtitle": "Enter asset, capital, leverage and horizon: the engine applies spread, commissions, funding and execution quality from real CFD broker fee schedules and ranks the most efficient ones for your scenario.",
+    "eyebrow": "Tradelia · Trading Cost Simulator",
+    "title": "How much trading really costs you",
+    "subtitle": "Enter asset, capital, leverage and horizon: the engine applies spread, commissions, funding and execution quality from real broker fee schedules and ranks the most efficient ones for your scenario.",
     "simulator_label": "Engine",
     "cta": "Run Simulation",
     "cta_note": "Free, no sign-up required",

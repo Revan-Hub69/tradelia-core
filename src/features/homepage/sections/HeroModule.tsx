@@ -19,13 +19,25 @@ export const HeroModule = () => {
       id="simulator"
       className="relative overflow-hidden border-b border-border/50 bg-background text-foreground"
     >
-      {/* Ambient glow — SOTA 2026 depth */}
+      {/* Layer 1: Deep ambient glow — iOS 26 depth foundation */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            'radial-gradient(60% 50% at 20% 0%, hsl(var(--primary) / 0.08), transparent 60%), radial-gradient(50% 40% at 100% 30%, hsl(var(--accent) / 0.06), transparent 60%)',
+          background: `
+            radial-gradient(80% 60% at 15% 10%, hsl(var(--primary) / 0.12), transparent 55%),
+            radial-gradient(60% 50% at 85% 20%, hsl(var(--accent) / 0.08), transparent 50%),
+            radial-gradient(40% 30% at 50% 80%, hsl(var(--primary) / 0.05), transparent 45%)
+          `,
+        }}
+      />
+
+      {/* Layer 2: Noise texture overlay for glass material depth */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.015]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
@@ -48,7 +60,7 @@ export const HeroModule = () => {
             {trustChips.map(chip => (
               <span
                 key={chip}
-                className="rounded-full border border-border/60 bg-card/60 px-3 py-1 text-xs text-muted-foreground"
+                className="rounded-full border border-border/60 bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm"
               >
                 {chip}
               </span>
@@ -60,9 +72,38 @@ export const HeroModule = () => {
           </p>
         </div>
 
-        {/* RIGHT · Live simulator */}
-        <div className="lg:sticky lg:top-24">
-          <div className="rounded-3xl border border-border/60 bg-card/60 p-5 shadow-2xl backdrop-blur-sm sm:p-6 lg:p-7">
+        {/* RIGHT · Live simulator — iOS 26 Glass Card */}
+        <div className="relative lg:sticky lg:top-24">
+          {/* Glass card glow effect */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-px rounded-[calc(1.5rem+1px)] opacity-60 blur-xl"
+            style={{
+              background: `
+                linear-gradient(135deg, hsl(var(--primary) / 0.3) 0%, transparent 50%),
+                linear-gradient(225deg, hsl(var(--accent) / 0.2) 0%, transparent 50%)
+              `,
+            }}
+          />
+
+          {/* Main glass card — iOS 26 style */}
+          <div
+            className="relative rounded-3xl border border-white/[0.08] bg-white/[0.02] p-5 shadow-2xl backdrop-blur-xl sm:p-6 lg:p-7"
+            style={{
+              boxShadow: `
+                0 0 0 1px rgba(255,255,255,0.02) inset,
+                0 20px 50px -10px rgba(0,0,0,0.4),
+                0 50px 100px -20px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(0,0,0,0.1)
+              `,
+            }}
+          >
+            {/* Subtle top highlight */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
+            />
+
             <SimulatorLauncher />
           </div>
         </div>

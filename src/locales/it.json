@@ -1,12 +1,12 @@
 {
   "Index": {
-    "meta_title": "Tradelia | Simulatore di attrito operativo CFD",
-    "meta_description": "Misura i costi reali del tuo trading CFD su forex, indici, azioni, commodity e crypto. Spread, commissioni, funding e qualità di esecuzione quantificati sul tuo scenario."
+    "meta_title": "Tradelia | Simulatore costi operativi",
+    "meta_description": "Misura l'attrito reale del tuo trading su forex, indici, azioni, commodity e crypto. Spread, commissioni, funding e qualità di esecuzione quantificati per il tuo scenario operativo."
   },
   "TradeHero": {
-    "eyebrow": "Tradelia · Simulatore di attrito operativo",
-    "title": "Quanto ti costa davvero operare sui CFD",
-    "subtitle": "Inserisci asset, capitale, leva e orizzonte: il motore calcola spread, commissioni, funding e qualità di esecuzione sui tariffari reali dei broker CFD e ordina i più efficienti per il tuo scenario.",
+    "eyebrow": "Tradelia · Simulatore costi operativi",
+    "title": "Quanto ti costa davvero operare sui mercati",
+    "subtitle": "Inserisci asset, capitale, leva e orizzonte: il motore calcola spread, commissioni, funding e qualità di esecuzione sui tariffari broker e ordina i più efficienti per il tuo scenario operativo.",
     "simulator_label": "Motore",
     "cta": "Avvia simulazione",
     "cta_note": "Gratuito, senza registrazione",
