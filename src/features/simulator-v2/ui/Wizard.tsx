@@ -16,6 +16,7 @@ import { cn } from '@/utils/Helpers';
 import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
 import type { SimulatorInput } from '../state/useSimulatorState';
 import type { AssetId } from './AssetSelector';
+import { PairChip } from './PairChip';
 
 type WizardProps = {
   assetId: AssetId;
@@ -23,17 +24,22 @@ type WizardProps = {
   onClose: () => void;
 };
 
-const CAPITAL_PRESETS = [1000, 2500, 5000, 10000, 25000, 50000];
-const LOTS_PRESETS = [0.01, 0.1, 0.5, 1, 2, 5];
+// Retail-realistic presets (2026 aggregated market data)
+const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
+const LOTS_PRESETS = [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2];
 const TRADES_PRESETS = [5, 10, 20, 50, 100];
 
 export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
-  const [capital, setCapital] = useState<number>(10000);
+  const isForex = assetId === 'forex';
+  const [pairSymbol, setPairSymbol] = useState<string>(
+    DEFAULT_FOREX_PAIR.symbol,
+  );
+  const [capital, setCapital] = useState<number>(1000);
   const [lotSize, setLotSize] = useState<number>(0.1);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
 
-  const canSubmit = capital > 0 && lotSize > 0 && tradesPerMonth > 0;
-  const defaultPair = assetId === 'forex' ? DEFAULT_FOREX_PAIR : null;
+  const canSubmit
+    = capital >= 10 && lotSize >= 0.001 && tradesPerMonth > 0;
 
   const handleSubmit = () => {
     if (!canSubmit) {
@@ -41,7 +47,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
     }
     onSubmit({
       assetId,
-      pairSymbol: defaultPair?.symbol,
+      pairSymbol: isForex ? pairSymbol : undefined,
       capital,
       tradesPerMonth,
       lotSize,
@@ -72,35 +78,20 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           Simula i costi reali del forex
         </h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Calcoliamo spread, commissioni e funding su dati broker aggregati. Imposta la dimensione e la frequenza dei tuoi trade.
+          Spread, commissioni e funding aggregati da tariffari broker pubblici.
+          Imposta il tuo scenario e confronta i broker eleggibili.
         </p>
+
+        {/* Pair chip inline */}
+        {isForex && (
+          <div className="mt-5">
+            <PairChip value={pairSymbol} onSelect={setPairSymbol} />
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="flex-1 space-y-6 overflow-y-auto p-6">
-        {/* Pair context chip */}
-        {defaultPair && (
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-popover/60 p-4 backdrop-blur-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center -space-x-1 text-2xl leading-none">
-                <span>{defaultPair.baseFlag}</span>
-                <span>{defaultPair.quoteFlag}</span>
-              </div>
-              <div>
-                <p className="font-mono text-sm font-semibold tracking-tight text-foreground">
-                  {defaultPair.symbol}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Coppia predefinita · cambiabile dopo
-                </p>
-              </div>
-            </div>
-            <span className="rounded-full border border-border/60 bg-muted/60 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              Default
-            </span>
-          </div>
-        )}
-
+      <div className="flex-1 space-y-5 overflow-y-auto px-6 py-6">
         {/* Account size */}
         <InputCard
           icon={Wallet}
@@ -115,8 +106,8 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
               value={capital}
               onChange={e => setCapital(Number(e.target.value))}
               className="w-full border-0 bg-transparent text-3xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
-              min={100}
-              step={100}
+              min={10}
+              step={10}
               aria-label="Dimensione account in euro"
             />
           </div>
@@ -124,8 +115,12 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             values={CAPITAL_PRESETS}
             value={capital}
             onSelect={setCapital}
-            format={v => `€${v.toLocaleString('it-IT')}`}
+            format={v => `€${v >= 1000 ? `${v / 1000}k` : v}`}
           />
+          <p className="mt-3 text-[11px] text-muted-foreground/70">
+            Il capitale filtra i broker che potresti realmente aprire (ogni
+            broker ha un deposito minimo).
+          </p>
         </InputCard>
 
         {/* Lot size */}
@@ -133,7 +128,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           icon={Gauge}
           accent="teal"
           label="Dimensione posizione"
-          hint="Quanto è grande in media un tuo trade (in lotti standard)"
+          hint="Grandezza media di un tuo trade"
         >
           <div className="mb-4 flex items-baseline gap-2">
             <input
@@ -141,11 +136,13 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
               value={lotSize}
               onChange={e => setLotSize(Number(e.target.value))}
               className="w-full border-0 bg-transparent text-3xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
-              min={0.01}
+              min={0.001}
               step={0.01}
               aria-label="Dimensione posizione in lotti"
             />
-            <span className="text-sm font-medium text-muted-foreground">lots</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              {formatLotLabel(lotSize)}
+            </span>
           </div>
           <PresetChips
             values={LOTS_PRESETS}
@@ -153,6 +150,9 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             onSelect={setLotSize}
             format={v => String(v)}
           />
+          <p className="mt-3 text-[11px] text-muted-foreground/70">
+            1 micro lot = 1.000 unità · 1 mini = 10.000 · 1 standard = 100.000
+          </p>
         </InputCard>
 
         {/* Trades per month */}
@@ -160,7 +160,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           icon={Repeat}
           accent="emerald"
           label="Trade al mese"
-          hint="Quante operazioni esegui mediamente in un mese"
+          hint="Quante operazioni esegui mediamente"
         >
           <div className="mb-4 flex items-baseline gap-2">
             <input
@@ -172,7 +172,9 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
               max={500}
               aria-label="Numero trade al mese"
             />
-            <span className="text-sm font-medium text-muted-foreground">/ mese</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              / mese
+            </span>
           </div>
           <PresetChips
             values={TRADES_PRESETS}
@@ -200,15 +202,32 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           )}
         >
           <Sparkles className="size-4" />
-          Vedi risultati
+          Vedi broker eleggibili
           <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
         </motion.button>
         <p className="mt-2 text-center text-[11px] text-muted-foreground/70">
-          Gratuito · nessuna registrazione · risultati in tempo reale
+          Gratuito · nessuna registrazione · dati aggregati da tariffari
+          pubblici
         </p>
       </div>
     </div>
   );
+}
+
+// ──────────────────────────────────────────────────────────────
+// Helpers
+
+function formatLotLabel(lot: number): string {
+  if (lot < 0.01) {
+    return 'nano lot';
+  }
+  if (lot < 0.1) {
+    return 'micro lot';
+  }
+  if (lot < 1) {
+    return 'mini lot';
+  }
+  return 'standard lot';
 }
 
 // ──────────────────────────────────────────────────────────────

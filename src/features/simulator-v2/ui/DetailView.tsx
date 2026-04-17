@@ -77,7 +77,7 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
                 {broker.brokerName}
               </h1>
               <p className="text-sm text-slate-400">
-                {broker.accountType}
+                {broker.accountName}
 {' '}
 Account
               </p>

@@ -6,8 +6,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { BottomSheet } from '../layout/BottomSheet';
 import { Drawer } from '../layout/Drawer';
-import type { MockResult, SimulatorInput } from '../state/useSimulatorState';
-import { MOCK_RESULTS } from '../state/useSimulatorState';
+import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
+import { computeResults } from '../state/useSimulatorState';
 import type { AssetId } from './AssetSelector';
 import { CompareView } from './CompareView';
 import { DetailView } from './DetailView';
@@ -25,7 +25,7 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const [view, setView] = useState<ShellState>('wizard');
   const [, setInput] = useState<SimulatorInput | null>(null);
-  const [results, setResults] = useState<MockResult[] | null>(null);
+  const [results, setResults] = useState<BrokerResult[] | null>(null);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string | null>(null);
 
   // Reset state every time shell opens
@@ -52,7 +52,7 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
 
   const handleSubmit = useCallback((nextInput: SimulatorInput) => {
     setInput(nextInput);
-    setResults(MOCK_RESULTS);
+    setResults(computeResults(nextInput));
     setView('results_compare');
   }, []);
 

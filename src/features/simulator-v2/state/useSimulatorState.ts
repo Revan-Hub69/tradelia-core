@@ -2,6 +2,8 @@
 
 import { useCallback, useState } from 'react';
 
+import type { BrokerAccount, BrokerTier } from '../data/brokers';
+import { BROKER_ACCOUNTS, estimateMonthlyCost } from '../data/brokers';
 import type { AssetId } from '../ui/AssetSelector';
 
 export type SimState = 'closed' | 'wizard' | 'results_compare' | 'results_detail';
@@ -15,31 +17,31 @@ export type SimulatorInput = {
   underlyingId?: string;
 };
 
-export type SimulatorState = {
-  // UI State
-  isOpen: boolean;
-  currentState: SimState;
-
-  // Selection
-  selectedAsset: AssetId | null;
-  selectedBrokerId: string | null;
-
-  // Input
-  input: SimulatorInput | null;
-
-  // Results (mock for now)
-  results: MockResult[] | null;
-};
-
-export type MockResult = {
+export type BrokerResult = {
   id: string;
   rank: number;
   brokerName: string;
-  accountType: string;
+  accountName: string;
+  tier: BrokerTier;
+  minDepositEur: number;
   costPerTrade: number;
   costPerMonth: number;
   score: number;
   isWinner?: boolean;
+  isEligible: boolean;
+  regulator: string;
+};
+
+// Back-compat alias
+export type MockResult = BrokerResult;
+
+export type SimulatorState = {
+  isOpen: boolean;
+  currentState: SimState;
+  selectedAsset: AssetId | null;
+  selectedBrokerId: string | null;
+  input: SimulatorInput | null;
+  results: BrokerResult[] | null;
 };
 
 const initialState: SimulatorState = {
@@ -51,55 +53,56 @@ const initialState: SimulatorState = {
   results: null,
 };
 
-// Mock results for UI development
-export const MOCK_RESULTS: MockResult[] = [
-  {
-    id: '1',
-    rank: 1,
-    brokerName: 'Tickmill Pro',
-    accountType: 'ECN',
-    costPerTrade: 2.5,
-    costPerMonth: 42,
-    score: 94,
-    isWinner: true,
-  },
-  {
-    id: '2',
-    rank: 2,
-    brokerName: 'IC Markets',
-    accountType: 'Raw Spread',
-    costPerTrade: 3.2,
-    costPerMonth: 54,
-    score: 89,
-  },
-  {
-    id: '3',
-    rank: 3,
-    brokerName: 'Pepperstone',
-    accountType: 'Razor',
-    costPerTrade: 4.1,
-    costPerMonth: 68,
-    score: 82,
-  },
-  {
-    id: '4',
-    rank: 4,
-    brokerName: 'OANDA',
-    accountType: 'Core',
-    costPerTrade: 5.8,
-    costPerMonth: 96,
-    score: 71,
-  },
-  {
-    id: '5',
-    rank: 5,
-    brokerName: 'XTB',
-    accountType: 'Pro',
-    costPerTrade: 7.2,
-    costPerMonth: 120,
-    score: 65,
-  },
-];
+/**
+ * Compute broker results for a given simulator input.
+ * Eligibility = capital >= account.minDepositEur.
+ * Ranking considers eligible accounts first, sorted by cost ascending.
+ */
+export function computeResults(input: SimulatorInput): BrokerResult[] {
+  const scored = BROKER_ACCOUNTS.map((account: BrokerAccount) => {
+    const costPerMonth = estimateMonthlyCost(
+      account,
+      input.lotSize,
+      input.tradesPerMonth,
+    );
+    const costPerTrade = costPerMonth / Math.max(1, input.tradesPerMonth);
+    const isEligible = input.capital >= account.minDepositEur;
+    return { account, costPerMonth, costPerTrade, isEligible };
+  });
+
+  // Sort: eligible first (by cost asc), then ineligible (by cost asc)
+  scored.sort((a, b) => {
+    if (a.isEligible !== b.isEligible) {
+      return a.isEligible ? -1 : 1;
+    }
+    return a.costPerMonth - b.costPerMonth;
+  });
+
+  // Compute score: best eligible cost = 100, scale linearly
+  const eligible = scored.filter(s => s.isEligible);
+  const bestCost = eligible[0]?.costPerMonth ?? scored[0]?.costPerMonth ?? 1;
+  const worstCost = scored[scored.length - 1]?.costPerMonth ?? bestCost;
+  const range = Math.max(1, worstCost - bestCost);
+
+  return scored.map((s, idx) => {
+    const normalized = 1 - (s.costPerMonth - bestCost) / range;
+    const score = Math.round(Math.max(30, Math.min(100, normalized * 100)));
+    return {
+      id: s.account.id,
+      rank: idx + 1,
+      brokerName: s.account.brokerName,
+      accountName: s.account.accountName,
+      tier: s.account.tier,
+      minDepositEur: s.account.minDepositEur,
+      costPerTrade: Number(s.costPerTrade.toFixed(2)),
+      costPerMonth: Number(s.costPerMonth.toFixed(2)),
+      score,
+      isWinner: idx === 0 && s.isEligible,
+      isEligible: s.isEligible,
+      regulator: s.account.regulator,
+    };
+  });
+}
 
 export function useSimulatorState() {
   const [state, setState] = useState<SimulatorState>(initialState);
@@ -126,7 +129,7 @@ export function useSimulatorState() {
       ...prev,
       currentState: 'results_compare',
       input,
-      results: MOCK_RESULTS,
+      results: computeResults(input),
     }));
   }, []);
 
@@ -148,8 +151,8 @@ export function useSimulatorState() {
 
   const getSelectedBroker = useCallback(() => {
     if (!state.selectedBrokerId || !state.results) {
- return null;
-}
+      return null;
+    }
     return state.results.find(r => r.id === state.selectedBrokerId) || null;
   }, [state.selectedBrokerId, state.results]);
 
@@ -164,3 +167,6 @@ export function useSimulatorState() {
     getSelectedBroker,
   };
 }
+
+// Legacy export for SimulatorShell transition (deprecated, use computeResults)
+export const MOCK_RESULTS: BrokerResult[] = [];
