@@ -7,6 +7,7 @@ import { FaqModule } from './sections/FaqModule';
 import { HeroModule } from './sections/HeroModule';
 import { HowItWorksModule } from './sections/HowItWorksModule';
 import { ProblemModule } from './sections/ProblemModule';
+import { SimulatorModule } from './sections/SimulatorModule';
 
 export const ModularHomepage = () => {
   return (
@@ -17,6 +18,7 @@ export const ModularHomepage = () => {
         <ProblemModule />
         <HowItWorksModule />
         <ComparisonModule />
+        <SimulatorModule />
         <FaqModule />
       </main>
       <LandingFooter />
