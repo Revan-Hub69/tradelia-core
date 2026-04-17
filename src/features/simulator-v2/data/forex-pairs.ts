@@ -41,3 +41,5 @@ export const PAIR_CATEGORIES: { id: PairCategory; label: string; desc: string }[
   { id: 'cross', label: 'Cross', desc: '6 coppie · no USD' },
   { id: 'exotic', label: 'Esotiche', desc: '5 coppie · mercati emergenti' },
 ];
+
+export const DEFAULT_FOREX_PAIR: ForexPair = FOREX_PAIRS[0]!;
