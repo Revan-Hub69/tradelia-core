@@ -20,11 +20,11 @@ type DetailViewProps = {
   onClose: () => void;
 };
 
-// Mock breakdown data
+// Mock breakdown data (CFD cost decomposition)
 const MOCK_BREAKDOWN = {
   spread: { eur: 1.8, bps: 1.2, percent: 40 },
   commission: { eur: 0.7, bps: 0.5, percent: 15 },
-  slippage: { eur: 1.2, bps: 0.8, percent: 25 },
+  funding: { eur: 1.2, bps: 0.8, percent: 25 },
   other: { eur: 0.6, bps: 0.4, percent: 20 },
 };
 
@@ -148,8 +148,8 @@ Account
               color="bg-violet-500"
             />
             <CostBar
-              label="Slippage"
-              value={MOCK_BREAKDOWN.slippage}
+              label="Funding / overnight"
+              value={MOCK_BREAKDOWN.funding}
               icon={Clock}
               color="bg-amber-500"
             />

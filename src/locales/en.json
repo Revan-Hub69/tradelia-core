@@ -1,15 +1,16 @@
 {
   "Index": {
-    "meta_title": "TradeScope – Trading Cost Simulator",
-    "meta_description": "Compare real costs of CFDs, futures, ETFs and options based on your actual trading scenario. Free, no sign-up required."
+    "meta_title": "Tradelia | CFD Operational Friction Simulator",
+    "meta_description": "Measure the real costs of your CFD trading across forex, indices, equities, commodities and crypto. Spreads, commissions, funding and execution quality quantified on your scenario."
   },
   "TradeHero": {
-    "eyebrow": "Tradelia · TradeScope",
-    "title": "Simulate your strategy and discover what it really costs you",
-    "subtitle": "Enter capital, leverage, time horizon and operating strategy: the simulator calculates real costs from measured database and generates rankings of the most efficient instruments and brokers for your scenario.",
+    "eyebrow": "Tradelia · Operational Friction Simulator",
+    "title": "How much your CFD trading really costs you",
+    "subtitle": "Enter asset, capital, leverage and horizon: the engine applies spread, commissions, funding and execution quality from real CFD broker fee schedules and ranks the most efficient ones for your scenario.",
+    "simulator_label": "Engine",
     "cta": "Run Simulation",
     "cta_note": "Free, no sign-up required",
-    "trust": "Informational tool · Not financial advice · Based on real measured data"
+    "trust": "Informational tool · Not financial advice · Based on public broker fee schedules"
   },
   "HowItWorks": {
     "eyebrow": "How it works",
@@ -24,49 +25,6 @@
     "step3_tag": "Output",
     "step3_title": "Rankings and cost impact on capital",
     "step3_desc": "Dynamic table with total costs and efficiency index. Charts show how much costs actually weigh on your capital over time."
-  },
-  "Compare": {
-    "eyebrow": "Instruments compared",
-    "title": "Same underlying, very different costs",
-    "intro": "Each instrument has a different cost structure. The simulator normalises them to make them comparable.",
-    "etf_label": "ETF",
-    "etf_desc": "Low management cost, no overnight. Ideal for medium-to-long horizons.",
-    "etf_cost": "TER + broker commission",
-    "cfd_label": "CFD",
-    "cfd_desc": "Fast access with leverage, but spread and overnight swap can weigh on operations.",
-    "cfd_cost": "Spread + overnight swap",
-    "futures_label": "Futures",
-    "futures_desc": "Regulated instrument, periodic rollover. Low costs at high volumes.",
-    "futures_cost": "Commission + rollover",
-    "options_label": "Options",
-    "options_desc": "Flexible payoff, but theta and commissions raise the effective cost.",
-    "options_cost": "Premium + theta + commission"
-  },
-  "OutputPreview": {
-    "eyebrow": "Output example",
-    "title": "See what you get before you start",
-    "intro": "A real example: €5,000 capital, intraday horizon, Nasdaq underlying. The table below is generated automatically by the calculation engine — not an opinion, a quantitative cost reading.",
-    "col_instrument": "Instrument",
-    "col_broker": "Top broker",
-    "col_cost": "Est. cost",
-    "col_efficiency": "Efficiency",
-    "col_rank_instrument": "Instrument rank",
-    "col_rank_broker": "Broker rank",
-    "output_etf_note": "Simple structure, contained costs",
-    "output_cfd_note": "Spread and funding impact multi-day operations",
-    "output_futures_note": "Efficient over longer horizons",
-    "output_options_note": "Theta decay relevant beyond 15 days",
-    "table_note": "Rankings automatically generated from real measured cost database. Does not constitute investment advice."
-  },
-  "WhyDifferent": {
-    "eyebrow": "Why it's different",
-    "title": "Not opinions. Calculations from measured data.",
-    "p1_title": "Real cost database",
-    "p1_desc": "The simulator doesn't use generic averages. It applies spreads, commissions, rollover, and theta decay from a measured database — specific to your operating scenario.",
-    "p2_title": "Objective rankings",
-    "p2_desc": "Instruments and brokers are automatically ranked by cost efficiency for your horizon and strategy. No recommendations: just sorted data.",
-    "p3_title": "Homogeneous comparison",
-    "p3_desc": "Every instrument is normalised to the same notional exposure. ETFs, CFDs, Futures, and Options on the same underlying, compared on a level playing field."
   },
   "Disclaimer": {
     "label": "Disclaimer:",
@@ -152,16 +110,16 @@
     "testimonial3_content": "Comparisons saved me hours and avoided bad conditions."
   },
   "FAQ": {
-    "question1": "What is TradeScope?",
-    "answer1": "A free tool to simulate and compare the real costs of different financial instruments based on your trading scenario.",
+    "question1": "What is Tradelia?",
+    "answer1": "Tradelia is a CFD operational friction simulator. It measures real execution, holding and structure costs for your scenario across asset, broker and horizon.",
     "question2": "Is it free?",
     "answer2": "Yes, completely free. No sign-up required.",
     "question3": "Do you provide financial advice?",
     "answer3": "No. Results are informational estimates. You decide and operate at your own risk.",
     "question4": "How accurate is the data?",
     "answer4": "Calculations use data measured from market sources. They represent informational estimates — exact costs depend on your broker and operating conditions at the time of the transaction.",
-    "question5": "Which instruments do you compare?",
-    "answer5": "CFDs, futures, ETFs and options. Same underlying, different cost structures.",
+    "question5": "Which asset classes do you cover?",
+    "answer5": "CFDs on forex, indices, equities, commodities and crypto. Same underlying, different cost drivers per asset class and horizon.",
     "question6": "What data do you store?",
     "answer6": "None. The simulation is completely anonymous and requires no account.",
     "section_title": "Frequently Asked Questions",

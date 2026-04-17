@@ -6,3 +6,4 @@ export { SimulatorShell } from './SimulatorShell';
 export { AssetCardSkeleton } from './skeletons/AssetCardSkeleton';
 export { ErrorState, NoResultsState } from './states';
 export { Wizard } from './Wizard';
+export { BrokerComparisonChart, CostBreakdownChart } from './charts';

@@ -5,9 +5,11 @@ import { useTranslations } from 'next-intl';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 
 const rows = [
-  { instrument: 'instrument_etf', efficiency: 'efficiency_alta' },
-  { instrument: 'instrument_futures', efficiency: 'efficiency_mediaalta' },
-  { instrument: 'instrument_cfd', efficiency: 'efficiency_media' },
+  { asset: 'asset_forex', driver: 'driver_spread', cost: '0.6 – 1.2 pip' },
+  { asset: 'asset_indices', driver: 'driver_funding', cost: '0.8 – 2.5 pt/die' },
+  { asset: 'asset_equities', driver: 'driver_commission', cost: '0.05 – 0.15%' },
+  { asset: 'asset_commodities', driver: 'driver_rollover', cost: '3 – 12 USD / contratto' },
+  { asset: 'asset_crypto', driver: 'driver_weekend', cost: '0.3 – 1.5%' },
 ] as const;
 
 export const ComparisonModule = () => {
@@ -30,11 +32,11 @@ export const ComparisonModule = () => {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, idx) => (
-                <tr key={row.instrument} className="border-t border-border/60">
-                  <td className="px-4 py-3 font-medium text-foreground">{t(row.instrument)}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{t(row.efficiency)}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{`${(idx + 1) * 0.18}%`}</td>
+              {rows.map(row => (
+                <tr key={row.asset} className="border-t border-border/60">
+                  <td className="px-4 py-3 font-medium text-foreground">{t(row.asset)}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{t(row.driver)}</td>
+                  <td className="px-4 py-3 tabular-nums text-muted-foreground">{row.cost}</td>
                 </tr>
               ))}
             </tbody>

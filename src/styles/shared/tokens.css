@@ -23,147 +23,146 @@
   --font-mono: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 
   /* ──────────────────────────────────────────────────────────────────────────
-     COLORS — Light mode (WCAG AA Compliant)
+     COLORS — SOTA 2026 Dark-first (Zinc + Emerald)
+     Ref: #09090b bg · #18181b card · #27272a muted · #fafafa fg · #10b981 accent
      ────────────────────────────────────────────────────────────────────────── */
-  --background:            150 14% 97%;
-  --foreground:            160 25% 16%;
-  --card:                  0 0% 100%;
-  --card-foreground:       160 25% 16%;
-  --popover:               0 0% 100%;
-  --popover-foreground:    160 25% 16%;
+  --background: 240 10% 4%; /* #09090b */
+  --foreground: 0 0% 98%; /* #fafafa */
+  --card: 240 6% 10%; /* #18181b */
+  --card-foreground: 0 0% 98%;
+  --popover: 240 4% 16%; /* #27272a */
+  --popover-foreground: 0 0% 98%;
 
-  /* Emerald primary — hsl(162 72% 34%) = #157a53 */
-  --primary:               162 72% 34%;
-  --primary-foreground:    0 0% 100%;
-  --primary-rgb:           21, 122, 83;
+  /* Emerald primary — hsl(160 84% 39%) = #10b981 */
+  --primary: 160 84% 39%;
+  --primary-foreground: 240 10% 4%;
+  --primary-rgb: 16, 185, 129;
 
-  --secondary:             150 20% 94%;
-  --secondary-foreground:  160 25% 16%;
-  --muted:                 150 15% 94%;
-  --muted-foreground:      155 12% 42%;
-  --accent:                162 55% 42%;
-  --accent-foreground:     0 0% 100%;
+  --secondary: 240 5% 26%; /* #3f3f46 */
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 4% 16%; /* #27272a */
+  --muted-foreground: 240 5% 65%; /* #a1a1aa */
+  --accent: 173 80% 40%; /* #14b8a6 teal */
+  --accent-foreground: 240 10% 4%;
 
-  --destructive:           0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-  --warning:               38 92% 50%;
-  --warning-foreground:    0 0% 0%;
-  --info:                  199 89% 48%;
-  --info-foreground:       0 0% 100%;
+  --destructive: 0 84% 60%; /* #ef4444 */
+  --destructive-foreground: 0 0% 98%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 217 91% 60%; /* #3b82f6 */
+  --info-foreground: 0 0% 98%;
 
-  --border:                150 18% 88%;
-  --input:                 150 18% 88%;
-  --ring:                  162 72% 34%;
-  --radius:                0.625rem;
+  --border: 240 5% 26%; /* #3f3f46 */
+  --input: 240 4% 16%;
+  --ring: 160 84% 39%;
+  --radius: 0.625rem;
 
   /* ──────────────────────────────────────────────────────────────────────────
      SPACING / LAYOUT
      ────────────────────────────────────────────────────────────────────────── */
-  --nav-height:                64px;
-  --sidebar-width-expanded:    240px;
-  --sidebar-width-collapsed:   64px;
-  --sidebar-width-current:     var(--sidebar-width-expanded);
-  --tap-target:                44px;
-  --nav-padding:               1rem;
-  --header-padding:            1rem 1.5rem;
+  --nav-height: 64px;
+  --sidebar-width-expanded: 240px;
+  --sidebar-width-collapsed: 64px;
+  --sidebar-width-current: var(--sidebar-width-expanded);
+  --tap-target: 44px;
+  --nav-padding: 1rem;
+  --header-padding: 1rem 1.5rem;
 
   /* ──────────────────────────────────────────────────────────────────────────
      MOTION
      ────────────────────────────────────────────────────────────────────────── */
   --motion-fast: 150ms;
   --motion-base: 250ms;
-  --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   /* ──────────────────────────────────────────────────────────────────────────
      Z-INDEX LAYERS
      ────────────────────────────────────────────────────────────────────────── */
-  --z-nav:              40;
-  --z-header:           50;
-  --z-popover:          60;
-  --z-modal:            70;
-  --z-toast:            80;
-  --z-tooltip-sidebar:  100;
+  --z-nav: 40;
+  --z-header: 50;
+  --z-popover: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+  --z-tooltip-sidebar: 100;
 
   /* ──────────────────────────────────────────────────────────────────────────
      MICRO-INTERACTION
      ────────────────────────────────────────────────────────────────────────── */
-  --hover-lift-distance:        2px;
+  --hover-lift-distance: 2px;
   --hover-lift-subtle-distance: 0.5px;
 
   /* ──────────────────────────────────────────────────────────────────────────
      SKELETON TOKENS
      ────────────────────────────────────────────────────────────────────────── */
-  --skeleton-base:      150, 15%, 88%;
-  --skeleton-highlight: 150, 20%, 94%;
+  --skeleton-base: 240, 4%, 16%;
+  --skeleton-highlight: 240, 5%, 26%;
 
   /* ──────────────────────────────────────────────────────────────────────────
      SHADOWS
      ────────────────────────────────────────────────────────────────────────── */
-  --shadow-soft:  0 2px 8px rgba(15, 46, 30, 0.07);
-  --shadow-nav:   0 4px 16px rgba(15, 46, 30, 0.09);
-  --shadow-glass: 0 20px 40px rgba(15, 46, 30, 0.11), 0 8px 16px rgba(15, 46, 30, 0.07);
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-nav: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-glass:
+    0 20px 40px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.25);
+  --shadow-glow-emerald: 0 0 20px rgba(16, 185, 129, 0.25);
 
   /* ──────────────────────────────────────────────────────────────────────────
      GLASS MATERIAL
      ────────────────────────────────────────────────────────────────────────── */
-  --glass-bg:               color-mix(in oklch, hsl(var(--background)) 60%, transparent);
-  --glass-border:           rgba(0, 0, 0, 0.06);
-  --glass-blur:             12px;
-  --glass-saturate:         1.8;
-  --glass-material-bg:      color-mix(in oklch, hsl(var(--card)) 95%, transparent);
-  --glass-material-border:  rgba(0, 0, 0, 0.06);
-  --glass-material-blur:    20px;
-  --glass-material-saturate: 180%;
-  --glass-material-shadow:  var(--shadow-glass);
-}
-
-@media (color-gamut: p3) {
-  :root {
-    --glass-bg: color-mix(in oklch, oklch(0.97 0.008 155) 60%, transparent);
-  }
-}
-
-.dark {
-  --background:            220 13% 10%;
-  --foreground:            150 12% 88%;
-  --card:                  220 12% 14%;
-  --card-foreground:       150 12% 88%;
-  --popover:               220 11% 19%;
-  --popover-foreground:    150 12% 88%;
-
-  --primary:               158 52% 58%;
-  --primary-foreground:    220 13% 10%;
-  --primary-rgb:           82, 191, 147;
-
-  --secondary:             220 10% 18%;
-  --secondary-foreground:  150 12% 88%;
-  --muted:                 220 10% 18%;
-  --muted-foreground:      150 8% 60%;
-  --accent:                158 45% 50%;
-  --accent-foreground:     220 13% 10%;
-
-  --destructive:           0 72% 51%;
-  --destructive-foreground: 0 0% 100%;
-  --warning:               38 92% 50%;
-  --warning-foreground:    0 0% 0%;
-  --info:                  199 89% 48%;
-  --info-foreground:       0 0% 100%;
-
-  --border:                220 10% 20%;
-  --input:                 220 10% 20%;
-  --ring:                  158 52% 58%;
-
-  --skeleton-base:      220, 10%, 18%;
-  --skeleton-highlight: 220, 10%, 25%;
-
-  --shadow-soft:  0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-nav:   0 4px 16px rgba(0, 0, 0, 0.35);
-  --shadow-glass: 0 20px 40px rgba(0, 0, 0, 0.40), 0 8px 16px rgba(0, 0, 0, 0.25);
-
-  --glass-bg:              color-mix(in oklch, hsl(var(--background)) 60%, transparent);
-  --glass-border:          rgba(255, 255, 255, 0.08);
-  --glass-material-bg:     color-mix(in oklch, hsl(var(--card)) 95%, transparent);
+  --glass-bg: color-mix(in oklch, hsl(var(--background)) 60%, transparent);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 12px;
+  --glass-saturate: 1.8;
+  --glass-material-bg: color-mix(in oklch, hsl(var(--card)) 95%, transparent);
   --glass-material-border: rgba(255, 255, 255, 0.08);
+  --glass-material-blur: 20px;
+  --glass-material-saturate: 180%;
   --glass-material-shadow: var(--shadow-glass);
+}
+
+/* .dark is an alias of :root (SOTA 2026 is dark-first). */
+.dark {
+  color-scheme: dark;
+}
+
+/* Opt-in light theme via .light (preserves SOTA 2026 aesthetic in reverse). */
+.light {
+  color-scheme: light;
+  --background: 0 0% 98%;
+  --foreground: 240 10% 4%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 4%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 4%;
+
+  --primary: 160 84% 34%;
+  --primary-foreground: 0 0% 100%;
+  --primary-rgb: 13, 148, 103;
+
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 10% 4%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 4% 46%;
+  --accent: 173 80% 34%;
+  --accent-foreground: 0 0% 100%;
+
+  --border: 240 6% 90%;
+  --input: 240 6% 90%;
+  --ring: 160 84% 34%;
+
+  --skeleton-base: 240, 5%, 90%;
+  --skeleton-highlight: 240, 6%, 94%;
+
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-nav: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-glass:
+    0 20px 40px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.06);
+
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-material-border: rgba(0, 0, 0, 0.06);
+}
+
+:root {
+  color-scheme: dark;
 }

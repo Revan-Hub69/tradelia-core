@@ -99,10 +99,10 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
           className={cn(
-            'group relative flex flex-col items-center gap-3 p-4 rounded-xl',
-            'bg-[#18181b] border border-[#3f3f46]',
-            'hover:border-[#52525b] hover:bg-[#27272a]',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10b981] focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b]',
+            'group relative flex flex-col items-center gap-3 rounded-xl p-4',
+            'border border-border/60 bg-card',
+            'hover:border-border hover:bg-popover',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
             'transition-all duration-200 ease-out',
             'backdrop-blur-sm',
           )}
@@ -112,19 +112,19 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
           {/* Icon container */}
           <div
             className={cn(
-              'p-3 rounded-lg bg-[#27272a]',
-              'group-hover:bg-[#3f3f46] transition-colors duration-200',
+              'rounded-lg bg-muted p-3',
+              'transition-colors duration-200 group-hover:bg-secondary',
             )}
           >
-            <asset.icon className={cn('w-6 h-6', asset.color)} />
+            <asset.icon className={cn('size-6', asset.color)} />
           </div>
 
           {/* Label */}
           <div className="text-center">
-            <p className="text-sm font-semibold text-[#fafafa]">
+            <p className="text-sm font-semibold text-foreground">
               {asset.label}
             </p>
-            <p className="mt-0.5 text-xs text-[#a1a1aa]">{asset.desc}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{asset.desc}</p>
           </div>
 
           {/* Hover arrow */}
@@ -134,7 +134,7 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
             className="absolute bottom-3 right-3"
             aria-hidden="true"
           >
-            <ArrowRight className="size-4 text-[#71717a] transition-colors group-hover:text-[#a1a1aa]" />
+            <ArrowRight className="size-4 text-muted-foreground/70 transition-colors group-hover:text-muted-foreground" />
           </motion.div>
 
           {/* Glow effect - SOTA 2026 brand glow */}
