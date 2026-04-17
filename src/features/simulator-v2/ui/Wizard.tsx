@@ -14,9 +14,10 @@ import { useMemo, useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
+import type { AssetId } from '../data/assets';
 import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
 import type { SimulatorInput } from '../state/useSimulatorState';
-import type { AssetId } from './AssetSelector';
+import { AssetSwitcher } from './AssetSwitcher';
 import { PairChip } from './PairChip';
 
 type WizardProps = {
@@ -86,20 +87,22 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
 
   return (
     <div className="flex h-full flex-col bg-card text-foreground">
-      {/* Header — compact */}
+      {/* Header — compact with asset switcher */}
       <div className="border-b border-border/60">
-        <div className="flex items-center justify-between px-5 py-2.5">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Forex Simulator
-            </p>
+        <div className="flex items-center gap-3 px-5 py-2">
+          <span className="inline-flex size-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
+          <div className="min-w-0 flex-1">
+            <AssetSwitcher
+              value={assetId}
+              onSelect={() => {
+                // Per ora solo Forex è attivo — altri asset sono "In arrivo"
+              }}
+            />
           </div>
-
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label="Chiudi"
           >
             <X className="size-4" />
