@@ -8,6 +8,7 @@ export type SimState = 'closed' | 'wizard' | 'results_compare' | 'results_detail
 
 export type SimulatorInput = {
   assetId: AssetId;
+  pairSymbol?: string;
   capital: number;
   tradesPerMonth: number;
   lotSize: number;

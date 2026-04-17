@@ -8,6 +8,7 @@ import {
   Euro,
   Gauge,
   Hash,
+  LineChart,
   TrendingUp,
   Wallet,
 } from 'lucide-react';
@@ -17,6 +18,7 @@ import { cn } from '@/utils/Helpers';
 
 import type { SimulatorInput } from '../state/useSimulatorState';
 import type { AssetId } from './AssetSelector';
+import { PairSelector } from './PairSelector';
 
 type WizardProps = {
   assetId: AssetId;
@@ -29,19 +31,35 @@ const TRADES_PRESETS = [5, 10, 20, 50, 100];
 const LOTS_PRESETS = [0.01, 0.05, 0.1, 0.5, 1, 2, 5];
 
 export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
+  const needsPair = assetId === 'forex';
   const [step, setStep] = useState(1);
+  const [pairSymbol, setPairSymbol] = useState<string | null>(null);
   const [capital, setCapital] = useState<number>(5000);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
   const [lotSize, setLotSize] = useState<number>(0.1);
 
-  const totalSteps = 3;
+  const totalSteps = needsPair ? 4 : 3;
+  const pairStep = needsPair ? 1 : 0;
+  const capitalStep = needsPair ? 2 : 1;
+  const tradesStep = needsPair ? 3 : 2;
+  const lotsStep = needsPair ? 4 : 3;
+
+  const canAdvance
+    = (step === pairStep && !!pairSymbol)
+      || (step === capitalStep && capital > 0)
+      || (step === tradesStep && tradesPerMonth > 0)
+      || (step === lotsStep && lotSize > 0);
 
   const handleNext = () => {
+    if (!canAdvance) {
+      return;
+    }
     if (step < totalSteps) {
       setStep(step + 1);
     } else {
       onSubmit({
         assetId,
+        pairSymbol: pairSymbol ?? undefined,
         capital,
         tradesPerMonth,
         lotSize,
@@ -126,9 +144,33 @@ di
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
         <AnimatePresence mode="wait">
-          {step === 1 && (
+          {step === pairStep && needsPair && (
             <motion.div
-              key="step1"
+              key="step-pair"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <div className="space-y-2 text-center">
+                <div className="inline-flex items-center justify-center rounded-full bg-emerald-500/10 p-3">
+                  <LineChart className="size-6 text-emerald-400" />
+                </div>
+                <h2 className="text-xl font-semibold text-white">
+                  Quale coppia vuoi simulare?
+                </h2>
+                <p className="text-sm text-slate-400">
+                  Seleziona la coppia forex su cui operare
+                </p>
+              </div>
+
+              <PairSelector value={pairSymbol} onSelect={setPairSymbol} />
+            </motion.div>
+          )}
+
+          {step === capitalStep && (
+            <motion.div
+              key="step-capital"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -180,9 +222,9 @@ di
             </motion.div>
           )}
 
-          {step === 2 && (
+          {step === tradesStep && (
             <motion.div
-              key="step2"
+              key="step-trades"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -234,9 +276,9 @@ di
             </motion.div>
           )}
 
-          {step === 3 && (
+          {step === lotsStep && (
             <motion.div
-              key="step3"
+              key="step-lots"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -291,6 +333,14 @@ di
                   Riepilogo
                 </h3>
                 <div className="space-y-2 text-sm">
+                  {pairSymbol && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Coppia</span>
+                      <span className="font-mono font-medium text-white">
+                        {pairSymbol}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-slate-400">Capitale</span>
                     <span className="font-medium text-white">
@@ -323,7 +373,8 @@ lots
       <div className="border-t border-white/10 p-4">
         <button
           onClick={handleNext}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 font-semibold text-white transition-all hover:from-emerald-400 hover:to-teal-400"
+          disabled={!canAdvance}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-3 font-semibold text-white transition-all hover:from-emerald-400 hover:to-teal-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:from-emerald-500 disabled:hover:to-teal-500"
         >
           {step === totalSteps ? (
             <>
