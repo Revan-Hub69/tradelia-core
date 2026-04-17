@@ -16,7 +16,6 @@ const rows = [
 ] as const;
 
 export const Comparison = () => {
-  // @ts-ignore
   const t = useTranslations('FeaturesComparison') as (key: string) => string;
 
   return (
@@ -42,14 +41,14 @@ export const Comparison = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border/50 bg-muted/30">
-                  <th className="px-4 py-4 text-left text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground sm:px-6">
+                  <th className="p-4 text-left text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground sm:px-6">
                     {t('col_feature')}
                   </th>
-                  <th className="w-20 px-4 py-4 text-center text-[11px] font-medium uppercase tracking-[0.16em] text-primary sm:px-6">
+                  <th className="w-20 p-4 text-center text-[11px] font-medium uppercase tracking-[0.16em] text-primary sm:px-6">
                     {t('col_tradelia')}
                   </th>
                   {/* Others header: /60 → /75 */}
-                  <th className="w-20 px-4 py-4 text-center text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground/75 sm:px-6">
+                  <th className="w-20 p-4 text-center text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground/75 sm:px-6">
                     {t('col_others')}
                   </th>
                 </tr>
@@ -57,10 +56,10 @@ export const Comparison = () => {
               <tbody>
                 {rows.map((row, i) => (
                   <tr key={row.featureKey} className={`border-b border-border/30 transition-colors hover:bg-muted/20 ${i === rows.length - 1 ? 'border-b-0' : ''}`}>
-                    <td className="px-4 py-4 text-sm font-medium text-foreground sm:px-6">
+                    <td className="p-4 text-sm font-medium text-foreground sm:px-6">
                       {t(row.featureKey)}
                     </td>
-                    <td className="px-4 py-4 text-center sm:px-6">
+                    <td className="p-4 text-center sm:px-6">
                       {/*
                         Check icon WCAG fix:
                         Light: emerald-700 on emerald-100 → ~5.8:1 ✅
@@ -70,7 +69,7 @@ export const Comparison = () => {
                         <Check className="size-3.5" />
                       </span>
                     </td>
-                    <td className="px-4 py-4 text-center sm:px-6">
+                    <td className="p-4 text-center sm:px-6">
                       {row.others ? (
                         /*
                           Others check: muted-foreground (full) on muted/20 → passes 4.5:1

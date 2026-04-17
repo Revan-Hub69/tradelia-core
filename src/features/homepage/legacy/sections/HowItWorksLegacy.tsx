@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { useTranslations } from 'next-intl';
+import React from 'react';
 
 import { BackToSimulator } from '@/components/ui/BackToSimulator';
 import { FadeIn, StaggerChildren } from '@/components/ui/scroll-animations';

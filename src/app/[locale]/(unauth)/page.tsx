@@ -1,6 +1,6 @@
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 
-import { ModularHomepage } from '@/features/homepage/ModularHomepage';
+import { ModularHomepage } from '@/features/homepage';
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
   const params = await props.params;
