@@ -1,37 +1,29 @@
-# Docs Index
+# Documentation Index (Updated)
 
-This folder contains both current product docs and legacy research.
+Questa cartella è stata ripulita per ridurre ambiguità tra documentazione attiva e materiale storico.
 
-## Canonical Product Docs
+## ✅ Canonical docs (attive)
 
-These are the documents that should guide new work on the public product:
+Usa **solo** questi documenti per guidare sviluppo e copy del prodotto corrente:
 
-- `HOMEPAGE_REDESIGN_ARCHITECTURE.md`
-- `FRONTEND_SOTA_2026_CHEATSHEET.md`
+- `docs/HOMEPAGE_REDESIGN_ARCHITECTURE.md`
+- `docs/FRONTEND_SOTA_2026_CHEATSHEET.md`
+- `docs/README.md` (questo file)
 
-Current public direction:
+## 📦 Legacy docs (storiche)
 
-- product name: `TradeScope`
-- brand: `Tradelia`
-- category: trading cost simulator
-- homepage: single-tool landing
-- primary narrative: spreads, swaps, commissions, and cost-aware broker selection
+Il materiale non più canonico è stato spostato in `docs/legacy/`.
+Serve come contesto storico e **non** come source of truth di prodotto.
 
-## Legacy / Historical Material
+Contiene, ad esempio:
 
-Many docs in `docs/research/` and several root docs still reflect older product directions:
+- analisi visuali iterative
+- audit esterni
+- brainstorming e sketch UI storici
 
-- trading challenges
-- prop-firm infrastructure
-- AI signals
-- challenge dashboards
+## Regola operativa
 
-These files are useful as background context only.
-They are not the public product spec.
+Se un documento in `docs/legacy/` entra in conflitto con i canonical docs:
 
-## Working Rule
-
-If a document conflicts with the current homepage or the canonical docs above:
-
-1. trust the canonical docs
-2. treat the conflicting file as legacy unless explicitly updated
+1. prevale sempre la documentazione canonica;
+2. il file legacy è informativo, non prescrittivo.
