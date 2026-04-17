@@ -34,5 +34,6 @@ Architettura homepage attiva:
 La documentazione storica è in:
 
 - `docs/legacy/*`
+- `legacy/*` (artifact e SQL storici rimossi dalla root)
 
 Questi file non guidano direttamente il prodotto pubblico attuale salvo revisione esplicita.

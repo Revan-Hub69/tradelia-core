@@ -14,6 +14,7 @@ Usa **solo** questi documenti per guidare sviluppo e copy del prodotto corrente:
 
 Il materiale non più canonico è stato spostato in `docs/legacy/`.
 Serve come contesto storico e **non** come source of truth di prodotto.
+Altri artifact storici di repo sono stati archiviati in `legacy/`.
 
 Contiene, ad esempio:
 
