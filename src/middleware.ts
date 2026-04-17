@@ -1,9 +1,9 @@
 import type { NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 
-import { applySecurityHeaders } from './libs/security/headers';
-// import { authRateLimiter, emailCheckRateLimiter, getClientIdentifier } from './libs/security/rateLimiter'; // DISABLED
-import { updateSession } from './libs/supabase/middleware';
+import { applySecurityHeaders } from './lib/security/headers';
+// import { authRateLimiter, emailCheckRateLimiter, getClientIdentifier } from './lib/security/rateLimiter'; // DISABLED
+import { updateSession } from './lib/supabase/middleware';
 import { AllLocales, AppConfig } from './utils/AppConfig';
 
 const intlMiddleware = createMiddleware({

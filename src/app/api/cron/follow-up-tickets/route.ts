@@ -16,7 +16,7 @@ import {
   type EmailTemplateData,
   type Locale,
 } from '@/lib/email-templates';
-import { db } from '@/libs/DB';
+import { db } from '@/lib/DB';
 import { supportTicketsSchema } from '@/models/Schema';
 import { AppConfig } from '@/utils/AppConfig';
 

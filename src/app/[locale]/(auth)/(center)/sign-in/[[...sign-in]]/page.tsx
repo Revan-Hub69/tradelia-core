@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { createClient } from '@/libs/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 const signInSchema = z.object({
   email: z.string().email(),

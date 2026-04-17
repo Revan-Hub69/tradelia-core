@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from '@/libs/i18nNavigation';
+import { Link } from '@/lib/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 import { cn } from '@/utils/Helpers';
 

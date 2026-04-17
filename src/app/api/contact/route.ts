@@ -11,7 +11,7 @@ import {
   type Locale,
 } from '@/lib/email-templates';
 import { getClientIp, rateLimit } from '@/lib/rate-limit';
-import { db } from '@/libs/DB';
+import { db } from '@/lib/DB';
 import { supportTicketsSchema } from '@/models/Schema';
 import { contactFormSchema } from '@/types/contact';
 import { AppConfig } from '@/utils/AppConfig';

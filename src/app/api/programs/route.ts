@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { logger } from '@/lib/logger';
-import { createClient } from '@/libs/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * GET /api/programs

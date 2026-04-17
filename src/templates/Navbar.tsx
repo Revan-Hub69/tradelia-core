@@ -7,7 +7,7 @@ import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { getLandingSectionHref, landingSections } from '@/config/landing';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
-import { usePathname } from '@/libs/i18nNavigation';
+import { usePathname } from '@/lib/i18nNavigation';
 import { cn } from '@/utils/Helpers';
 
 import { Logo } from './Logo';

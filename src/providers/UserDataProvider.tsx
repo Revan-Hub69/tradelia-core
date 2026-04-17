@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import React, { useMemo } from 'react';
 
-import { createClient } from '@/libs/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 import { type UserData, UserDataContext, type UserDataContextType } from './userDataContext';
 

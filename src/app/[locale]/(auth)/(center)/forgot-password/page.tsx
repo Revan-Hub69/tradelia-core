@@ -19,8 +19,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 import { useEmailCheckRateLimit } from '@/hooks/useRateLimit';
-import { Link } from '@/libs/i18nNavigation';
-import { createClient } from '@/libs/supabase/client';
+import { Link } from '@/lib/i18nNavigation';
+import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/templates/Logo';
 
 /**

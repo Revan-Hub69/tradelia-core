@@ -3,7 +3,7 @@
  * Verifica che la configurazione Supabase sia corretta per OAuth
  */
 
-import { createClient } from '@/libs/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 export const checkSupabaseConfig = async () => {
   const supabase = createClient();

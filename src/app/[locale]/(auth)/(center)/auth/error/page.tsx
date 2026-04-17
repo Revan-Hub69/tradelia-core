@@ -7,7 +7,7 @@ import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
-import { Link } from '@/libs/i18nNavigation';
+import { Link } from '@/lib/i18nNavigation';
 import { Logo } from '@/templates/Logo';
 
 /**

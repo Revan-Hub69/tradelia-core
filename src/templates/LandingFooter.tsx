@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { SectionContainer } from '@/components/ui/SectionContainer';
 import { getLandingSectionHref, landingSections } from '@/config/landing';
-import { Link, usePathname } from '@/libs/i18nNavigation';
+import { Link, usePathname } from '@/lib/i18nNavigation';
 import { AppConfig } from '@/utils/AppConfig';
 
 import { Logo } from './Logo';

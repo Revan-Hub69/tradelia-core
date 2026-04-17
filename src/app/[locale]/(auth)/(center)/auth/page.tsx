@@ -22,8 +22,8 @@ import { Input } from '@/components/ui/input';
 import { PasswordStrength } from '@/components/ui/password-strength';
 import { FadeIn, SlideReveal } from '@/components/ui/scroll-animations';
 import { useAuthRateLimit, useEmailCheckRateLimit } from '@/hooks/useRateLimit';
-import { Link, useRouter } from '@/libs/i18nNavigation';
-import { createClient } from '@/libs/supabase/client';
+import { Link, useRouter } from '@/lib/i18nNavigation';
+import { createClient } from '@/lib/supabase/client';
 import { Logo } from '@/templates/Logo';
 import { checkSupabaseConfig } from '@/utils/supabase-config-check';
 

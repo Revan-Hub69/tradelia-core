@@ -2,7 +2,7 @@ import { FileQuestion, Home, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { UiButton } from '@/components/ui/UiButton';
-import { Link } from '@/libs/i18nNavigation';
+import { Link } from '@/lib/i18nNavigation';
 
 /**
  * 404 Not Found Page

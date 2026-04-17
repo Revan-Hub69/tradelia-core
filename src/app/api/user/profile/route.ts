@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 
 import { withValidation } from '@/lib/validation/middleware';
 import { userProfileSchema } from '@/lib/validation/schemas';
-import { ApiError, withErrorHandler } from '@/libs/api/errorHandler';
-import { createUserProfile, getUserProfile, updateUserProfile } from '@/libs/supabase/database';
-import { createClient } from '@/libs/supabase/server';
+import { ApiError, withErrorHandler } from '@/lib/api/errorHandler';
+import { createUserProfile, getUserProfile, updateUserProfile } from '@/lib/supabase/database';
+import { createClient } from '@/lib/supabase/server';
 
 export const GET = withErrorHandler(async () => {
   const supabase = await createClient();

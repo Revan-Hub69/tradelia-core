@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { createClient } from '@/libs/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * Auth Callback Handler - 2026 Best Practices
