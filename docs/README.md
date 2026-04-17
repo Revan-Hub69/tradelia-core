@@ -9,6 +9,7 @@ Usa **solo** questi documenti per guidare sviluppo e copy del prodotto corrente:
 - `docs/HOMEPAGE_REDESIGN_ARCHITECTURE.md`
 - `docs/FRONTEND_SOTA_2026_CHEATSHEET.md`
 - `docs/README.md` (questo file)
+- `docs/REPO_AUDIT_2026-04-17.md` (ultimo audit struttura repo)
 
 ## 📦 Legacy docs (storiche)
 

@@ -6,6 +6,7 @@ Questa cartella contiene file storici spostati fuori dalla root per ridurre rumo
 
 - `legacy/root-artifacts/` → documenti e trigger storici non canonici.
 - `legacy/sql/` → setup SQL legacy mantenuti a scopo storico.
+- `legacy/scripts/` → script operativi non più usati nel workflow corrente.
 
 ## Regola
 
