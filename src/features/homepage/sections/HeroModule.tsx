@@ -6,7 +6,7 @@ import { SectionContainer } from '@/components/ui/SectionContainer';
 import { SimulatorLauncher } from '@/features/simulator-v2/ui/SimulatorLauncher';
 
 const trustChips = [
-  'Dati broker pubblici',
+  'Dati di mercato rilevati',
   'Nessuna registrazione',
   'Informativo · non è consulenza',
 ] as const;
