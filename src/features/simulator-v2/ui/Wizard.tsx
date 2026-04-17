@@ -43,9 +43,10 @@ function getLotPresets(capital: number): number[] {
   // Prendi step parlati fino al max, min 3 valori, max 5
   const presets = LOT_STEPS.filter(l => l <= Math.max(maxLot, 0.005));
   if (presets.length < 2) {
- return LOT_STEPS.slice(0, 3);
-}
-  return presets.slice(0, 5);
+    return LOT_STEPS.slice(0, 3);
+  }
+  // Prendi gli ULTIMI 5 (più grandi) per avere step coerenti con account size
+  return presets.slice(-5);
 }
 
 /**
