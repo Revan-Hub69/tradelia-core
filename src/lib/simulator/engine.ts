@@ -14,13 +14,12 @@
 //   - Range (best/expected/worst) su tutti i costi
 //   - brokerMeta su SimulatorResult
 //   - commission tiering su volume mensile
-//   - slippage model per liquidityTier
+//   - slippage escluso dal core engine (da stimare fuori engine)
 // ============================================================
 
 import { INSTRUMENT_OFFERS } from '@/data/simulator/market-data/instrument-offers';
 import { BROKERS }           from '@/data/simulator/catalog/brokers';
-import { UNDERLYINGS }       from '@/data/simulator/underlyings';
-import type { UnderlyingId, Underlying } from '@/data/simulator/underlyings';
+import type { UnderlyingId } from '@/data/simulator/underlyings';
 import type { InstrumentOffer, SwapInfo } from '@/data/simulator/schema/offer.types';
 import type { AssetClass }  from '@/components/simulatore/AssetSelector';
 
@@ -43,13 +42,6 @@ const FX_RATE_TO_EUR: Record<string, number> = {
 function fxRate(from: string, to: string): number {
   if (from === to) return 1;
   return (FX_RATE_TO_EUR[from] ?? 1) / (FX_RATE_TO_EUR[to] ?? 1);
-}
-
-// ── Pip value per lot (dynamic based on size) ──────────────────────────
-function pipValue(lots: number, quoteCurrency: string, accountCurrency = 'EUR'): number {
-  const pipSize = quoteCurrency === 'JPY' ? 0.01 : 0.0001;
-  const actualSize = lots * LOT_SIZE;
-  return pipSize * actualSize * fxRate(quoteCurrency, accountCurrency);
 }
 
 // ── Simplified pip value for display (standard lot) ────────────────────────
@@ -90,24 +82,6 @@ function sumRange(ranges: Range[]): Range {
 function spreadToRange(v: number, regime: VolatilityRegime): Range {
   const worstMult = regime === 'HIGH' ? 3.5 : regime === 'NORMAL' ? 2.0 : 1.4;
   return { best: v * 0.7, expected: v, worst: v * worstMult };
-}
-
-// ── Slippage ───────────────────────────────────────────────────────────────
-const SLIPPAGE_BASE_PIPS: Record<string, Record<VolatilityRegime, number>> = {
-  tier1:   { LOW: 0.05, NORMAL: 0.15, HIGH: 0.50 },
-  tier2:   { LOW: 0.15, NORMAL: 0.35, HIGH: 1.20 },
-  tier3:   { LOW: 0.40, NORMAL: 0.80, HIGH: 2.50 },
-  default: { LOW: 0.20, NORMAL: 0.40, HIGH: 1.40 },
-};
-
-function calcSlippageRange(
-  lots: number, pipVal: number, liquidityTier: string, regime: VolatilityRegime,
-): Range {
-  const tierKey  = SLIPPAGE_BASE_PIPS[liquidityTier] ? liquidityTier : 'default';
-  const basePips = SLIPPAGE_BASE_PIPS[tierKey]![regime]!;
-  const volumeFactor = lots > 5 ? 1.2 : 1.0;
-  const expected = basePips * 2 * pipVal * lots * volumeFactor;
-  return { best: expected * 0.4, expected, worst: expected * 2.2 };
 }
 
 // ── Commission tiering ─────────────────────────────────────────────────────
@@ -210,25 +184,17 @@ function calcScore(totalCostBps: number): number {
 // ── CFD / Spot FX cost calculator ─────────────────────────────────────────
 function calcFxCosts(params: {
   offer:           InstrumentOffer;
-  underlying:      Underlying | undefined;
   exposure:        number;
   lots:            number;
   monthlyNotional: number;
-  quoteCurrency:   string;
   accountCurrency: string;
   tradesPerMonth:  number;
-  slippageMode:    'ideal' | 'good' | 'realistic' | 'volatile';
 }): CostBreakdown {
-  const { offer, underlying, exposure, lots: totalLots, monthlyNotional, quoteCurrency, accountCurrency, tradesPerMonth, slippageMode } = params;
-  
+  const { offer, exposure, lots: totalLots, monthlyNotional, accountCurrency, tradesPerMonth } = params;
+
   // Pip value dynamically based on actual lot size (not just standard)
-  const pipVal = pipValue(totalLots, quoteCurrency, accountCurrency);
-  const liquidityTier = underlying?.liquidityTier ?? 'tier2';
-  
-  // Slippage: base latency + market stress multiplier
-  const baseSlippagePips: Record<string, number> = { ideal: 0, good: 0.1, realistic: 0.3, volatile: 0.8 };
-  const stressMultiplier: Record<string, number> = { ideal: 1, good: 1.2, realistic: 1.5, volatile: 2.5 };
-  const slippagePips = baseSlippagePips[slippageMode] * stressMultiplier[slippageMode];
+  // kept for compatibility with function signature behavior, even if slippage is out of engine
+  void totalLots;
 
   // Spread: use avg by default for realism (not min marketing)
   const spreadType: 'min' | 'avg' = 'avg';
@@ -253,11 +219,11 @@ function calcFxCosts(params: {
     commBase = commBase * 2;
   }
   const commissionR = toRange(commBase);
-  
-  // Slippage based on mode selection
-  const slippageBase = slippagePips * pipVal;
-  const slippageR = toRange(slippageBase);
-  const totalR = sumRange([spreadR, commissionR, slippageR]);
+
+  // Slippage intentionally excluded from engine core:
+  // non-deterministic and execution-dependent.
+  const slippageR = toRange(0);
+  const totalR = sumRange([spreadR, commissionR]);
   const totalEUR = totalR.expected;
 
   // Monthly aggregated cost
@@ -427,8 +393,6 @@ export function runEngine({
 }: EngineInput): SimulatorResult[] {
   if (capital <= 0 || lotSize <= 0) return [];
 
-  const underlying = UNDERLYINGS[underlyingId];
-  const quoteCcy   = underlying?.quoteCurrency ?? 'USD';
   const ugIds      = ugIdsForAssetClass(assetClass);
 
   const compatibleOffers = INSTRUMENT_OFFERS.filter(offer =>
@@ -469,14 +433,11 @@ export function runEngine({
 
       breakdown = calcFxCosts({
         offer,
-        underlying,
         exposure,
         lots: lots,
         monthlyNotional: estMonthlyNotional,
-        quoteCurrency:   quoteCcy,
         accountCurrency,
         tradesPerMonth,
-        slippageMode: 'realistic', // default - can be filtered in output
       });
     }
 
