@@ -28,40 +28,33 @@ type WizardProps = {
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
 const TRADES_PRESETS = [5, 10, 20, 50, 100];
 
-// Step "parlati" del settore FX (nano/micro/mini/standard)
-const LOT_STEPS = [0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10];
-
 /**
- * Lot presets: step parlati filtrati per account size.
- * ESMA retail 30:1 → margin ~3.33% notional.
- * Max sicuro: 10% account in margin → max notional = account * 3.
- * 1 lot = €100k → max lot = account * 3 / 100000 = account / 33333.
+ * Lot presets: step reali usati dal retail per account size.
+ * Riflette pratica reale — non calcolo margin.
  */
 function getLotPresets(capital: number): number[] {
-  // Max lot teorico con 10% account in margin
-  const maxLot = capital / 33333;
-  // Prendi step parlati fino al max, min 3 valori, max 5
-  const presets = LOT_STEPS.filter(l => l <= Math.max(maxLot, 0.005));
-  if (presets.length < 2) {
-    return LOT_STEPS.slice(0, 3);
+  if (capital < 500) {
+    // Nano/micro account
+    return [0.001, 0.005, 0.01, 0.02, 0.05];
   }
-  // Prendi gli ULTIMI 5 (più grandi) per avere step coerenti con account size
-  return presets.slice(-5);
-}
-
-/**
- * Rischio lotto: verde ≤5%, ambra 5-15%, rosso >15% account in margin.
- */
-function getLotRiskLevel(lot: number, capital: number): 'low' | 'medium' | 'high' {
-  const margin = (lot * 100000) / 30; // ESMA 30:1
-  const marginPct = margin / capital;
-  if (marginPct <= 0.05) {
- return 'low';
-}
-  if (marginPct <= 0.15) {
- return 'medium';
-}
-  return 'high';
+  if (capital < 2000) {
+    // Small retail
+    return [0.01, 0.02, 0.05, 0.1, 0.2];
+  }
+  if (capital < 10000) {
+    // Mid retail
+    return [0.02, 0.05, 0.1, 0.2, 0.5];
+  }
+  if (capital < 50000) {
+    // Standard retail
+    return [0.05, 0.1, 0.2, 0.5, 1];
+  }
+  if (capital < 200000) {
+    // Large retail
+    return [0.1, 0.2, 0.5, 1, 2];
+  }
+  // Pro/institutional
+  return [0.5, 1, 2, 5, 10];
 }
 
 export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
@@ -162,14 +155,12 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             onChange={setLotSize}
             min={0.001}
             step={0.01}
-            riskLevel={getLotRiskLevel(lotSize, capital)}
           />
           <PresetChips<number>
             values={lotPresets}
             value={lotSize}
             onSelect={v => setLotSize(v)}
             format={v => String(v)}
-            getRiskLevel={v => getLotRiskLevel(v, capital)}
           />
         </InputCard>
 
@@ -280,7 +271,6 @@ type EditableAmountProps = {
   min?: number;
   max?: number;
   step?: number;
-  riskLevel?: 'low' | 'medium' | 'high';
 };
 
 function EditableAmount({
@@ -291,7 +281,6 @@ function EditableAmount({
   min,
   max,
   step,
-  riskLevel,
 }: EditableAmountProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const handlePencilClick = () => {
@@ -299,19 +288,10 @@ function EditableAmount({
     inputRef.current?.select();
   };
 
-  const riskColor = riskLevel === 'high' ? 'text-destructive' : riskLevel === 'medium' ? 'text-amber-500' : undefined;
-
   return (
-    <div
-      className={cn(
-        'group mb-3 flex items-baseline gap-2 border-b-2 border-border pb-1.5 transition-colors',
-        'focus-within:border-primary',
-        riskLevel === 'high' && 'border-destructive/50',
-        riskLevel === 'medium' && 'border-amber-500/50',
-      )}
-    >
+    <div className="group mb-3 flex items-baseline gap-2 border-b-2 border-border pb-1.5 transition-colors focus-within:border-primary">
       {prefix && (
-        <span className={cn('text-xl font-semibold text-muted-foreground', riskColor)}>
+        <span className="text-xl font-semibold text-muted-foreground">
           {prefix}
         </span>
       )}
@@ -320,29 +300,21 @@ function EditableAmount({
         type="number"
         value={value}
         onChange={e => onChange(Number(e.target.value))}
-        className={cn(
-          'min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight outline-none focus:ring-0',
-          riskColor || 'text-foreground',
-        )}
+        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
         min={min}
         max={max}
         step={step}
         inputMode="decimal"
       />
       {suffix && (
-        <span className={cn('text-xs font-medium text-muted-foreground', riskColor)}>
+        <span className="text-xs font-medium text-muted-foreground">
           {suffix}
         </span>
       )}
       <button
         type="button"
         onClick={handlePencilClick}
-        className={cn(
-          'rounded p-0.5 transition-colors hover:bg-muted',
-          riskLevel === 'high' ? 'text-destructive/70 hover:text-destructive' :
-          riskLevel === 'medium' ? 'text-amber-500/70 hover:text-amber-500' :
-          'text-muted-foreground/50 group-focus-within:text-primary hover:text-primary',
-        )}
+        className="rounded p-0.5 text-muted-foreground/50 transition-colors hover:bg-muted hover:text-primary group-focus-within:text-primary"
         aria-label="Modifica"
       >
         <Pencil className="size-3.5" />
@@ -356,35 +328,27 @@ type PresetChipsProps<T> = {
   value: T;
   onSelect: (v: T) => void;
   format: (v: T) => string;
-  getRiskLevel?: (v: T) => 'low' | 'medium' | 'high' | undefined;
 };
 
-function PresetChips<T>({ values, value, onSelect, format, getRiskLevel }: PresetChipsProps<T>) {
+function PresetChips<T>({ values, value, onSelect, format }: PresetChipsProps<T>) {
   return (
     <div className="flex flex-wrap gap-1.5">
-      {values.map((v) => {
-        const risk = getRiskLevel?.(v);
-        return (
-          <button
-            key={String(v)}
-            type="button"
-            onClick={() => onSelect(v)}
-            className={cn(
-              'rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              value === v
-                ? risk === 'high' ? 'bg-destructive text-destructive-foreground shadow-sm' :
-                  risk === 'medium' ? 'bg-amber-500 text-white shadow-sm' :
-                  'bg-primary text-primary-foreground shadow-sm'
-                : risk === 'high' ? 'border border-destructive/50 text-destructive hover:bg-destructive/10' :
-                  risk === 'medium' ? 'border border-amber-500/50 text-amber-600 hover:bg-amber-500/10' :
-                  'border border-border/60 bg-card/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',
-            )}
-          >
-            {format(v)}
-          </button>
-        );
-      })}
+      {values.map(v => (
+        <button
+          key={String(v)}
+          type="button"
+          onClick={() => onSelect(v)}
+          className={cn(
+            'rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+            value === v
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'border border-border/60 bg-card/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',
+          )}
+        >
+          {format(v)}
+        </button>
+      ))}
     </div>
   );
 }
