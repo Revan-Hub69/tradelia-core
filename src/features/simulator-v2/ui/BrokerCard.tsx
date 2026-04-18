@@ -19,7 +19,7 @@ import { cn } from '@/utils/Helpers';
 import type { BrokerTier } from '../data/brokers';
 import { BROKER_ACCOUNTS, getBrokerQualitative } from '../data/brokers';
 import type { BrokerResult } from '../state/useSimulatorState';
-import { TRANSITION } from './motion';
+import { FLASH_ON_CHANGE, TRANSITION } from './motion';
 
 const TIER_LABELS: Record<BrokerTier, string> = {
   cent: 'Cent',
@@ -27,6 +27,14 @@ const TIER_LABELS: Record<BrokerTier, string> = {
   standard: 'Standard',
   ecn: 'ECN',
   pro: 'Pro',
+};
+
+const TIER_TOOLTIPS: Record<BrokerTier, string> = {
+  cent: 'Conto Cent: lotti micro (0.01) · depositi da €5 · ideale per chi inizia',
+  starter: 'Conto Starter: depositi bassi · spread standard · niente commissioni',
+  standard: 'Conto Standard: nessun minimo · condizioni bilanciate · solo spread',
+  ecn: 'ECN Raw: spread quasi 0 + commissione fissa · conviene con alti volumi',
+  pro: 'Conto Pro/VIP: commissioni ridotte · minimo deposit alto (€10k+)',
 };
 
 function primaryRegulator(regulator: string): string {
@@ -64,8 +72,7 @@ export function BrokerCard({
   const isWinner = broker.isWinner && !locked;
 
   return (
-    <motion.div
-      layout
+    <div
       className={cn(
         'overflow-hidden rounded-2xl border transition-colors',
         isWinner
@@ -133,16 +140,19 @@ export function BrokerCard({
             </div>
           </div>
 
-          {/* Prezzo dominante a destra */}
+          {/* Prezzo dominante a destra — flash breve quando il valore ricomputa */}
           <div className="flex shrink-0 flex-col items-end text-right">
-            <span className={cn(
-              'font-bold tabular-nums leading-none tracking-tight',
-              isWinner ? 'text-[22px] text-primary' : 'text-[20px] text-foreground',
-            )}
+            <motion.span
+              key={broker.costPerMonth}
+              {...FLASH_ON_CHANGE}
+              className={cn(
+                'rounded px-1 font-bold tabular-nums leading-none tracking-tight',
+                isWinner ? 'text-[22px] text-primary' : 'text-[20px] text-foreground',
+              )}
             >
               €
               {broker.costPerMonth}
-            </span>
+            </motion.span>
             <span className="mt-0.5 text-[11px] font-medium text-muted-foreground">
               /mese
             </span>
@@ -190,7 +200,7 @@ export function BrokerCard({
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
 
@@ -351,9 +361,10 @@ function TierBadge({ tier }: { tier: BrokerTier }) {
   return (
     <span
       className={cn(
-        'rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider',
+        'cursor-help rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider',
         TIER_STYLES[tier],
       )}
+      title={TIER_TOOLTIPS[tier]}
     >
       {TIER_LABELS[tier]}
     </span>
@@ -368,9 +379,13 @@ function MetricTile({ label, value, primary }: { label: string; value: string; p
     )}
     >
       <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={cn('mt-0.5 text-lg font-bold tabular-nums tracking-tight', primary ? 'text-primary' : 'text-foreground')}>
+      <motion.p
+        key={value}
+        {...FLASH_ON_CHANGE}
+        className={cn('mt-0.5 rounded px-1 text-lg font-bold tabular-nums tracking-tight', primary ? 'text-primary' : 'text-foreground')}
+      >
         {value}
-      </p>
+      </motion.p>
     </div>
   );
 }

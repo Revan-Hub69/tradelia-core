@@ -27,6 +27,13 @@ export const DURATION = {
   slow: 0.42,
 } as const;
 
+/** Flash background quando un valore numerico cambia (recompute feedback). */
+export const FLASH_ON_CHANGE = {
+  initial: { backgroundColor: 'rgba(16, 185, 129, 0.20)' },
+  animate: { backgroundColor: 'rgba(16, 185, 129, 0)' },
+  transition: { duration: 0.6, ease: [0.2, 0, 0, 1] as const },
+} as const;
+
 /** Preset pronti per `transition` di framer-motion. */
 export const TRANSITION = {
   standard: { duration: DURATION.base, ease: EASE.standard },
