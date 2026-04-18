@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import type { AssetId } from '../data/assets';
 import type { BrokerAccount, BrokerTier, TradingMode } from '../data/brokers';
 import { BROKER_ACCOUNTS, computeCostBreakdown, estimateMonthlyCost } from '../data/brokers';
+import type { TradingDirection } from '../data/swap-rates';
 
 export type SimState = 'closed' | 'wizard' | 'results_compare' | 'results_detail';
 
@@ -18,6 +19,8 @@ export type SimulatorInput = {
   mode: TradingMode;
   /** Notti medie tenute per trade (solo multiday). */
   nightsPerTrade?: number;
+  /** Direzione bias: long/short/mixed (solo multiday). */
+  direction?: TradingDirection;
   underlyingId?: string;
 };
 
@@ -43,6 +46,8 @@ export type BrokerResult = {
     spreadPerMonth: number;
     commissionPerMonth: number;
     swapPerMonth: number;
+    /** Costo swap firmato €/lot/notte (positivo=costo, negativo=income). */
+    swapCostPerLotNight: number;
   };
   score: number;
   isWinner?: boolean;
@@ -77,15 +82,16 @@ const initialState: SimulatorState = {
  * Ranking considers eligible accounts first, sorted by cost ascending.
  */
 export function computeResults(input: SimulatorInput): BrokerResult[] {
-  const nightsPerTrade = input.nightsPerTrade ?? 0;
+  const ctx = {
+    lotSize: input.lotSize,
+    tradesPerMonth: input.tradesPerMonth,
+    mode: input.mode,
+    nightsPerTrade: input.nightsPerTrade ?? 0,
+    direction: input.direction ?? 'mixed' as TradingDirection,
+    pairSymbol: input.pairSymbol,
+  };
   const scored = BROKER_ACCOUNTS.map((account: BrokerAccount) => {
-    const costPerMonth = estimateMonthlyCost(
-      account,
-      input.lotSize,
-      input.tradesPerMonth,
-      input.mode,
-      nightsPerTrade,
-    );
+    const costPerMonth = estimateMonthlyCost(account, ctx);
     const costPerTrade = costPerMonth / Math.max(1, input.tradesPerMonth);
     const isEligible = input.capital >= account.minDepositEur;
     return { account, costPerMonth, costPerTrade, isEligible };
@@ -108,13 +114,7 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
   return scored.map((s, idx) => {
     const normalized = 1 - (s.costPerMonth - bestCost) / range;
     const score = Math.round(Math.max(30, Math.min(100, normalized * 100)));
-    const breakdown = computeCostBreakdown(
-      s.account,
-      input.lotSize,
-      input.tradesPerMonth,
-      input.mode,
-      nightsPerTrade,
-    );
+    const breakdown = computeCostBreakdown(s.account, ctx);
     return {
       id: s.account.id,
       rank: idx + 1,

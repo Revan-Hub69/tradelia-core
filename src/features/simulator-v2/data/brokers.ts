@@ -6,6 +6,9 @@
  * NON sono misurazioni real-time. UI deve etichettarli come "dati aggregati".
  */
 
+import type { TradingDirection } from './swap-rates';
+import { computeSwapCostPerLotNight } from './swap-rates';
+
 export type BrokerTier = 'cent' | 'starter' | 'standard' | 'ecn' | 'pro';
 
 export type BrokerAccount = {
@@ -22,8 +25,8 @@ export type BrokerAccount = {
   /** Minimum tradable lot size. */
   minLotSize: number;
   regulator: string;
-  /** Typical overnight swap EUR/USD long side, €/lot/night (indicative, include markup broker). */
-  swapLongPerLotEur?: number;
+  /** Broker markup sullo swap interbank (€/lot/notte, positivo). Peggiora sia long sia short. */
+  swapMarkupPerLotEur?: number;
   /** Average execution latency (ms) in normal conditions. */
   avgExecutionMs?: number;
   /** Deposit/withdrawal notes (short summary). */
@@ -186,28 +189,35 @@ export const BROKER_TIERS: { id: BrokerTier; label: string; range: string }[] = 
 
 export type TradingMode = 'intraday' | 'multiday';
 
+export type CostContext = {
+  lotSize: number;
+  tradesPerMonth: number;
+  mode: TradingMode;
+  /** Solo se mode=multiday */
+  nightsPerTrade?: number;
+  /** Solo se mode=multiday */
+  direction?: TradingDirection;
+  pairSymbol?: string;
+};
+
 /**
  * Calcola costo mensile totale per un account broker.
  * pipValue = €10 per standard lot a EUR/USD (semplificazione).
- * In modalità multiday, aggiunge il costo swap (markup broker su EUR/USD long)
- * stimato su nightsPerTrade notti per trade.
+ * In multiday: aggiunge swap firmato (può essere income se la direzione è favorevole).
  */
 export function estimateMonthlyCost(
   account: BrokerAccount,
-  lotSize: number,
-  tradesPerMonth: number,
-  mode: TradingMode = 'intraday',
-  nightsPerTrade = 0,
+  ctx: CostContext,
 ): number {
-  const pipValuePerLot = 10; // EUR/USD standard
+  const { lotSize, tradesPerMonth, mode, nightsPerTrade = 0, direction = 'long', pairSymbol } = ctx;
+  const pipValuePerLot = 10;
   const spreadCostPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionCostPerTrade = account.commissionPerLotEur * lotSize;
   let costPerTrade = spreadCostPerTrade + commissionCostPerTrade;
   if (mode === 'multiday' && nightsPerTrade > 0) {
     const qual = getBrokerQualitative(account);
-    // swap long è tipicamente negativo (costo): usiamo valore assoluto come costo
-    const swapPerNight = Math.abs(qual.swapLongPerLotEur) * lotSize;
-    costPerTrade += swapPerNight * nightsPerTrade;
+    const swapCostPerNight = computeSwapCostPerLotNight(pairSymbol, direction, qual.swapMarkupPerLotEur);
+    costPerTrade += swapCostPerNight * lotSize * nightsPerTrade;
   }
   return costPerTrade * tradesPerMonth;
 }
@@ -217,18 +227,19 @@ export function estimateMonthlyCost(
  */
 export function computeCostBreakdown(
   account: BrokerAccount,
-  lotSize: number,
-  tradesPerMonth: number,
-  mode: TradingMode = 'intraday',
-  nightsPerTrade = 0,
+  ctx: CostContext,
 ) {
+  const { lotSize, tradesPerMonth, mode, nightsPerTrade = 0, direction = 'long', pairSymbol } = ctx;
   const pipValuePerLot = 10;
   const spreadPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionPerTrade = account.commissionPerLotEur * lotSize;
   const qual = getBrokerQualitative(account);
-  const swapPerTrade = mode === 'multiday' && nightsPerTrade > 0
-    ? Math.abs(qual.swapLongPerLotEur) * lotSize * nightsPerTrade
-    : 0;
+  let swapCostPerLotNight = 0;
+  let swapPerTrade = 0;
+  if (mode === 'multiday' && nightsPerTrade > 0) {
+    swapCostPerLotNight = computeSwapCostPerLotNight(pairSymbol, direction, qual.swapMarkupPerLotEur);
+    swapPerTrade = swapCostPerLotNight * lotSize * nightsPerTrade;
+  }
   return {
     spreadPerTrade: Number(spreadPerTrade.toFixed(2)),
     commissionPerTrade: Number(commissionPerTrade.toFixed(2)),
@@ -236,6 +247,8 @@ export function computeCostBreakdown(
     spreadPerMonth: Number((spreadPerTrade * tradesPerMonth).toFixed(2)),
     commissionPerMonth: Number((commissionPerTrade * tradesPerMonth).toFixed(2)),
     swapPerMonth: Number((swapPerTrade * tradesPerMonth).toFixed(2)),
+    /** Costo swap firmato per lot/notte (positivo=costo, negativo=income). */
+    swapCostPerLotNight: Number(swapCostPerLotNight.toFixed(2)),
   };
 }
 
@@ -244,42 +257,42 @@ export function computeCostBreakdown(
  * Indicativi — non entrano nel calcolo costo mensile.
  */
 const TIER_DEFAULTS: Record<BrokerTier, {
-  swapLongPerLotEur: number;
+  swapMarkupPerLotEur: number;
   avgExecutionMs: number;
   depositNote: string;
   platforms: string[];
   maxLeverageRetail: number;
 }> = {
   cent: {
-    swapLongPerLotEur: -7,
+    swapMarkupPerLotEur: 2.0,
     avgExecutionMs: 80,
     depositNote: 'Carte, e-wallet, SEPA gratis',
     platforms: ['MT4', 'MT5'],
     maxLeverageRetail: 30,
   },
   starter: {
-    swapLongPerLotEur: -6.5,
+    swapMarkupPerLotEur: 1.8,
     avgExecutionMs: 60,
     depositNote: 'Carte, e-wallet, SEPA gratis',
     platforms: ['MT4', 'MT5'],
     maxLeverageRetail: 30,
   },
   standard: {
-    swapLongPerLotEur: -6,
+    swapMarkupPerLotEur: 1.5,
     avgExecutionMs: 45,
     depositNote: 'SEPA gratis · Carta 1.5% · Bonifici €15',
     platforms: ['MT4', 'MT5', 'WebTrader'],
     maxLeverageRetail: 30,
   },
   ecn: {
-    swapLongPerLotEur: -5,
+    swapMarkupPerLotEur: 0.8,
     avgExecutionMs: 25,
     depositNote: 'SEPA gratis · Carta 0-2% · Prelievi gratuiti',
     platforms: ['MT4', 'MT5', 'cTrader'],
     maxLeverageRetail: 30,
   },
   pro: {
-    swapLongPerLotEur: -4,
+    swapMarkupPerLotEur: 0.5,
     avgExecutionMs: 15,
     depositNote: 'Tutti i metodi gratuiti · Priority support',
     platforms: ['MT4', 'MT5', 'cTrader', 'TradingView'],
@@ -293,7 +306,7 @@ const TIER_DEFAULTS: Record<BrokerTier, {
 export function getBrokerQualitative(account: BrokerAccount) {
   const defaults = TIER_DEFAULTS[account.tier];
   return {
-    swapLongPerLotEur: account.swapLongPerLotEur ?? defaults.swapLongPerLotEur,
+    swapMarkupPerLotEur: account.swapMarkupPerLotEur ?? defaults.swapMarkupPerLotEur,
     avgExecutionMs: account.avgExecutionMs ?? defaults.avgExecutionMs,
     depositNote: account.depositNote ?? defaults.depositNote,
     platforms: account.platforms ?? defaults.platforms,

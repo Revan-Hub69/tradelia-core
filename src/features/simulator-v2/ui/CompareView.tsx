@@ -86,6 +86,13 @@ export function CompareView({
               : 'Intraday'}
             highlight
           />
+          {input.mode === 'multiday' && input.direction && (
+            <Badge
+              label="Direzione"
+              value={input.direction === 'mixed' ? 'Misto' : input.direction === 'long' ? 'Long' : 'Short'}
+              highlight
+            />
+          )}
           <Badge label="Capitale" value={`€${input.capital.toLocaleString('it-IT')}`} />
           <Badge label="Lotto" value={`${input.lotSize}`} />
           <Badge label="Trade/mese" value={String(input.tradesPerMonth)} />
