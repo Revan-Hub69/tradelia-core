@@ -9,6 +9,7 @@ import { cn } from '@/utils/Helpers';
 import { FOREX_PAIRS } from '../data/forex-pairs';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
+import { formatEURWhole } from '../utils/format';
 import { BrokerCard } from './BrokerCard';
 import { CurrencyFlag } from './CurrencyFlag';
 import { TRANSITION } from './motion';
@@ -145,7 +146,7 @@ export function CompareView({
         <button
           type="button"
           onClick={onBackAction}
-          className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background/80 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card"
+          className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background/80 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Torna al wizard"
         >
           <ChevronLeft className="size-3.5" />
@@ -154,7 +155,7 @@ export function CompareView({
         <button
           type="button"
           onClick={onCloseAction}
-          className="rounded-full border border-border/60 bg-background/80 p-1.5 text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card"
+          className="rounded-full border border-border/60 bg-background/80 p-1.5 text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Chiudi"
         >
           <X className="size-3.5" />
@@ -220,7 +221,7 @@ export function CompareView({
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
           <EditableBadge
             label="Capitale"
-            value={`€${input.capital.toLocaleString('it-IT')}`}
+            value={formatEURWhole(input.capital)}
             rawValue={String(input.capital)}
             suffix="€"
             isEditing={editingField === 'capital'}
@@ -385,6 +386,7 @@ function EditablePairBadge({ value, isEditing, onStartEdit, onCancel }: Editable
       onClick={isEditing ? onCancel : onStartEdit}
       className={cn(
         'group inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         isEditing
           ? 'border-primary/40 bg-primary/10'
           : 'border-transparent hover:border-border/60 hover:bg-card/60',
@@ -496,6 +498,7 @@ function EditableBadge({
       onClick={onStartEdit}
       className={cn(
         'group inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         'hover:border-border/60 hover:bg-card/60',
         highlight && 'border-primary/30 bg-primary/10 hover:border-primary/40',
       )}

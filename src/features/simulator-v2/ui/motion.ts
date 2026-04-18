@@ -27,11 +27,38 @@ export const DURATION = {
   slow: 0.42,
 } as const;
 
-/** Flash background quando un valore numerico cambia (recompute feedback). */
+/** Rileva prefers-reduced-motion in modo SSR-safe. */
+export function prefersReducedMotion(): boolean {
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    return false;
+  }
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/**
+ * Flash background quando un valore numerico cambia (recompute feedback).
+ * Rispetta prefers-reduced-motion: se attivo, diventa no-op.
+ */
+export function getFlashOnChange() {
+  if (prefersReducedMotion()) {
+    return {
+      initial: false as const,
+      animate: {},
+      transition: { duration: 0 },
+    };
+  }
+  return {
+    initial: { backgroundColor: 'rgba(16, 185, 129, 0.20)' },
+    animate: { backgroundColor: 'rgba(16, 185, 129, 0)' },
+    transition: { duration: 0.6, ease: EASE.standard },
+  };
+}
+
+/** @deprecated — usa getFlashOnChange() che rispetta prefers-reduced-motion. */
 export const FLASH_ON_CHANGE = {
   initial: { backgroundColor: 'rgba(16, 185, 129, 0.20)' },
   animate: { backgroundColor: 'rgba(16, 185, 129, 0)' },
-  transition: { duration: 0.6, ease: [0.2, 0, 0, 1] as const },
+  transition: { duration: 0.6, ease: EASE.standard },
 } as const;
 
 /** Preset pronti per `transition` di framer-motion. */

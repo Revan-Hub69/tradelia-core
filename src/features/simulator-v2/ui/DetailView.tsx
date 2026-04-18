@@ -17,33 +17,10 @@ import {
 
 import { cn } from '@/utils/Helpers';
 
-import type { BrokerTier } from '../data/brokers';
 import { BROKER_ACCOUNTS, getBrokerQualitative } from '../data/brokers';
+import { TIER_LABELS, TIER_STYLES, TIER_TOOLTIPS } from '../data/tiers';
 import type { BrokerResult } from '../state/useSimulatorState';
-
-const TIER_LABELS: Record<BrokerTier, string> = {
-  cent: 'Cent',
-  starter: 'Starter',
-  standard: 'Standard',
-  ecn: 'ECN',
-  pro: 'Pro',
-};
-
-const TIER_TOOLTIPS: Record<BrokerTier, string> = {
-  cent: 'Conto Cent: lotti micro (0.01) · depositi da €5 · ideale per chi inizia',
-  starter: 'Conto Starter: depositi bassi · spread standard · niente commissioni',
-  standard: 'Conto Standard: nessun minimo · condizioni bilanciate · solo spread',
-  ecn: 'ECN Raw: spread quasi 0 + commissione fissa · conviene con alti volumi',
-  pro: 'Conto Pro/VIP: commissioni ridotte · minimo deposit alto (€10k+)',
-};
-
-const TIER_STYLES: Record<BrokerTier, string> = {
-  cent: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-  starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  standard: 'bg-primary/10 text-primary border-primary/20',
-  ecn: 'bg-accent/10 text-accent border-accent/20',
-  pro: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-};
+import { formatEUR, formatEURWhole } from '../utils/format';
 
 type DetailViewProps = {
   broker: BrokerResult;
@@ -151,12 +128,12 @@ export function DetailView({ broker, onBackAction, onCloseAction }: DetailViewPr
           <div className="grid grid-cols-2 gap-3">
             <StatTile
               label="Costo mensile"
-              value={`€${broker.costPerMonth}`}
+              value={formatEUR(broker.costPerMonth)}
               primary
             />
             <StatTile
               label="Costo a trade"
-              value={`€${broker.costPerTrade}`}
+              value={formatEUR(broker.costPerTrade)}
             />
           </div>
         </Section>
@@ -221,7 +198,7 @@ export function DetailView({ broker, onBackAction, onCloseAction }: DetailViewPr
         {qual && account && (
           <Section title="Specifiche conto" icon={Layers}>
             <div className="grid grid-cols-2 gap-2">
-              <SpecCard label="Min deposito" value={`€${broker.minDepositEur}`} />
+              <SpecCard label="Min deposito" value={formatEURWhole(broker.minDepositEur)} />
               <SpecCard label="Lotto minimo" value={`${account.minLotSize}`} />
               <SpecCard label="Leva max ESMA" value={`${qual.maxLeverageRetail}:1`} />
               <SpecCard label="Piattaforme" value={qual.platforms.join(' · ')} />
@@ -391,9 +368,8 @@ function BreakdownRow({
     <div className="rounded-xl border border-border/60 bg-card/60 p-3">
       <div className="mb-1.5 flex items-baseline justify-between gap-2">
         <span className="text-sm font-medium text-foreground">{label}</span>
-        <span className="text-sm font-semibold text-foreground">
-          €
-          {amount.toFixed(2)}
+        <span className="text-sm font-semibold tabular-nums text-foreground">
+          {formatEUR(amount)}
           <span className="ml-1 font-normal text-muted-foreground">
             (
             {pct.toFixed(0)}

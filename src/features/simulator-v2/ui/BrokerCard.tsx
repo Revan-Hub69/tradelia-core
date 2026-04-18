@@ -18,37 +18,15 @@ import { cn } from '@/utils/Helpers';
 
 import type { BrokerTier } from '../data/brokers';
 import { BROKER_ACCOUNTS, getBrokerQualitative } from '../data/brokers';
+import { TIER_LABELS, TIER_STYLES, TIER_TOOLTIPS } from '../data/tiers';
 import type { BrokerResult } from '../state/useSimulatorState';
-import { FLASH_ON_CHANGE, TRANSITION } from './motion';
-
-const TIER_LABELS: Record<BrokerTier, string> = {
-  cent: 'Cent',
-  starter: 'Starter',
-  standard: 'Standard',
-  ecn: 'ECN',
-  pro: 'Pro',
-};
-
-const TIER_TOOLTIPS: Record<BrokerTier, string> = {
-  cent: 'Conto Cent: lotti micro (0.01) · depositi da €5 · ideale per chi inizia',
-  starter: 'Conto Starter: depositi bassi · spread standard · niente commissioni',
-  standard: 'Conto Standard: nessun minimo · condizioni bilanciate · solo spread',
-  ecn: 'ECN Raw: spread quasi 0 + commissione fissa · conviene con alti volumi',
-  pro: 'Conto Pro/VIP: commissioni ridotte · minimo deposit alto (€10k+)',
-};
+import { formatEUR, formatEURWhole, formatInt, formatNum2 } from '../utils/format';
+import { getFlashOnChange, TRANSITION } from './motion';
 
 function primaryRegulator(regulator: string): string {
   const parts = regulator.split('·');
   return (parts[0] || regulator).trim();
 }
-
-const TIER_STYLES: Record<BrokerTier, string> = {
-  cent: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-  starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  standard: 'bg-primary/10 text-primary border-primary/20',
-  ecn: 'bg-accent/10 text-accent border-accent/20',
-  pro: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-};
 
 type BrokerCardProps = {
   broker: BrokerResult;
@@ -133,9 +111,8 @@ export function BrokerCard({
                 {primaryRegulator(broker.regulator)}
               </span>
               <span className="text-muted-foreground/70">·</span>
-              <span>
-                Min €
-                <span className="tabular-nums">{broker.minDepositEur}</span>
+              <span className="tabular-nums">
+                {`Min ${formatEURWhole(broker.minDepositEur)}`}
               </span>
             </div>
           </div>
@@ -144,22 +121,21 @@ export function BrokerCard({
           <div className="flex shrink-0 flex-col items-end text-right">
             <motion.span
               key={broker.costPerMonth}
-              {...FLASH_ON_CHANGE}
+              {...getFlashOnChange()}
               className={cn(
                 'rounded px-1 font-bold tabular-nums leading-none tracking-tight',
                 isWinner ? 'text-[22px] text-primary' : 'text-[20px] text-foreground',
               )}
             >
-              €
-              {broker.costPerMonth}
+              {formatEUR(broker.costPerMonth)}
             </motion.span>
             <span className="mt-0.5 text-[11px] font-medium text-muted-foreground">
               /mese
             </span>
             {!isWinner && broker.deltaVsBestMonth > 0 && !locked && (
               <span className="mt-0.5 text-[11px] tabular-nums text-muted-foreground">
-                +€
-                {broker.deltaVsBestMonth.toFixed(2)}
+                +
+                {formatEUR(broker.deltaVsBestMonth)}
                 {' '}
                 vs best
               </span>
@@ -253,9 +229,9 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }
 
       {/* Numeri chiave */}
       <div className="grid grid-cols-3 gap-2">
-        <MetricTile label="Costo/mese" value={`€${broker.costPerMonth}`} primary />
-        <MetricTile label="Costo/trade" value={`€${broker.costPerTrade}`} />
-        <MetricTile label="Trade/mese" value={String(tradesPerMonth)} />
+        <MetricTile label="Costo/mese" value={formatEUR(broker.costPerMonth)} primary />
+        <MetricTile label="Costo/trade" value={formatEUR(broker.costPerTrade)} />
+        <MetricTile label="Trade/mese" value={formatInt(tradesPerMonth)} />
       </div>
 
       {/* Breakdown costi calcolati */}
@@ -270,7 +246,7 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }
             label="Spread"
             amount={broker.breakdown.spreadPerMonth}
             pct={spreadPct}
-            detail={`${broker.spreadEurUsdPip} pip × ${lotSize} lot × ${tradesPerMonth} trade`}
+            detail={`${formatNum2(broker.spreadEurUsdPip)} pip × ${formatNum2(lotSize)} lot × ${formatInt(tradesPerMonth)} trade`}
             color="bg-primary"
           />
           <CostRow
@@ -278,7 +254,7 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }
             amount={broker.breakdown.commissionPerMonth}
             pct={commissionPct}
             detail={broker.commissionPerLotEur > 0
-              ? `€${broker.commissionPerLotEur}/lot × ${lotSize} lot × ${tradesPerMonth} trade`
+              ? `${formatEUR(broker.commissionPerLotEur)}/lot × ${formatNum2(lotSize)} lot × ${formatInt(tradesPerMonth)} trade`
               : 'Nessuna commissione · solo spread'}
             color="bg-accent"
           />
@@ -287,7 +263,7 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }
               label="Swap markup"
               amount={broker.breakdown.swapPerMonth}
               pct={swapPct}
-              detail={`+€${broker.breakdown.swapMarkupPerLotNight}/lot/notte × ${lotSize} lot × esposizione`}
+              detail={`+${formatEUR(broker.breakdown.swapMarkupPerLotNight)}/lot/notte × ${formatNum2(lotSize)} lot × esposizione`}
               color="bg-amber-500"
             />
           )}
@@ -306,7 +282,7 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }
               <QualRow
                 icon={Clock}
                 label="Swap markup broker"
-                value={`+€${qual.swapMarkupPerLotEur}/lot/notte`}
+                value={`+${formatEUR(qual.swapMarkupPerLotEur)}/lot/notte`}
                 hint="Sommato al rate interbank per coppia · switcha in alto per includerlo"
               />
             )}
@@ -381,7 +357,7 @@ function MetricTile({ label, value, primary }: { label: string; value: string; p
       <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
       <motion.p
         key={value}
-        {...FLASH_ON_CHANGE}
+        {...getFlashOnChange()}
         className={cn('mt-0.5 rounded px-1 text-lg font-bold tabular-nums tracking-tight', primary ? 'text-primary' : 'text-foreground')}
       >
         {value}
@@ -408,8 +384,7 @@ function CostRow({
       <div className="mb-1 flex items-baseline justify-between gap-2">
         <span className="text-xs font-medium text-foreground">{label}</span>
         <span className="text-xs font-semibold tabular-nums text-foreground">
-          €
-          {amount.toFixed(2)}
+          {formatEUR(amount)}
           <span className="ml-1 font-normal text-muted-foreground">
             (
             {pct.toFixed(0)}
