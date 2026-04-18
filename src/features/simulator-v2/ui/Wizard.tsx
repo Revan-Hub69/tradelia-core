@@ -2,15 +2,13 @@
 
 import { motion } from 'framer-motion';
 import {
-  ArrowDown,
   ArrowRight,
-  ArrowUp,
   Calculator,
+  CalendarClock,
   Gauge,
   Moon,
   Pencil,
   Repeat,
-  Scale,
   Sun,
   Wallet,
   X,
@@ -22,8 +20,6 @@ import { cn } from '@/utils/Helpers';
 import type { AssetId } from '../data/assets';
 import type { TradingMode } from '../data/brokers';
 import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
-import type { TradingDirection } from '../data/swap-rates';
-import { getInterbankSwap } from '../data/swap-rates';
 import type { SimulatorInput } from '../state/useSimulatorState';
 import { AssetSwitcher } from './AssetSwitcher';
 import { PairChip } from './PairChip';
@@ -37,7 +33,11 @@ type WizardProps = {
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
 const TRADES_PRESETS_INTRADAY = [5, 10, 20, 50, 100];
 const TRADES_PRESETS_MULTIDAY = [1, 2, 5, 10, 20];
-const NIGHTS_PRESETS = [1, 2, 3, 5, 7, 14];
+/**
+ * Giorni/mese in cui hai almeno una posizione aperta a cavallo del rollover.
+ * Preset tipici: scalper/swing leggero 5gg, swing 10gg, swing pesante 20gg, position 30gg.
+ */
+const EXPOSURE_PRESETS = [5, 10, 15, 20, 30];
 
 /**
  * Lot presets: step reali usati dal retail per account size.
@@ -77,8 +77,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
   const [lotSize, setLotSize] = useState<number>(0.1);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
   const [mode, setMode] = useState<TradingMode>('intraday');
-  const [nightsPerTrade, setNightsPerTrade] = useState<number>(3);
-  const [direction, setDirection] = useState<TradingDirection>('mixed');
+  const [exposureDaysPerMonth, setExposureDaysPerMonth] = useState<number>(10);
 
   const tradesPresets = mode === 'multiday' ? TRADES_PRESETS_MULTIDAY : TRADES_PRESETS_INTRADAY;
 
@@ -91,9 +90,6 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
       setTradesPerMonth(20);
     }
   };
-
-  // Derivate per UX multiday
-  const totalNightLotsPerMonth = mode === 'multiday' ? tradesPerMonth * nightsPerTrade : 0;
 
   const lotPresets = useMemo(() => getLotPresets(capital), [capital]);
 
@@ -111,8 +107,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
       tradesPerMonth,
       lotSize,
       mode,
-      nightsPerTrade: mode === 'multiday' ? nightsPerTrade : undefined,
-      direction: mode === 'multiday' ? direction : undefined,
+      exposureDaysPerMonth: mode === 'multiday' ? exposureDaysPerMonth : undefined,
     });
   };
 
@@ -151,16 +146,6 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
               </div>
               <div className="h-4 w-px bg-border/60" />
               <ModeToggle value={mode} onSelect={handleModeChange} />
-              {mode === 'multiday' && (
-                <>
-                  <div className="h-4 w-px bg-border/60" />
-                  <DirectionToggle
-                    value={direction}
-                    onSelect={setDirection}
-                    pairSymbol={pairSymbol}
-                  />
-                </>
-              )}
             </div>
           </div>
         )}
@@ -235,27 +220,27 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           />
         </InputCard>
 
-        {/* Notti per trade — solo multiday */}
+        {/* Esposizione overnight — solo multiday */}
         {mode === 'multiday' && (
           <InputCard
-            icon={Moon}
+            icon={CalendarClock}
             accent="teal"
-            label="Notti tenute per trade"
-            hint={`Notti medie di holding · ${tradesPerMonth} trade × ${nightsPerTrade} notti = ${totalNightLotsPerMonth} notti-lot/mese`}
+            label="Esposizione overnight"
+            hint="Giorni al mese in cui hai almeno una posizione aperta al rollover"
           >
             <EditableAmount
-              suffix="notti"
-              value={nightsPerTrade}
-              onChange={setNightsPerTrade}
-              min={1}
-              max={365}
+              suffix="gg/mese"
+              value={exposureDaysPerMonth}
+              onChange={setExposureDaysPerMonth}
+              min={0}
+              max={30}
               step={1}
             />
             <PresetChips<number>
-              values={NIGHTS_PRESETS}
-              value={nightsPerTrade}
-              onSelect={v => setNightsPerTrade(v)}
-              format={v => `${v}n`}
+              values={EXPOSURE_PRESETS}
+              value={exposureDaysPerMonth}
+              onSelect={v => setExposureDaysPerMonth(v)}
+              format={v => `${v}gg`}
             />
           </InputCard>
         )}
@@ -345,56 +330,6 @@ function ModeToggle({ value, onSelect }: ModeToggleProps) {
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
               active
                 ? 'bg-primary text-primary-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground',
-            )}
-          >
-            <Icon className="size-3" />
-            {opt.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-type DirectionToggleProps = {
-  value: TradingDirection;
-  onSelect: (v: TradingDirection) => void;
-  pairSymbol?: string;
-};
-
-function DirectionToggle({ value, onSelect, pairSymbol }: DirectionToggleProps) {
-  const swap = getInterbankSwap(pairSymbol);
-  // Hint: segno netto su quale direzione è favorevole (interbank-only, pre-markup)
-  const longHint = swap.long >= 0 ? 'Ricevi swap' : 'Paghi swap';
-  const shortHint = swap.short >= 0 ? 'Ricevi swap' : 'Paghi swap';
-  const options: { id: TradingDirection; label: string; icon: React.ElementType; hint: string }[] = [
-    { id: 'long', label: 'Long', icon: ArrowUp, hint: `${pairSymbol ?? ''} long · ${longHint}` },
-    { id: 'mixed', label: 'Misto', icon: Scale, hint: 'Media 50/50 long-short' },
-    { id: 'short', label: 'Short', icon: ArrowDown, hint: `${pairSymbol ?? ''} short · ${shortHint}` },
-  ];
-  return (
-    <div
-      role="radiogroup"
-      aria-label="Direzione"
-      className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5"
-    >
-      {options.map((opt) => {
-        const active = opt.id === value;
-        const Icon = opt.icon;
-        return (
-          <button
-            key={opt.id}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            onClick={() => onSelect(opt.id)}
-            title={opt.hint}
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              active
-                ? 'bg-accent text-accent-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground',
             )}
           >

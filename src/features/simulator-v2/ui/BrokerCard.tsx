@@ -196,15 +196,11 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
 
-  const isMultiday = broker.breakdown.swapPerTrade !== 0;
-  const swapIsIncome = broker.breakdown.swapPerMonth < 0;
-  // Per le barre percentuali usiamo magnitudo (il visual è la quota di ogni voce sul totale lordo).
-  const grossTotal = broker.breakdown.spreadPerMonth
-    + broker.breakdown.commissionPerMonth
-    + Math.abs(broker.breakdown.swapPerMonth);
-  const spreadPct = grossTotal > 0 ? (broker.breakdown.spreadPerMonth / grossTotal) * 100 : 100;
-  const commissionPct = grossTotal > 0 ? (broker.breakdown.commissionPerMonth / grossTotal) * 100 : 0;
-  const swapPct = grossTotal > 0 ? (Math.abs(broker.breakdown.swapPerMonth) / grossTotal) * 100 : 0;
+  const isMultiday = broker.breakdown.swapPerMonth > 0;
+  const total = broker.breakdown.spreadPerMonth + broker.breakdown.commissionPerMonth + broker.breakdown.swapPerMonth;
+  const spreadPct = total > 0 ? (broker.breakdown.spreadPerMonth / total) * 100 : 100;
+  const commissionPct = total > 0 ? (broker.breakdown.commissionPerMonth / total) * 100 : 0;
+  const swapPct = total > 0 ? (broker.breakdown.swapPerMonth / total) * 100 : 0;
 
   return (
     <>
@@ -241,12 +237,11 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
           />
           {isMultiday && (
             <CostRow
-              label={swapIsIncome ? 'Swap overnight (entrata)' : 'Swap overnight'}
+              label="Swap markup"
               amount={broker.breakdown.swapPerMonth}
               pct={swapPct}
-              detail={`€${broker.breakdown.swapCostPerLotNight}/lot/notte · interbank + markup`}
-              color={swapIsIncome ? 'bg-emerald-500' : 'bg-amber-500'}
-              negative={swapIsIncome}
+              detail={`+€${broker.breakdown.swapMarkupPerLotNight}/lot/notte × ${lotSize} lot × esposizione`}
+              color="bg-amber-500"
             />
           )}
         </div>
@@ -358,27 +353,23 @@ function CostRow({
   pct,
   detail,
   color,
-  negative,
 }: {
   label: string;
   amount: number;
   pct: number;
   detail: string;
   color: string;
-  negative?: boolean;
 }) {
-  const displayAmount = Math.abs(amount).toFixed(2);
   return (
     <div>
       <div className="mb-1 flex items-baseline justify-between gap-2">
         <span className="text-xs font-medium text-foreground">{label}</span>
-        <span className={cn('text-xs font-semibold', negative ? 'text-emerald-500' : 'text-foreground')}>
-          {negative ? '−' : ''}
+        <span className="text-xs font-semibold text-foreground">
           €
-          {displayAmount}
+          {amount.toFixed(2)}
           <span className="ml-1 font-normal text-muted-foreground">
             (
-            {Math.abs(pct).toFixed(0)}
+            {pct.toFixed(0)}
             %)
           </span>
         </span>
@@ -386,7 +377,7 @@ function CostRow({
       <div className="h-1.5 overflow-hidden rounded-full bg-muted/50">
         <div
           className={cn('h-full rounded-full transition-all', color)}
-          style={{ width: `${Math.max(2, Math.abs(pct))}%` }}
+          style={{ width: `${Math.max(2, pct)}%` }}
         />
       </div>
       <p className="mt-1 text-[10px] text-muted-foreground">{detail}</p>

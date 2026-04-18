@@ -5,7 +5,6 @@ import { useCallback, useState } from 'react';
 import type { AssetId } from '../data/assets';
 import type { BrokerAccount, BrokerTier, TradingMode } from '../data/brokers';
 import { BROKER_ACCOUNTS, computeCostBreakdown, estimateMonthlyCost } from '../data/brokers';
-import type { TradingDirection } from '../data/swap-rates';
 
 export type SimState = 'closed' | 'wizard' | 'results_compare' | 'results_detail';
 
@@ -17,10 +16,8 @@ export type SimulatorInput = {
   lotSize: number;
   /** Modalità operativa: intraday (nessuno swap) o multiday (swap incluso nel calcolo). */
   mode: TradingMode;
-  /** Notti medie tenute per trade (solo multiday). */
-  nightsPerTrade?: number;
-  /** Direzione bias: long/short/mixed (solo multiday). */
-  direction?: TradingDirection;
+  /** Giorni medi di esposizione overnight al mese (0-30). Solo se mode=multiday. */
+  exposureDaysPerMonth?: number;
   underlyingId?: string;
 };
 
@@ -42,12 +39,11 @@ export type BrokerResult = {
   breakdown: {
     spreadPerTrade: number;
     commissionPerTrade: number;
-    swapPerTrade: number;
     spreadPerMonth: number;
     commissionPerMonth: number;
     swapPerMonth: number;
-    /** Costo swap firmato €/lot/notte (positivo=costo, negativo=income). */
-    swapCostPerLotNight: number;
+    /** Markup broker €/lot/notte — metrica discriminante per swap ranking. */
+    swapMarkupPerLotNight: number;
   };
   score: number;
   isWinner?: boolean;
@@ -86,9 +82,7 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
     lotSize: input.lotSize,
     tradesPerMonth: input.tradesPerMonth,
     mode: input.mode,
-    nightsPerTrade: input.nightsPerTrade ?? 0,
-    direction: input.direction ?? 'mixed' as TradingDirection,
-    pairSymbol: input.pairSymbol,
+    exposureDaysPerMonth: input.exposureDaysPerMonth ?? 0,
   };
   const scored = BROKER_ACCOUNTS.map((account: BrokerAccount) => {
     const costPerMonth = estimateMonthlyCost(account, ctx);

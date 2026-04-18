@@ -159,14 +159,13 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
               color="bg-accent"
               total={broker.costPerMonth}
             />
-            {broker.breakdown.swapPerTrade !== 0 && (
+            {broker.breakdown.swapPerMonth > 0 && (
               <BreakdownRow
-                label={broker.breakdown.swapPerMonth < 0 ? 'Swap overnight (entrata)' : 'Swap overnight'}
+                label="Swap markup"
                 amount={broker.breakdown.swapPerMonth}
-                per={`€${broker.breakdown.swapCostPerLotNight}/lot/notte · interbank + markup`}
-                color={broker.breakdown.swapPerMonth < 0 ? 'bg-emerald-500' : 'bg-amber-500'}
+                per={`+€${broker.breakdown.swapMarkupPerLotNight}/lot/notte · markup broker`}
+                color="bg-amber-500"
                 total={broker.costPerMonth}
-                negative={broker.breakdown.swapPerMonth < 0}
               />
             )}
           </div>
@@ -176,11 +175,11 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
         {qual && (
           <Section title="Non incluso nel calcolo" icon={Clock} variant="amber">
             <div className="space-y-2">
-              {broker.breakdown.swapPerTrade === 0 && (
+              {broker.breakdown.swapPerMonth === 0 && (
                 <InfoRow
                   icon={Clock}
                   label="Swap markup broker"
-                  value={`+€${qual.swapMarkupPerLotEur}/lot/notte · sommato al rate interbank`}
+                  value={`+€${qual.swapMarkupPerLotEur}/lot/notte · applicato solo in overnight`}
                 />
               )}
               <InfoRow
@@ -305,24 +304,21 @@ function BreakdownRow({
   per,
   color,
   total,
-  negative,
 }: {
   label: string;
   amount: number;
   per: string;
   color: string;
   total: number;
-  negative?: boolean;
 }) {
-  const pct = total > 0 ? (Math.abs(amount) / total) * 100 : 0;
+  const pct = total > 0 ? (amount / total) * 100 : 0;
   return (
     <div className="rounded-xl border border-border/60 bg-card/60 p-3">
       <div className="mb-1.5 flex items-baseline justify-between gap-2">
         <span className="text-sm font-medium text-foreground">{label}</span>
-        <span className={cn('text-sm font-semibold', negative ? 'text-emerald-500' : 'text-foreground')}>
-          {negative ? '−' : ''}
+        <span className="text-sm font-semibold text-foreground">
           €
-          {Math.abs(amount).toFixed(2)}
+          {amount.toFixed(2)}
           <span className="ml-1 font-normal text-muted-foreground">
             (
             {pct.toFixed(0)}

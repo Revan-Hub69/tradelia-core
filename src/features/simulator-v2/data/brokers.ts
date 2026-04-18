@@ -6,9 +6,6 @@
  * NON sono misurazioni real-time. UI deve etichettarli come "dati aggregati".
  */
 
-import type { TradingDirection } from './swap-rates';
-import { computeSwapCostPerLotNight } from './swap-rates';
-
 export type BrokerTier = 'cent' | 'starter' | 'standard' | 'ecn' | 'pro';
 
 export type BrokerAccount = {
@@ -193,33 +190,33 @@ export type CostContext = {
   lotSize: number;
   tradesPerMonth: number;
   mode: TradingMode;
-  /** Solo se mode=multiday */
-  nightsPerTrade?: number;
-  /** Solo se mode=multiday */
-  direction?: TradingDirection;
-  pairSymbol?: string;
+  /** Giorni medi di esposizione overnight al mese (0-30). Solo se mode=multiday. */
+  exposureDaysPerMonth?: number;
 };
 
 /**
  * Calcola costo mensile totale per un account broker.
  * pipValue = €10 per standard lot a EUR/USD (semplificazione).
- * In multiday: aggiunge swap firmato (può essere income se la direzione è favorevole).
+ *
+ * In multiday: aggiunge il solo **markup broker** × lot × giorni di esposizione mensile.
+ * L'interbank swap rate (identico per tutti i broker) non entra nel ranking perché
+ * non è una componente broker-specifica. Il markup è l'unica variabile discriminante.
  */
 export function estimateMonthlyCost(
   account: BrokerAccount,
   ctx: CostContext,
 ): number {
-  const { lotSize, tradesPerMonth, mode, nightsPerTrade = 0, direction = 'long', pairSymbol } = ctx;
+  const { lotSize, tradesPerMonth, mode, exposureDaysPerMonth = 0 } = ctx;
   const pipValuePerLot = 10;
   const spreadCostPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionCostPerTrade = account.commissionPerLotEur * lotSize;
-  let costPerTrade = spreadCostPerTrade + commissionCostPerTrade;
-  if (mode === 'multiday' && nightsPerTrade > 0) {
+  const tradingCost = (spreadCostPerTrade + commissionCostPerTrade) * tradesPerMonth;
+  let swapCost = 0;
+  if (mode === 'multiday' && exposureDaysPerMonth > 0) {
     const qual = getBrokerQualitative(account);
-    const swapCostPerNight = computeSwapCostPerLotNight(pairSymbol, direction, qual.swapMarkupPerLotEur);
-    costPerTrade += swapCostPerNight * lotSize * nightsPerTrade;
+    swapCost = qual.swapMarkupPerLotEur * lotSize * exposureDaysPerMonth;
   }
-  return costPerTrade * tradesPerMonth;
+  return tradingCost + swapCost;
 }
 
 /**
@@ -229,26 +226,23 @@ export function computeCostBreakdown(
   account: BrokerAccount,
   ctx: CostContext,
 ) {
-  const { lotSize, tradesPerMonth, mode, nightsPerTrade = 0, direction = 'long', pairSymbol } = ctx;
+  const { lotSize, tradesPerMonth, mode, exposureDaysPerMonth = 0 } = ctx;
   const pipValuePerLot = 10;
   const spreadPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionPerTrade = account.commissionPerLotEur * lotSize;
   const qual = getBrokerQualitative(account);
-  let swapCostPerLotNight = 0;
-  let swapPerTrade = 0;
-  if (mode === 'multiday' && nightsPerTrade > 0) {
-    swapCostPerLotNight = computeSwapCostPerLotNight(pairSymbol, direction, qual.swapMarkupPerLotEur);
-    swapPerTrade = swapCostPerLotNight * lotSize * nightsPerTrade;
-  }
+  const swapMarkupPerLotNight = mode === 'multiday' && exposureDaysPerMonth > 0
+    ? qual.swapMarkupPerLotEur
+    : 0;
+  const swapPerMonth = swapMarkupPerLotNight * lotSize * exposureDaysPerMonth;
   return {
     spreadPerTrade: Number(spreadPerTrade.toFixed(2)),
     commissionPerTrade: Number(commissionPerTrade.toFixed(2)),
-    swapPerTrade: Number(swapPerTrade.toFixed(2)),
     spreadPerMonth: Number((spreadPerTrade * tradesPerMonth).toFixed(2)),
     commissionPerMonth: Number((commissionPerTrade * tradesPerMonth).toFixed(2)),
-    swapPerMonth: Number((swapPerTrade * tradesPerMonth).toFixed(2)),
-    /** Costo swap firmato per lot/notte (positivo=costo, negativo=income). */
-    swapCostPerLotNight: Number(swapCostPerLotNight.toFixed(2)),
+    swapPerMonth: Number(swapPerMonth.toFixed(2)),
+    /** Markup broker €/lot/notte (0 se intraday). È la metrica di discriminazione del ranking swap. */
+    swapMarkupPerLotNight: Number(swapMarkupPerLotNight.toFixed(2)),
   };
 }
 
