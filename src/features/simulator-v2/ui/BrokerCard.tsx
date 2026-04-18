@@ -19,6 +19,7 @@ import { cn } from '@/utils/Helpers';
 import type { BrokerTier } from '../data/brokers';
 import { BROKER_ACCOUNTS, getBrokerQualitative } from '../data/brokers';
 import type { BrokerResult } from '../state/useSimulatorState';
+import { TRANSITION } from './motion';
 
 const TIER_LABELS: Record<BrokerTier, string> = {
   cent: 'Cent',
@@ -101,47 +102,58 @@ export function BrokerCard({
           {locked ? <Lock className="size-3.5" /> : isWinner ? <Trophy className="size-4" /> : broker.rank}
         </div>
 
-        {/* Info */}
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="truncate text-sm font-semibold text-foreground">
-              {broker.brokerName}
-            </span>
-            <span className="truncate text-xs text-muted-foreground">
-              {broker.accountName}
-            </span>
-            <TierBadge tier={broker.tier} />
-            {isWinner && (
-              <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground">
-                Best
+        {/* Info — gerarchia: broker/conto a sx, prezzo dominante a dx */}
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="truncate text-sm font-semibold text-foreground">
+                {broker.brokerName}
               </span>
-            )}
+              <span className="truncate text-xs text-muted-foreground">
+                {broker.accountName}
+              </span>
+              <TierBadge tier={broker.tier} />
+              {isWinner && (
+                <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground">
+                  Best
+                </span>
+              )}
+            </div>
+
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="size-3" />
+                {primaryRegulator(broker.regulator)}
+              </span>
+              <span className="text-muted-foreground/70">·</span>
+              <span>
+                Min €
+                <span className="tabular-nums">{broker.minDepositEur}</span>
+              </span>
+            </div>
           </div>
 
-          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
-            <span className="flex items-center gap-1 font-semibold text-foreground">
+          {/* Prezzo dominante a destra */}
+          <div className="flex shrink-0 flex-col items-end text-right">
+            <span className={cn(
+              'font-bold tabular-nums leading-none tracking-tight',
+              isWinner ? 'text-[22px] text-primary' : 'text-[20px] text-foreground',
+            )}
+            >
               €
-              <span className="tabular-nums">{broker.costPerMonth}</span>
-              <span className="font-normal text-muted-foreground">/mese</span>
+              {broker.costPerMonth}
+            </span>
+            <span className="mt-0.5 text-[11px] font-medium text-muted-foreground">
+              /mese
             </span>
             {!isWinner && broker.deltaVsBestMonth > 0 && !locked && (
-              <span className="text-muted-foreground">
-                · +€
-                <span className="tabular-nums">{broker.deltaVsBestMonth.toFixed(2)}</span>
+              <span className="mt-0.5 text-[11px] tabular-nums text-muted-foreground">
+                +€
+                {broker.deltaVsBestMonth.toFixed(2)}
                 {' '}
                 vs best
               </span>
             )}
-            <span className="text-muted-foreground/70">·</span>
-            <span className="flex items-center gap-1 text-muted-foreground">
-              <ShieldCheck className="size-3" />
-              {primaryRegulator(broker.regulator)}
-            </span>
-            <span className="text-muted-foreground/70">·</span>
-            <span className="text-muted-foreground">
-              Min €
-              {broker.minDepositEur}
-            </span>
           </div>
         </div>
 
@@ -149,7 +161,7 @@ export function BrokerCard({
         {!locked && (
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
+            transition={TRANSITION.standard}
             className="shrink-0 text-muted-foreground"
           >
             <ChevronDown className="size-4" />
@@ -164,7 +176,7 @@ export function BrokerCard({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
+            transition={TRANSITION.enter}
             className="overflow-hidden"
           >
             <div className="space-y-4 border-t border-border/40 p-4">

@@ -274,10 +274,11 @@ export function DetailView({ broker, onBackAction, onCloseAction }: DetailViewPr
             </a>
           </div>
 
-          {/* ESMA risk warning — specifico del broker se disponibile */}
-          <div className="flex items-start gap-2 border-t border-amber-500/20 bg-amber-500/5 px-4 py-2.5">
-            <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-500" />
-            <p className="text-[11px] leading-snug text-amber-700 dark:text-amber-400">
+          {/* ESMA risk warning — specifico del broker se disponibile.
+              Red-orange (rose) per distinguere da amber tier badge / "non incluso" box. */}
+          <div className="flex items-start gap-2 border-t border-rose-500/20 bg-rose-500/5 px-4 py-2.5">
+            <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-rose-600 dark:text-rose-500" />
+            <p className="text-[11px] leading-snug text-rose-700 dark:text-rose-400">
               <span className="font-semibold">Avvertenza rischio ESMA · </span>
               {esmaLossRatePct !== undefined
                 ? (

@@ -7,9 +7,11 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/utils/Helpers';
 
 import { FOREX_PAIRS } from '../data/forex-pairs';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
 import { BrokerCard } from './BrokerCard';
 import { CurrencyFlag } from './CurrencyFlag';
+import { TRANSITION } from './motion';
 import { PairSelector } from './PairSelector';
 
 type EditableField = 'capital' | 'lotSize' | 'tradesPerMonth' | 'exposureDaysPerMonth';
@@ -39,10 +41,10 @@ export function CompareView({
   const [editingField, setEditingField] = useState<EditableField | null>(null);
   const [isEditingPair, setIsEditingPair] = useState(false);
 
-  // Scroll-aware header (2026 pattern):
-  // - hide quickly su scroll-down deciso
-  // - reveal solo con intenzione cumulata (>24px verso l'alto) e timing più lento
-  // - transizioni cubic-bezier coordinate, niente spring secco
+  // Scroll-aware header (2026 pattern) — attivo solo su mobile/tablet.
+  // Su desktop (>=1024px) l'header resta fisso: HIG/Material vogliono chrome
+  // persistente quando c'è spazio sufficiente.
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
   const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ container: scrollRef });
   const [headerHidden, setHeaderHidden] = useState(false);
@@ -54,6 +56,14 @@ export function CompareView({
     const delta = y - lastY.current;
     lastY.current = y;
     setHasScrolled(y > 4);
+
+    // Desktop: header sempre visibile
+    if (isDesktop) {
+      if (headerHidden) {
+        setHeaderHidden(false);
+      }
+      return;
+    }
 
     // Ignora micro-movimenti (tipico del rubber-band)
     if (Math.abs(delta) < 2) {
@@ -125,8 +135,7 @@ export function CompareView({
           y: headerHidden ? 0 : -8,
         }}
         transition={{
-          duration: headerHidden ? 0.32 : 0.18,
-          ease: headerHidden ? [0.22, 1, 0.36, 1] : [0.4, 0, 1, 1],
+          ...TRANSITION.collapseAsymmetric(!headerHidden),
           delay: headerHidden ? 0.08 : 0,
         }}
         className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-3 py-2"
@@ -163,13 +172,9 @@ export function CompareView({
           opacity: headerHidden ? 0 : 1,
         }}
         transition={{
-          height: {
-            duration: headerHidden ? 0.22 : 0.42,
-            ease: headerHidden ? [0.4, 0, 1, 1] : [0.22, 1, 0.36, 1],
-          },
+          height: TRANSITION.collapseAsymmetric(!headerHidden),
           opacity: {
-            duration: headerHidden ? 0.16 : 0.32,
-            ease: headerHidden ? [0.4, 0, 1, 1] : [0.22, 1, 0.36, 1],
+            ...TRANSITION.collapseAsymmetric(!headerHidden),
             delay: headerHidden ? 0 : 0.06,
           },
         }}
@@ -272,7 +277,7 @@ export function CompareView({
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.24, ease: [0.2, 0, 0.2, 1] }}
+              transition={TRANSITION.standard}
               className="overflow-hidden"
             >
               <div className="mt-3 rounded-xl border border-border/60 bg-card/80 p-3 backdrop-blur-sm">
