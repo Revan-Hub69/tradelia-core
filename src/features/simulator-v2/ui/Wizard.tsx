@@ -5,8 +5,10 @@ import {
   ArrowRight,
   Calculator,
   Gauge,
+  Moon,
   Pencil,
   Repeat,
+  Sun,
   Wallet,
   X,
 } from 'lucide-react';
@@ -15,6 +17,7 @@ import { useMemo, useRef, useState } from 'react';
 import { cn } from '@/utils/Helpers';
 
 import type { AssetId } from '../data/assets';
+import type { TradingMode } from '../data/brokers';
 import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
 import type { SimulatorInput } from '../state/useSimulatorState';
 import { AssetSwitcher } from './AssetSwitcher';
@@ -66,6 +69,8 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
   const [capital, setCapital] = useState<number>(1000);
   const [lotSize, setLotSize] = useState<number>(0.1);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
+  const [mode, setMode] = useState<TradingMode>('intraday');
+  const [nightsPerTrade, setNightsPerTrade] = useState<number>(3);
 
   const lotPresets = useMemo(() => getLotPresets(capital), [capital]);
 
@@ -82,6 +87,8 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
       capital,
       tradesPerMonth,
       lotSize,
+      mode,
+      nightsPerTrade: mode === 'multiday' ? nightsPerTrade : undefined,
     });
   };
 
@@ -111,11 +118,15 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
 
         {isForex && (
           <div className="border-t border-border/40 bg-popover/30 px-5 py-2.5">
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                Coppia
-              </span>
-              <PairChip value={pairSymbol} onSelect={setPairSymbol} />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Coppia
+                </span>
+                <PairChip value={pairSymbol} onSelect={setPairSymbol} />
+              </div>
+              <div className="h-4 w-px bg-border/60" />
+              <ModeToggle value={mode} onSelect={setMode} />
             </div>
           </div>
         )}
@@ -189,6 +200,31 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
             format={v => String(v)}
           />
         </InputCard>
+
+        {/* Notti per trade — solo multiday */}
+        {mode === 'multiday' && (
+          <InputCard
+            icon={Moon}
+            accent="teal"
+            label="Notti tenute per trade"
+            hint="Media notti in cui la posizione è aperta (applica swap markup)"
+          >
+            <EditableAmount
+              suffix="notti"
+              value={nightsPerTrade}
+              onChange={setNightsPerTrade}
+              min={1}
+              max={365}
+              step={1}
+            />
+            <PresetChips<number>
+              values={[1, 2, 3, 5, 7, 14]}
+              value={nightsPerTrade}
+              onSelect={v => setNightsPerTrade(v)}
+              format={v => `${v}n`}
+            />
+          </InputCard>
+        )}
       </div>
 
       {/* Footer CTA */}
@@ -242,6 +278,50 @@ type InputCardProps = {
   hint: string;
   children: React.ReactNode;
 };
+
+type ModeToggleProps = {
+  value: TradingMode;
+  onSelect: (v: TradingMode) => void;
+};
+
+function ModeToggle({ value, onSelect }: ModeToggleProps) {
+  const options: { id: TradingMode; label: string; icon: React.ElementType; hint: string }[] = [
+    { id: 'intraday', label: 'Intraday', icon: Sun, hint: 'Senza overnight · no swap' },
+    { id: 'multiday', label: 'Multiday', icon: Moon, hint: 'Include swap markup broker' },
+  ];
+  return (
+    <div
+      role="radiogroup"
+      aria-label="Modalità operativa"
+      className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5"
+    >
+      {options.map((opt) => {
+        const active = opt.id === value;
+        const Icon = opt.icon;
+        return (
+          <button
+            key={opt.id}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onSelect(opt.id)}
+            title={opt.hint}
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              active
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            <Icon className="size-3" />
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 function InputCard({ icon: Icon, accent, label, hint, children }: InputCardProps) {
   return (

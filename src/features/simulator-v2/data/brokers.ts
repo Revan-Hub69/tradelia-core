@@ -22,10 +22,10 @@ export type BrokerAccount = {
   /** Minimum tradable lot size. */
   minLotSize: number;
   regulator: string;
-  /** Typical overnight swap EUR/USD long side, €/lot/day (indicative). */
+  /** Typical overnight swap EUR/USD long side, €/lot/night (indicative, include markup broker). */
   swapLongPerLotEur?: number;
-  /** Typical slippage in normal conditions, pips. */
-  typicalSlippagePip?: number;
+  /** Average execution latency (ms) in normal conditions. */
+  avgExecutionMs?: number;
   /** Deposit/withdrawal notes (short summary). */
   depositNote?: string;
   /** Trading platforms supported. */
@@ -184,19 +184,31 @@ export const BROKER_TIERS: { id: BrokerTier; label: string; range: string }[] = 
   { id: 'pro', label: 'Pro', range: '€10k+' },
 ];
 
+export type TradingMode = 'intraday' | 'multiday';
+
 /**
  * Calcola costo mensile totale per un account broker.
  * pipValue = €10 per standard lot a EUR/USD (semplificazione).
+ * In modalità multiday, aggiunge il costo swap (markup broker su EUR/USD long)
+ * stimato su nightsPerTrade notti per trade.
  */
 export function estimateMonthlyCost(
   account: BrokerAccount,
   lotSize: number,
   tradesPerMonth: number,
+  mode: TradingMode = 'intraday',
+  nightsPerTrade = 0,
 ): number {
   const pipValuePerLot = 10; // EUR/USD standard
   const spreadCostPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionCostPerTrade = account.commissionPerLotEur * lotSize;
-  const costPerTrade = spreadCostPerTrade + commissionCostPerTrade;
+  let costPerTrade = spreadCostPerTrade + commissionCostPerTrade;
+  if (mode === 'multiday' && nightsPerTrade > 0) {
+    const qual = getBrokerQualitative(account);
+    // swap long è tipicamente negativo (costo): usiamo valore assoluto come costo
+    const swapPerNight = Math.abs(qual.swapLongPerLotEur) * lotSize;
+    costPerTrade += swapPerNight * nightsPerTrade;
+  }
   return costPerTrade * tradesPerMonth;
 }
 
@@ -207,15 +219,23 @@ export function computeCostBreakdown(
   account: BrokerAccount,
   lotSize: number,
   tradesPerMonth: number,
+  mode: TradingMode = 'intraday',
+  nightsPerTrade = 0,
 ) {
   const pipValuePerLot = 10;
   const spreadPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionPerTrade = account.commissionPerLotEur * lotSize;
+  const qual = getBrokerQualitative(account);
+  const swapPerTrade = mode === 'multiday' && nightsPerTrade > 0
+    ? Math.abs(qual.swapLongPerLotEur) * lotSize * nightsPerTrade
+    : 0;
   return {
     spreadPerTrade: Number(spreadPerTrade.toFixed(2)),
     commissionPerTrade: Number(commissionPerTrade.toFixed(2)),
+    swapPerTrade: Number(swapPerTrade.toFixed(2)),
     spreadPerMonth: Number((spreadPerTrade * tradesPerMonth).toFixed(2)),
     commissionPerMonth: Number((commissionPerTrade * tradesPerMonth).toFixed(2)),
+    swapPerMonth: Number((swapPerTrade * tradesPerMonth).toFixed(2)),
   };
 }
 
@@ -225,42 +245,42 @@ export function computeCostBreakdown(
  */
 const TIER_DEFAULTS: Record<BrokerTier, {
   swapLongPerLotEur: number;
-  typicalSlippagePip: number;
+  avgExecutionMs: number;
   depositNote: string;
   platforms: string[];
   maxLeverageRetail: number;
 }> = {
   cent: {
-    swapLongPerLotEur: -0.6,
-    typicalSlippagePip: 0.3,
+    swapLongPerLotEur: -7,
+    avgExecutionMs: 80,
     depositNote: 'Carte, e-wallet, SEPA gratis',
     platforms: ['MT4', 'MT5'],
     maxLeverageRetail: 30,
   },
   starter: {
-    swapLongPerLotEur: -0.5,
-    typicalSlippagePip: 0.3,
+    swapLongPerLotEur: -6.5,
+    avgExecutionMs: 60,
     depositNote: 'Carte, e-wallet, SEPA gratis',
     platforms: ['MT4', 'MT5'],
     maxLeverageRetail: 30,
   },
   standard: {
-    swapLongPerLotEur: -0.5,
-    typicalSlippagePip: 0.2,
+    swapLongPerLotEur: -6,
+    avgExecutionMs: 45,
     depositNote: 'SEPA gratis · Carta 1.5% · Bonifici €15',
     platforms: ['MT4', 'MT5', 'WebTrader'],
     maxLeverageRetail: 30,
   },
   ecn: {
-    swapLongPerLotEur: -0.4,
-    typicalSlippagePip: 0.1,
+    swapLongPerLotEur: -5,
+    avgExecutionMs: 25,
     depositNote: 'SEPA gratis · Carta 0-2% · Prelievi gratuiti',
     platforms: ['MT4', 'MT5', 'cTrader'],
     maxLeverageRetail: 30,
   },
   pro: {
-    swapLongPerLotEur: -0.3,
-    typicalSlippagePip: 0.1,
+    swapLongPerLotEur: -4,
+    avgExecutionMs: 15,
     depositNote: 'Tutti i metodi gratuiti · Priority support',
     platforms: ['MT4', 'MT5', 'cTrader', 'TradingView'],
     maxLeverageRetail: 30,
@@ -274,7 +294,7 @@ export function getBrokerQualitative(account: BrokerAccount) {
   const defaults = TIER_DEFAULTS[account.tier];
   return {
     swapLongPerLotEur: account.swapLongPerLotEur ?? defaults.swapLongPerLotEur,
-    typicalSlippagePip: account.typicalSlippagePip ?? defaults.typicalSlippagePip,
+    avgExecutionMs: account.avgExecutionMs ?? defaults.avgExecutionMs,
     depositNote: account.depositNote ?? defaults.depositNote,
     platforms: account.platforms ?? defaults.platforms,
     maxLeverageRetail: account.maxLeverageRetail ?? defaults.maxLeverageRetail,

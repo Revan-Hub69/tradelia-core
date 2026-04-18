@@ -196,12 +196,11 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
 
-  const total = broker.breakdown.spreadPerMonth + broker.breakdown.commissionPerMonth;
+  const isMultiday = broker.breakdown.swapPerMonth > 0;
+  const total = broker.breakdown.spreadPerMonth + broker.breakdown.commissionPerMonth + broker.breakdown.swapPerMonth;
   const spreadPct = total > 0 ? (broker.breakdown.spreadPerMonth / total) * 100 : 100;
-  const commissionPct = 100 - spreadPct;
-
-  // Swap estimate per 5 giorni holding (esempio indicativo)
-  const swapPer5Days = qual ? Number((qual.swapLongPerLotEur * lotSize * 5).toFixed(2)) : 0;
+  const commissionPct = total > 0 ? (broker.breakdown.commissionPerMonth / total) * 100 : 0;
+  const swapPct = total > 0 ? (broker.breakdown.swapPerMonth / total) * 100 : 0;
 
   return (
     <>
@@ -236,6 +235,15 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
               : 'Nessuna commissione · solo spread'}
             color="bg-accent"
           />
+          {isMultiday && qual && (
+            <CostRow
+              label="Swap overnight"
+              amount={broker.breakdown.swapPerMonth}
+              pct={swapPct}
+              detail={`€${Math.abs(qual.swapLongPerLotEur)}/lot/notte · markup broker rilevato`}
+              color="bg-amber-500"
+            />
+          )}
         </div>
       </div>
 
@@ -247,17 +255,19 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
             Non incluso nel calcolo (stime indicative)
           </h5>
           <div className="space-y-1.5 text-xs">
-            <QualRow
-              icon={Clock}
-              label="Swap overnight EUR/USD"
-              value={`${qual.swapLongPerLotEur} €/lot/giorno`}
-              hint={`Holding 5 giorni ≈ €${swapPer5Days}`}
-            />
+            {!isMultiday && (
+              <QualRow
+                icon={Clock}
+                label="Swap overnight EUR/USD"
+                value={`€${Math.abs(qual.swapLongPerLotEur)}/lot/notte`}
+                hint="Applicato solo su posizioni multiday · switcha in alto"
+              />
+            )}
             <QualRow
               icon={Zap}
-              label="Slippage tipico"
-              value={`~${qual.typicalSlippagePip} pip`}
-              hint="Condizioni normali · peggio in high volatility"
+              label="Esecuzione media"
+              value={`~${qual.avgExecutionMs} ms`}
+              hint="Latenza round-trip indicativa · peggiora in high volatility"
             />
             <QualRow
               icon={Wallet}

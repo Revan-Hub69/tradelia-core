@@ -79,6 +79,13 @@ export function CompareView({
       {/* Context recap */}
       <div className="border-b border-border/40 bg-muted/20 px-5 py-2.5">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <Badge
+            label="Modalità"
+            value={input.mode === 'multiday'
+              ? `Multiday · ${input.nightsPerTrade ?? 0}n`
+              : 'Intraday'}
+            highlight
+          />
           <Badge label="Capitale" value={`€${input.capital.toLocaleString('it-IT')}`} />
           <Badge label="Lotto" value={`${input.lotSize}`} />
           <Badge label="Trade/mese" value={String(input.tradesPerMonth)} />
@@ -160,11 +167,16 @@ export function CompareView({
   );
 }
 
-function Badge({ label, value }: { label: string; value: string }) {
+function Badge({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <span className="inline-flex items-center gap-1">
-      <span className="text-muted-foreground/70">{label}</span>
-      <span className="font-medium text-foreground">{value}</span>
+    <span
+      className={cn(
+        'inline-flex items-center gap-1',
+        highlight && 'rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5',
+      )}
+    >
+      <span className={cn('text-muted-foreground/70', highlight && 'text-primary/80')}>{label}</span>
+      <span className={cn('font-medium', highlight ? 'text-primary' : 'text-foreground')}>{value}</span>
     </span>
   );
 }

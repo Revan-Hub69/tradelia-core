@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 
 import type { AssetId } from '../data/assets';
-import type { BrokerAccount, BrokerTier } from '../data/brokers';
+import type { BrokerAccount, BrokerTier, TradingMode } from '../data/brokers';
 import { BROKER_ACCOUNTS, computeCostBreakdown, estimateMonthlyCost } from '../data/brokers';
 
 export type SimState = 'closed' | 'wizard' | 'results_compare' | 'results_detail';
@@ -14,6 +14,10 @@ export type SimulatorInput = {
   capital: number;
   tradesPerMonth: number;
   lotSize: number;
+  /** Modalità operativa: intraday (nessuno swap) o multiday (swap incluso nel calcolo). */
+  mode: TradingMode;
+  /** Notti medie tenute per trade (solo multiday). */
+  nightsPerTrade?: number;
   underlyingId?: string;
 };
 
@@ -35,8 +39,10 @@ export type BrokerResult = {
   breakdown: {
     spreadPerTrade: number;
     commissionPerTrade: number;
+    swapPerTrade: number;
     spreadPerMonth: number;
     commissionPerMonth: number;
+    swapPerMonth: number;
   };
   score: number;
   isWinner?: boolean;
@@ -71,11 +77,14 @@ const initialState: SimulatorState = {
  * Ranking considers eligible accounts first, sorted by cost ascending.
  */
 export function computeResults(input: SimulatorInput): BrokerResult[] {
+  const nightsPerTrade = input.nightsPerTrade ?? 0;
   const scored = BROKER_ACCOUNTS.map((account: BrokerAccount) => {
     const costPerMonth = estimateMonthlyCost(
       account,
       input.lotSize,
       input.tradesPerMonth,
+      input.mode,
+      nightsPerTrade,
     );
     const costPerTrade = costPerMonth / Math.max(1, input.tradesPerMonth);
     const isEligible = input.capital >= account.minDepositEur;
@@ -103,6 +112,8 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
       s.account,
       input.lotSize,
       input.tradesPerMonth,
+      input.mode,
+      nightsPerTrade,
     );
     return {
       id: s.account.id,

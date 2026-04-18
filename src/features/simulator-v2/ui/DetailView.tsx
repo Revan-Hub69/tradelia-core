@@ -15,8 +15,8 @@ import {
 
 import { cn } from '@/utils/Helpers';
 
-import { BROKER_ACCOUNTS, getBrokerQualitative } from '../data/brokers';
 import type { BrokerTier } from '../data/brokers';
+import { BROKER_ACCOUNTS, getBrokerQualitative } from '../data/brokers';
 import type { BrokerResult } from '../state/useSimulatorState';
 
 const TIER_LABELS: Record<BrokerTier, string> = {
@@ -159,6 +159,15 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
               color="bg-accent"
               total={broker.costPerMonth}
             />
+            {broker.breakdown.swapPerMonth > 0 && qual && (
+              <BreakdownRow
+                label="Swap overnight"
+                amount={broker.breakdown.swapPerMonth}
+                per={`€${Math.abs(qual.swapLongPerLotEur)}/lot/notte · markup broker`}
+                color="bg-amber-500"
+                total={broker.costPerMonth}
+              />
+            )}
           </div>
         </Section>
 
@@ -166,15 +175,17 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
         {qual && (
           <Section title="Non incluso nel calcolo" icon={Clock} variant="amber">
             <div className="space-y-2">
-              <InfoRow
-                icon={Clock}
-                label="Swap overnight EUR/USD (long)"
-                value={`${qual.swapLongPerLotEur} €/lot/giorno`}
-              />
+              {broker.breakdown.swapPerMonth === 0 && (
+                <InfoRow
+                  icon={Clock}
+                  label="Swap overnight EUR/USD (long)"
+                  value={`€${Math.abs(qual.swapLongPerLotEur)}/lot/notte · markup broker`}
+                />
+              )}
               <InfoRow
                 icon={Zap}
-                label="Slippage tipico"
-                value={`~${qual.typicalSlippagePip} pip (condizioni normali)`}
+                label="Esecuzione media"
+                value={`~${qual.avgExecutionMs} ms (round-trip, condizioni normali)`}
               />
               <InfoRow
                 icon={Wallet}
