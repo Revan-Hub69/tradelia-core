@@ -346,7 +346,13 @@ export function SimulatoreShell() {
     }, []);
 
   // ── Sheet / panel ─────────────────────────────────────────────────────
-  const { snap, toggle: toggleSheet, sheetRef } = usePanelSheet('collapsed');
+  const {
+    snap,
+    toggle: toggleSheet,
+    sheetRef,
+    isDragging,
+    dragProps,
+  } = usePanelSheet('collapsed');
   const { visible: kbdVisible, show: showKbd }  = useKbdHint();
   const panelContentRef = useRef<HTMLDivElement>(null);
   const sheetContentRef = useRef<HTMLDivElement>(null);
@@ -354,6 +360,13 @@ export function SimulatoreShell() {
   const scrollTrigger = [assetClass, subGroup, underlying, sizingMode, freqMode].join('|');
   useStepAutoScroll(panelContentRef, scrollTrigger, true);
   useStepAutoScroll(sheetContentRef, scrollTrigger, snap === 'full');
+
+  // Backdrop click handler
+  const handleBackdropClick = useCallback(() => {
+    if (snap === 'full') {
+      toggleSheet();
+    }
+  }, [snap, toggleSheet]);
 
   const handlePanelFocusIn = useCallback(() => showKbd(), [showKbd]);
 
@@ -514,21 +527,38 @@ export function SimulatoreShell() {
 
       {resultsArea}
 
+      {/* Backdrop overlay - visible when sheet is full */}
+      <div
+        className={`sim-sheet__backdrop ${snap === 'full' ? 'sim-sheet__backdrop--visible' : ''}`}
+        onClick={handleBackdropClick}
+        aria-hidden="true"
+      />
+
       <div
         ref={sheetRef}
-        className={`sim-sheet sim-sheet--${snap}`}
-        role="complementary"
+        className={`sim-sheet sim-sheet--${snap} ${isDragging ? 'sim-sheet--dragging' : ''}`}
+        role={snap === 'full' ? 'dialog' : 'complementary'}
         aria-label="Parametri simulazione"
+        aria-modal={snap === 'full' ? 'true' : undefined}
+        aria-expanded={snap !== 'collapsed'}
         onFocusCapture={handlePanelFocusIn}
       >
-        <button type="button" className="sim-sheet__handle-area" onClick={toggleSheet}
-          aria-expanded={snap === 'full'}
-          aria-label={snap === 'collapsed' ? 'Apri parametri' : 'Chiudi parametri'}
+        <button
+          type="button"
+          className="sim-sheet__handle-area"
+          onClick={toggleSheet}
+          {...dragProps}
+          aria-expanded={snap !== 'collapsed'}
+          aria-label={snap === 'collapsed' ? 'Apri parametri (swipe su per espandere)' : snap === 'peek' ? 'Espandi parametri' : 'Chiudi parametri (swipe giù per chiudere)'}
         >
           <div className="sim-sheet__drag-bar" aria-hidden="true" />
           <div className="sim-sheet__status">
             <span className="sim-sheet__status-asset">{statusLabel}</span>
-            <span className="sim-sheet__status-dot" aria-hidden="true" />
+            <span
+              className="sim-sheet__status-dot"
+              aria-hidden="true"
+              data-idle={!isComputing}
+            />
             <span className="sim-sheet__status-exposure">
               {sizingValue > 0
                 ? sizingMode === 'pct_capital' ? `${sizingValue}%`
@@ -538,8 +568,13 @@ export function SimulatoreShell() {
             </span>
             <div className="sim-sheet__handle-right">
               <ProgressDots completed={completedSteps} total={STEPS} />
-              <svg className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
-                width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
+              <svg
+                className={`sim-sheet__chevron sim-sheet__chevron--${snap}`}
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                aria-hidden="true"
               >
                 <path d="M2 8l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
