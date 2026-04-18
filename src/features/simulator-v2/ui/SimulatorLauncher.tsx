@@ -51,7 +51,7 @@ export function SimulatorLauncher({ className }: SimulatorLauncherProps) {
       </p>
 
       {/* Asset Grid */}
-      <AssetSelector onSelect={handleAssetSelect} />
+      <AssetSelector onSelectAction={handleAssetSelect} />
 
       {/* Footnote with enhanced styling */}
       <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground/80">
@@ -62,7 +62,7 @@ export function SimulatorLauncher({ className }: SimulatorLauncherProps) {
       {/* Simulator Shell */}
       <SimulatorShell
         isOpen={isOpen}
-        onClose={handleClose}
+        onCloseAction={handleClose}
         assetId={selectedAsset}
       />
     </div>

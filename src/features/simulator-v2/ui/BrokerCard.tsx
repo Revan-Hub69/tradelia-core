@@ -44,8 +44,8 @@ const TIER_STYLES: Record<BrokerTier, string> = {
 type BrokerCardProps = {
   broker: BrokerResult;
   isOpen: boolean;
-  onToggle: () => void;
-  onOpenDetail: () => void;
+  onToggleAction: () => void;
+  onOpenDetailAction: () => void;
   lotSize: number;
   tradesPerMonth: number;
   locked?: boolean;
@@ -54,8 +54,8 @@ type BrokerCardProps = {
 export function BrokerCard({
   broker,
   isOpen,
-  onToggle,
-  onOpenDetail,
+  onToggleAction,
+  onOpenDetailAction,
   lotSize,
   tradesPerMonth,
   locked = false,
@@ -78,7 +78,7 @@ export function BrokerCard({
       {/* HEADER / CLOSED STATE */}
       <button
         type="button"
-        onClick={locked ? undefined : onToggle}
+        onClick={locked ? undefined : onToggleAction}
         disabled={locked}
         className={cn(
           'flex w-full items-center gap-3 p-4 text-left',
@@ -172,7 +172,7 @@ export function BrokerCard({
                 broker={broker}
                 lotSize={lotSize}
                 tradesPerMonth={tradesPerMonth}
-                onOpenDetail={onOpenDetail}
+                onOpenDetailAction={onOpenDetailAction}
               />
             </div>
           </motion.div>
@@ -188,10 +188,10 @@ type ExpandedContentProps = {
   broker: BrokerResult;
   lotSize: number;
   tradesPerMonth: number;
-  onOpenDetail: () => void;
+  onOpenDetailAction: () => void;
 };
 
-function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: ExpandedContentProps) {
+function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }: ExpandedContentProps) {
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
 
@@ -322,7 +322,7 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
       <div className="pt-1">
         <button
           type="button"
-          onClick={onOpenDetail}
+          onClick={onOpenDetailAction}
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-muted"
         >
           <FileText className="size-3.5" />

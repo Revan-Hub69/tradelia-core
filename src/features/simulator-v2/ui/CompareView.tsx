@@ -14,19 +14,19 @@ type EditableField = 'capital' | 'lotSize' | 'tradesPerMonth' | 'exposureDaysPer
 type CompareViewProps = {
   results: BrokerResult[];
   input: SimulatorInput;
-  onSelectBroker: (brokerId: string) => void;
-  onBack: () => void;
-  onClose: () => void;
-  onUpdateInput?: (patch: Partial<SimulatorInput>) => void;
+  onSelectBrokerAction: (brokerId: string) => void;
+  onBackAction: () => void;
+  onCloseAction: () => void;
+  onUpdateInputAction?: (patch: Partial<SimulatorInput>) => void;
 };
 
 export function CompareView({
   results,
   input,
-  onSelectBroker,
-  onBack,
-  onClose,
-  onUpdateInput,
+  onSelectBrokerAction,
+  onBackAction,
+  onCloseAction,
+  onUpdateInputAction,
 }: CompareViewProps) {
   // Multi-expand: set di broker aperti. Winner aperto di default.
   const winnerId = results.find(r => r.isWinner)?.id;
@@ -37,7 +37,7 @@ export function CompareView({
 
   const commitEdit = (field: EditableField, raw: string) => {
     setEditingField(null);
-    if (!onUpdateInput) {
+    if (!onUpdateInputAction) {
       return;
     }
     const num = Number.parseFloat(raw.replace(',', '.'));
@@ -49,7 +49,7 @@ export function CompareView({
     if (value === input[field]) {
       return;
     }
-    onUpdateInput({ [field]: value });
+    onUpdateInputAction({ [field]: value });
   };
 
   const toggle = (id: string) => {
@@ -73,7 +73,7 @@ export function CompareView({
       <div className="flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-sm">
         <button
           type="button"
-          onClick={onBack}
+          onClick={onBackAction}
           className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label="Torna al wizard"
         >
@@ -90,7 +90,7 @@ export function CompareView({
 
         <button
           type="button"
-          onClick={onClose}
+          onClick={onCloseAction}
           className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label="Chiudi"
         >
@@ -161,8 +161,8 @@ export function CompareView({
                 key={broker.id}
                 broker={broker}
                 isOpen={openIds.has(broker.id)}
-                onToggle={() => toggle(broker.id)}
-                onOpenDetail={() => onSelectBroker(broker.id)}
+                onToggleAction={() => toggle(broker.id)}
+                onOpenDetailAction={() => onSelectBrokerAction(broker.id)}
                 lotSize={input.lotSize}
                 tradesPerMonth={input.tradesPerMonth}
               />
@@ -185,8 +185,8 @@ export function CompareView({
                   key={broker.id}
                   broker={broker}
                   isOpen={false}
-                  onToggle={() => {}}
-                  onOpenDetail={() => onSelectBroker(broker.id)}
+                  onToggleAction={() => {}}
+                  onOpenDetailAction={() => onSelectBrokerAction(broker.id)}
                   lotSize={input.lotSize}
                   tradesPerMonth={input.tradesPerMonth}
                   locked

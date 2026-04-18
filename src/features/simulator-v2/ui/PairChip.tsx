@@ -12,7 +12,7 @@ import { PairSelector } from './PairSelector';
 
 type PairChipProps = {
   value: string;
-  onSelect: (symbol: string) => void;
+  onSelectAction: (symbol: string) => void;
   label?: string;
 };
 
@@ -22,14 +22,14 @@ type PairChipProps = {
  * the chip. This avoids all positioning issues and is the standard pattern
  * for contextual selectors inside drawers/sheets.
  */
-export function PairChip({ value, onSelect }: PairChipProps) {
+export function PairChip({ value, onSelectAction }: PairChipProps) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   const pair: ForexPair | undefined = FOREX_PAIRS.find(p => p.symbol === value);
 
   const handleSelect = (symbol: string) => {
-    onSelect(symbol);
+    onSelectAction(symbol);
     setOpen(false);
     triggerRef.current?.focus();
   };
@@ -78,7 +78,7 @@ export function PairChip({ value, onSelect }: PairChipProps) {
             className="overflow-hidden"
           >
             <div className="mt-3 rounded-xl border border-border/60 bg-popover/60 p-3 backdrop-blur-sm">
-              <PairSelector value={value} onSelect={handleSelect} />
+              <PairSelector value={value} onSelectAction={handleSelect} />
             </div>
           </motion.div>
         )}

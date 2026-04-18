@@ -12,11 +12,11 @@ import { type AssetId, ASSETS } from '../data/assets';
 export type { AssetId };
 
 type AssetSelectorProps = {
-  onSelect: (asset: AssetId) => void;
+  onSelectAction: (asset: AssetId) => void;
   className?: string;
 };
 
-export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
+export function AssetSelector({ onSelectAction, className }: AssetSelectorProps) {
   return (
     <div
       className={cn(
@@ -30,7 +30,7 @@ export function AssetSelector({ onSelect, className }: AssetSelectorProps) {
         <motion.button
           key={asset.id}
           type="button"
-          onClick={() => asset.available && onSelect(asset.id)}
+          onClick={() => asset.available && onSelectAction(asset.id)}
           disabled={!asset.available}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

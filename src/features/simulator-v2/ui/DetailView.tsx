@@ -39,11 +39,11 @@ const TIER_STYLES: Record<BrokerTier, string> = {
 
 type DetailViewProps = {
   broker: BrokerResult;
-  onBack: () => void;
-  onClose: () => void;
+  onBackAction: () => void;
+  onCloseAction: () => void;
 };
 
-export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
+export function DetailView({ broker, onBackAction, onCloseAction }: DetailViewProps) {
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
   const isAffiliate = account?.isAffiliate ?? false;
@@ -56,7 +56,7 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
       <div className="flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-sm">
         <button
           type="button"
-          onClick={onBack}
+          onClick={onBackAction}
           className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <ChevronLeft className="size-4" />
@@ -72,7 +72,7 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
 
         <button
           type="button"
-          onClick={onClose}
+          onClick={onCloseAction}
           className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label="Chiudi"
         >

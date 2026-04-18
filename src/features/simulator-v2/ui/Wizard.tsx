@@ -23,8 +23,8 @@ import { PairChip } from './PairChip';
 
 type WizardProps = {
   assetId: AssetId;
-  onSubmit: (input: SimulatorInput) => void;
-  onClose: () => void;
+  onSubmitAction: (input: SimulatorInput) => void;
+  onCloseAction: () => void;
 };
 
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
@@ -33,7 +33,7 @@ const TRADES_PRESETS = [5, 10, 20, 50, 100];
 /** Giorni/mese in cui hai almeno una posizione aperta al rollover. 0 = solo intraday. */
 const EXPOSURE_PRESETS = [0, 5, 10, 15, 20, 25];
 
-export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
+export function Wizard({ assetId, onSubmitAction, onCloseAction }: WizardProps) {
   const isForex = assetId === 'forex';
   const [pairSymbol, setPairSymbol] = useState<string>(
     DEFAULT_FOREX_PAIR.symbol,
@@ -58,15 +58,15 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
 
   const canSubmit
     = capital !== null && capital >= 10
-    && lotSize !== null && lotSize >= 0.001
-    && tradesPerMonth !== null && tradesPerMonth > 0
-    && exposureDaysPerMonth !== null;
+      && lotSize !== null && lotSize >= 0.001
+      && tradesPerMonth !== null && tradesPerMonth > 0
+      && exposureDaysPerMonth !== null;
 
   const handleSubmit = () => {
     if (!canSubmit) {
       return;
     }
-    onSubmit({
+    onSubmitAction({
       assetId,
       pairSymbol: isForex ? pairSymbol : undefined,
       capital: capital!,
@@ -85,14 +85,14 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
           <div className="min-w-0 flex-1">
             <AssetSwitcher
               value={assetId}
-              onSelect={() => {
+              onSelectAction={() => {
                 // Per ora solo Forex è attivo — altri asset sono "In arrivo"
               }}
             />
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={onCloseAction}
             className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             aria-label="Chiudi"
           >
@@ -107,7 +107,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
                 <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                   Coppia
                 </span>
-                <PairChip value={pairSymbol} onSelect={setPairSymbol} />
+                <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
               </div>
             </div>
           </div>
@@ -346,7 +346,7 @@ function EditableAmount({
           const v = e.target.value;
           onChange(v === '' ? null : Number(v));
         }}
-        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight text-foreground outline-none focus:ring-0 placeholder:text-muted-foreground/40 placeholder:text-base placeholder:font-medium"
+        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/40 focus:ring-0"
         min={min}
         max={max}
         step={step}

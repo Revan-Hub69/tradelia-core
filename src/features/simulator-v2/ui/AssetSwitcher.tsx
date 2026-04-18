@@ -2,20 +2,20 @@
 
 import { cn } from '@/utils/Helpers';
 
-import { ASSETS, type AssetId } from '../data/assets';
+import { type AssetId, ASSETS } from '../data/assets';
 
 type AssetSwitcherProps = {
   value: AssetId;
-  onSelect: (id: AssetId) => void;
+  onSelectAction: (id: AssetId) => void;
 };
 
 /**
  * AssetSwitcher: pills compatti nell'header del wizard per switchare
  * tra categorie asset. Gli asset non disponibili mostrano badge "Presto".
  */
-export function AssetSwitcher({ value, onSelect }: AssetSwitcherProps) {
+export function AssetSwitcher({ value, onSelectAction }: AssetSwitcherProps) {
   return (
-    <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
+    <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">
       {ASSETS.map((asset) => {
         const active = asset.id === value;
         const Icon = asset.icon;
@@ -23,7 +23,7 @@ export function AssetSwitcher({ value, onSelect }: AssetSwitcherProps) {
           <button
             key={asset.id}
             type="button"
-            onClick={() => asset.available && onSelect(asset.id)}
+            onClick={() => asset.available && onSelectAction(asset.id)}
             disabled={!asset.available}
             className={cn(
               'group relative inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all',

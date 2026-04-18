@@ -15,11 +15,11 @@ import { CurrencyFlag } from './CurrencyFlag';
 
 type PairSelectorProps = {
   value: string | null;
-  onSelect: (symbol: string) => void;
+  onSelectAction: (symbol: string) => void;
   className?: string;
 };
 
-export function PairSelector({ value, onSelect, className }: PairSelectorProps) {
+export function PairSelector({ value, onSelectAction, className }: PairSelectorProps) {
   const [category, setCategory] = useState<PairCategory>('major');
 
   const pairs = useMemo(
@@ -85,7 +85,7 @@ export function PairSelector({ value, onSelect, className }: PairSelectorProps) 
                 type="button"
                 role="radio"
                 aria-checked={selected}
-                onClick={() => onSelect(pair.symbol)}
+                onClick={() => onSelectAction(pair.symbol)}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}

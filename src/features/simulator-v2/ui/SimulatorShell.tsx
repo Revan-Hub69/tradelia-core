@@ -17,11 +17,11 @@ type ShellState = 'wizard' | 'results_compare' | 'results_detail';
 
 type SimulatorShellProps = {
   isOpen: boolean;
-  onClose: () => void;
+  onCloseAction: () => void;
   assetId: AssetId | null;
 };
 
-export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps) {
+export function SimulatorShell({ isOpen, onCloseAction, assetId }: SimulatorShellProps) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const [view, setView] = useState<ShellState>('wizard');
   const [input, setInput] = useState<SimulatorInput | null>(null);
@@ -92,8 +92,8 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
         return (
           <Wizard
             assetId={assetId}
-            onSubmit={handleSubmit}
-            onClose={onClose}
+            onSubmitAction={handleSubmit}
+            onCloseAction={onCloseAction}
           />
         );
       case 'results_compare':
@@ -104,10 +104,10 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
           <CompareView
             results={results}
             input={input}
-            onSelectBroker={handleSelectBroker}
-            onBack={() => setView('wizard')}
-            onClose={onClose}
-            onUpdateInput={handleUpdateInput}
+            onSelectBrokerAction={handleSelectBroker}
+            onBackAction={() => setView('wizard')}
+            onCloseAction={onCloseAction}
+            onUpdateInputAction={handleUpdateInput}
           />
         );
       case 'results_detail': {
@@ -118,8 +118,8 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
         return (
           <DetailView
             broker={broker}
-            onBack={handleBackToCompare}
-            onClose={onClose}
+            onBackAction={handleBackToCompare}
+            onCloseAction={onCloseAction}
           />
         );
       }
@@ -145,14 +145,14 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
 
   if (isDesktop) {
     return (
-      <Drawer isOpen={isOpen} onClose={onClose} width="560px">
+      <Drawer isOpen={isOpen} onClose={onCloseAction} width="560px">
         {content}
       </Drawer>
     );
   }
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose}>
+    <BottomSheet isOpen={isOpen} onClose={onCloseAction}>
       {content}
     </BottomSheet>
   );
