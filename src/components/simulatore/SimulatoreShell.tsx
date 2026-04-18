@@ -3,7 +3,6 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useSimulatorEngine } from '@/hooks/useSimulatorEngine';
 import { usePanelSheet }      from '@/hooks/usePanelSheet';
-import { useRovingTabIndex }  from '@/hooks/useRovingTabIndex';
 import { useKbdHint }         from '@/hooks/useKbdHint';
 import { useStepAutoScroll }  from '@/hooks/useStepAutoScroll';
 import { KbdHintBar }         from './KbdHintBar';
@@ -21,6 +20,7 @@ import {
   type UserInput,
 } from '@/lib/simulator/sizing';
 import type { UnderlyingId } from '@/data/simulator/underlyings';
+import { getAssetClassFromId, getSubGroupFromId, getAssetById } from '@/data/simulator/assets';
 
 // ── Profili preset ────────────────────────────────────────────────────────
 const PROFILES: { id: TradingProfile; label: string }[] = [
@@ -31,10 +31,10 @@ const PROFILES: { id: TradingProfile; label: string }[] = [
 
 const RADIOGROUP_DESC_ID = 'sim-radiogroup-desc';
 
-const SIZING_MODES = [
-  { id: 'pct_capital' as const, label: '% Capitale' },
-  { id: 'lots' as const, label: 'Lotti' },
-  { id: 'euro' as const, label: 'Euro' },
+const SIZING_MODES: { id: SizingMode; label: string }[] = [
+  { id: 'pct_capital', label: '% Capitale' },
+  { id: 'lots', label: 'Lotti' },
+  { id: 'exposure_eur', label: 'Euro' },
 ];
 
 const FREQ_MODES = [
@@ -112,37 +112,6 @@ function Section({ label, value, children, done, groupId }: {
 
 function BlockDivider({ label }: { label: string }) {
   return <div className="sim-block-divider">{label}</div>;
-}
-
-// ── RadioChipGroup ─────────────────────────────────────────────────────────
-function RadioChipGroup<T extends string>({
-  id, options, value, onChange, mono,
-}: {
-  id: string;
-  options: { id: T; label: string; hint?: string }[];
-  value: T | null;
-  onChange: (v: T) => void;
-  mono?: boolean;
-}) {
-  const ids = options.map(o => o.id);
-  const { getItemProps } = useRovingTabIndex(ids, value, onChange);
-  return (
-    <div role="radiogroup" aria-labelledby={`${id}-label`} aria-describedby={RADIOGROUP_DESC_ID} className="sim-chips">
-      {options.map(o => {
-        const itemProps = getItemProps(o.id);
-        return (
-          <button key={o.id} type="button"
-            className={mono ? 'sim-chip sim-chip--mono' : 'sim-chip'}
-            data-active={value === o.id ? 'true' : 'false'}
-            {...itemProps}
-          >
-            <span>{o.label}</span>
-            {o.hint && <span className="sim-chip__hint">{o.hint}</span>}
-          </button>
-        );
-      })}
-    </div>
-  );
 }
 
 // ── ToggleModeBar — tab selector per modalità ──────────────────────────────
@@ -535,7 +504,7 @@ export function SimulatoreShell() {
       />
 
       <div
-        ref={sheetRef}
+        ref={sheetRef as React.RefObject<HTMLDivElement>}
         className={`sim-sheet sim-sheet--${snap} ${isDragging ? 'sim-sheet--dragging' : ''}`}
         role={snap === 'full' ? 'dialog' : 'complementary'}
         aria-label="Parametri simulazione"
