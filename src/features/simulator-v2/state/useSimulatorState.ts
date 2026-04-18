@@ -2,9 +2,9 @@
 
 import { useCallback, useState } from 'react';
 
+import type { AssetId } from '../data/assets';
 import type { BrokerAccount, BrokerTier } from '../data/brokers';
-import { BROKER_ACCOUNTS, estimateMonthlyCost } from '../data/brokers';
-import type { AssetId } from '../ui/AssetSelector';
+import { BROKER_ACCOUNTS, computeCostBreakdown, estimateMonthlyCost } from '../data/brokers';
 
 export type SimState = 'closed' | 'wizard' | 'results_compare' | 'results_detail';
 
@@ -26,6 +26,18 @@ export type BrokerResult = {
   minDepositEur: number;
   costPerTrade: number;
   costPerMonth: number;
+  /** Delta vs best eligible broker (€/mese). 0 per il winner. */
+  deltaVsBestMonth: number;
+  /** Raw specs */
+  spreadEurUsdPip: number;
+  commissionPerLotEur: number;
+  /** Breakdown costo calcolato */
+  breakdown: {
+    spreadPerTrade: number;
+    commissionPerTrade: number;
+    spreadPerMonth: number;
+    commissionPerMonth: number;
+  };
   score: number;
   isWinner?: boolean;
   isEligible: boolean;
@@ -87,6 +99,11 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
   return scored.map((s, idx) => {
     const normalized = 1 - (s.costPerMonth - bestCost) / range;
     const score = Math.round(Math.max(30, Math.min(100, normalized * 100)));
+    const breakdown = computeCostBreakdown(
+      s.account,
+      input.lotSize,
+      input.tradesPerMonth,
+    );
     return {
       id: s.account.id,
       rank: idx + 1,
@@ -96,6 +113,10 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
       minDepositEur: s.account.minDepositEur,
       costPerTrade: Number(s.costPerTrade.toFixed(2)),
       costPerMonth: Number(s.costPerMonth.toFixed(2)),
+      deltaVsBestMonth: Number((s.costPerMonth - bestCost).toFixed(2)),
+      spreadEurUsdPip: s.account.spreadEurUsdPip,
+      commissionPerLotEur: s.account.commissionPerLotEur,
+      breakdown,
       score,
       isWinner: idx === 0 && s.isEligible,
       isEligible: s.isEligible,

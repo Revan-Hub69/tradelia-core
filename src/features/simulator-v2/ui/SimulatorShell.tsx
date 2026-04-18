@@ -8,7 +8,7 @@ import { BottomSheet } from '../layout/BottomSheet';
 import { Drawer } from '../layout/Drawer';
 import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
 import { computeResults } from '../state/useSimulatorState';
-import type { AssetId } from './AssetSelector';
+import type { AssetId } from '../data/assets';
 import { CompareView } from './CompareView';
 import { DetailView } from './DetailView';
 import { Wizard } from './Wizard';
@@ -24,7 +24,7 @@ type SimulatorShellProps = {
 export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const [view, setView] = useState<ShellState>('wizard');
-  const [, setInput] = useState<SimulatorInput | null>(null);
+  const [input, setInput] = useState<SimulatorInput | null>(null);
   const [results, setResults] = useState<BrokerResult[] | null>(null);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string | null>(null);
 
@@ -86,12 +86,13 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
           />
         );
       case 'results_compare':
-        if (!results) {
+        if (!results || !input) {
           return null;
         }
         return (
           <CompareView
             results={results}
+            input={input}
             onSelectBroker={handleSelectBroker}
             onBack={() => setView('wizard')}
             onClose={onClose}

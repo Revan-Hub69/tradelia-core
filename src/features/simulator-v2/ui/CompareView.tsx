@@ -1,283 +1,170 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  ChevronLeft,
-  Lock,
-  ShieldCheck,
-  TrendingDown,
-  Trophy,
-  X,
-} from 'lucide-react';
+import { ChevronLeft, Info, X } from 'lucide-react';
+import { useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
-import type { BrokerTier } from '../data/brokers';
-import type { BrokerResult } from '../state/useSimulatorState';
+import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
+import { BrokerCard } from './BrokerCard';
 
 type CompareViewProps = {
   results: BrokerResult[];
+  input: SimulatorInput;
   onSelectBroker: (brokerId: string) => void;
   onBack: () => void;
   onClose: () => void;
 };
 
-const TIER_LABELS: Record<BrokerTier, string> = {
-  cent: 'Cent',
-  starter: 'Starter',
-  standard: 'Standard',
-  ecn: 'ECN',
-  pro: 'Pro',
-};
-
-const TIER_STYLES: Record<BrokerTier, string> = {
-  cent: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
-  starter: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  standard: 'bg-primary/10 text-primary border-primary/20',
-  ecn: 'bg-accent/10 text-accent border-accent/20',
-  pro: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-};
-
 export function CompareView({
   results,
+  input,
   onSelectBroker,
   onBack,
   onClose,
 }: CompareViewProps) {
+  // Multi-expand: set di broker aperti. Winner aperto di default.
+  const winnerId = results.find(r => r.isWinner)?.id;
+  const [openIds, setOpenIds] = useState<Set<string>>(
+    () => new Set(winnerId ? [winnerId] : []),
+  );
+
+  const toggle = (id: string) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   const eligible = results.filter(r => r.isEligible);
-  const ineligible = results.filter(r => !r.isEligible);
-  const winner = eligible[0];
-  const others = eligible.slice(1);
+  const locked = results.filter(r => !r.isEligible);
 
   return (
-    <div className="flex h-full flex-col bg-card text-foreground">
+    <div className="flex h-full flex-col bg-background text-foreground">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border/60 px-6 py-4">
+      <div className="flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-sm">
         <button
           type="button"
           onClick={onBack}
-          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          aria-label="Indietro"
+          className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          aria-label="Torna al wizard"
         >
-          <ChevronLeft className="size-5" />
+          <ChevronLeft className="size-4" />
+          Modifica
         </button>
 
-        <div className="text-center">
-          <h2 className="text-sm font-semibold text-foreground">Risultati</h2>
-          <p className="text-[11px] text-muted-foreground">
-            {eligible.length}
-            {' '}
-            eleggibili ·
-            {' '}
-            {ineligible.length}
-            {' '}
-            fuori tier
+        <div className="flex items-center gap-2">
+          <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Risultati
           </p>
         </div>
 
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label="Chiudi"
         >
-          <X className="size-5" />
+          <X className="size-4" />
         </button>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
-        {/* Winner */}
-        {winner && (
+      {/* Context recap */}
+      <div className="border-b border-border/40 bg-muted/20 px-5 py-2.5">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <Badge label="Capitale" value={`€${input.capital.toLocaleString('it-IT')}`} />
+          <Badge label="Lotto" value={`${input.lotSize}`} />
+          <Badge label="Trade/mese" value={String(input.tradesPerMonth)} />
+          {input.pairSymbol && (
+            <Badge label="Coppia" value={input.pairSymbol} />
+          )}
+        </div>
+      </div>
+
+      {/* Cards list */}
+      <div className="flex-1 space-y-3 overflow-y-auto p-4">
+        {eligible.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/15 via-primary/5 to-card p-5 shadow-lg shadow-primary/10"
+            className="space-y-3"
           >
-            <div className="absolute -right-20 -top-20 size-40 rounded-full bg-primary/20 blur-3xl" />
-
-            <div className="relative">
-              <div className="mb-3 flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground">
-                  <Trophy className="size-3.5" />
-                  Miglior scelta
-                </span>
-                <TierBadge tier={winner.tier} />
-              </div>
-
-              <h3 className="text-xl font-bold text-foreground">
-                {winner.brokerName}
-                {' '}
-                <span className="text-muted-foreground">·</span>
-                {' '}
-                <span className="text-muted-foreground">{winner.accountName}</span>
-              </h3>
-              <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                <ShieldCheck className="size-3" />
-                {winner.regulator}
-              </p>
-
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-primary">
-                  €
-                  {winner.costPerMonth}
-                </span>
-                <span className="text-sm text-muted-foreground">/mese</span>
-              </div>
-
-              <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                <TrendingDown className="size-3.5" />
-                <span>
-                  €
-                  {winner.costPerTrade}
-                  {' '}
-                  a trade
-                </span>
-                <span className="text-muted-foreground/50">·</span>
-                <span>
-                  Min deposito €
-                  {winner.minDepositEur}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => onSelectBroker(winner.id)}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
-              >
-                Vedi dettaglio
-                <ArrowRight className="size-4" />
-              </button>
-            </div>
+            {eligible.map(broker => (
+              <BrokerCard
+                key={broker.id}
+                broker={broker}
+                isOpen={openIds.has(broker.id)}
+                onToggle={() => toggle(broker.id)}
+                onOpenDetail={() => onSelectBroker(broker.id)}
+                lotSize={input.lotSize}
+                tradesPerMonth={input.tradesPerMonth}
+              />
+            ))}
           </motion.div>
         )}
 
-        {/* Other eligible */}
-        {others.length > 0 && (
-          <div className="space-y-2">
-            <h4 className="px-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Altri broker eleggibili
-            </h4>
-
-            {others.map((broker, idx) => (
-              <BrokerRow
-                key={broker.id}
-                broker={broker}
-                idx={idx}
-                onClick={() => onSelectBroker(broker.id)}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Ineligible */}
-        {ineligible.length > 0 && (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 px-1">
-              <Lock className="size-3 text-muted-foreground" />
-              <h4 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Fuori tier · deposito minimo più alto del tuo capitale
-              </h4>
+        {locked.length > 0 && (
+          <div className="pt-2">
+            <div className="mb-2 flex items-center gap-2 px-1">
+              <div className="h-px flex-1 bg-border/40" />
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Non accessibili con il tuo capitale
+              </span>
+              <div className="h-px flex-1 bg-border/40" />
             </div>
-
-            {ineligible.map((broker, idx) => (
-              <BrokerRow
-                key={broker.id}
-                broker={broker}
-                idx={idx}
-                onClick={() => onSelectBroker(broker.id)}
-                locked
-              />
-            ))}
+            <div className="space-y-2">
+              {locked.map(broker => (
+                <BrokerCard
+                  key={broker.id}
+                  broker={broker}
+                  isOpen={false}
+                  onToggle={() => {}}
+                  onOpenDetail={() => onSelectBroker(broker.id)}
+                  lotSize={input.lotSize}
+                  tradesPerMonth={input.tradesPerMonth}
+                  locked
+                />
+              ))}
+            </div>
           </div>
         )}
 
-        {/* Footer note */}
-        <p className="px-2 text-center text-[11px] leading-5 text-muted-foreground/70">
-          Costi calcolati su spread e commissioni tipiche dichiarate dai
-          broker. Non include funding overnight, slippage e fee di deposito.
-        </p>
+        {/* Disclaimer */}
+        <div className={cn(
+          'mt-2 flex items-start gap-2 rounded-xl border border-border/40 bg-muted/20 p-3',
+          'text-[11px] leading-5 text-muted-foreground',
+        )}
+        >
+          <Info className="mt-0.5 size-3.5 shrink-0 text-muted-foreground/70" />
+          <p>
+            Costi calcolati su spread e commissioni tipiche
+            {' '}
+            <strong className="text-foreground/80">rilevate sui broker</strong>
+            {' '}
+            (snapshot aggregato, non real-time). Non include funding overnight, slippage e fee di deposito/prelievo — questi fattori sono riportati come
+            {' '}
+            <strong className="text-foreground/80">stime indicative</strong>
+            {' '}
+            nelle schede espanse.
+          </p>
+        </div>
       </div>
     </div>
   );
 }
 
-// ──────────────────────────────────────────────────────────────
-
-function TierBadge({ tier }: { tier: BrokerTier }) {
+function Badge({ label, value }: { label: string; value: string }) {
   return (
-    <span
-      className={cn(
-        'rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider',
-        TIER_STYLES[tier],
-      )}
-    >
-      {TIER_LABELS[tier]}
+    <span className="inline-flex items-center gap-1">
+      <span className="text-muted-foreground/70">{label}</span>
+      <span className="font-medium text-foreground">{value}</span>
     </span>
-  );
-}
-
-type BrokerRowProps = {
-  broker: BrokerResult;
-  idx: number;
-  onClick: () => void;
-  locked?: boolean;
-};
-
-function BrokerRow({ broker, idx, onClick, locked = false }: BrokerRowProps) {
-  return (
-    <motion.button
-      type="button"
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: idx * 0.04 }}
-      onClick={onClick}
-      className={cn(
-        'flex w-full items-center gap-3 rounded-xl border p-4 text-left transition-all',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-        locked
-          ? 'border-border/40 bg-muted/30 opacity-60 hover:opacity-80'
-          : 'border-border/60 bg-popover/40 hover:border-border hover:bg-popover',
-      )}
-    >
-      {/* Rank / lock */}
-      <div
-        className={cn(
-          'flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
-          locked ? 'bg-muted text-muted-foreground' : 'bg-secondary text-secondary-foreground',
-        )}
-      >
-        {locked ? <Lock className="size-3.5" /> : broker.rank}
-      </div>
-
-      {/* Info */}
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-semibold text-foreground">
-            {broker.brokerName}
-          </span>
-          <span className="truncate text-xs text-muted-foreground">
-            {broker.accountName}
-          </span>
-          <TierBadge tier={broker.tier} />
-        </div>
-        <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="font-medium text-foreground">
-            €
-            {broker.costPerMonth}
-            /mese
-          </span>
-          <span>·</span>
-          <span>
-            Min €
-            {broker.minDepositEur}
-          </span>
-        </div>
-      </div>
-
-      {/* Arrow */}
-      <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
-    </motion.button>
   );
 }
