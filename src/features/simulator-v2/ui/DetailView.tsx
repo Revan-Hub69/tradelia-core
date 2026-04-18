@@ -44,9 +44,9 @@ type DetailViewProps = {
 export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
-  const totalBrokerAccounts = account
-    ? BROKER_ACCOUNTS.filter(a => a.brokerId === account.brokerId).length
-    : 1;
+  const isAffiliate = account?.isAffiliate ?? false;
+  const esmaLossRatePct = account?.esmaLossRatePct;
+  const signupUrl = account?.signupUrl;
 
   return (
     <div className="flex h-full flex-col bg-background text-foreground">
@@ -94,16 +94,11 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
                 {broker.accountName}
               </h1>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                1 di
-                {' '}
-                {totalBrokerAccounts}
-                {' '}
-                {totalBrokerAccounts === 1 ? 'conto' : 'conti'}
+                Conto specifico
                 {' '}
                 {broker.brokerName}
                 {' '}
-                analizzat
-                {totalBrokerAccounts === 1 ? 'o' : 'i'}
+                analizzato
               </p>
             </div>
             <span
@@ -243,17 +238,70 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
           </div>
         </Section>
 
-        {/* CTA */}
-        <div className="sticky bottom-0 border-t border-border/60 bg-card/95 p-4 backdrop-blur-sm">
-          <button
-            type="button"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
-          >
-            Apri conto
-            {' '}
-            {broker.brokerName}
-            <ExternalLink className="size-4" />
-          </button>
+        {/* CTA block: affiliate disclosure sopra · CTA · ESMA risk warning sotto */}
+        <div className="sticky bottom-0 border-t border-border/60 bg-card/95 backdrop-blur-sm">
+          {isAffiliate && (
+            <div className="flex items-start gap-2 border-b border-border/40 bg-muted/40 px-4 py-2">
+              <Info className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+              <p className="text-[11px] leading-4 text-muted-foreground">
+                <span className="font-semibold text-foreground/80">Divulgazione affiliato:</span>
+                {' '}
+                Tradelia potrebbe ricevere una commissione se apri un conto
+                {' '}
+                {broker.brokerName}
+                {' '}
+                tramite questo link, senza costi aggiuntivi per te. Il ranking
+                non è influenzato da accordi commerciali.
+              </p>
+            </div>
+          )}
+
+          <div className="p-4">
+            <a
+              href={signupUrl ?? '#'}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30"
+            >
+              Apri conto
+              {' '}
+              {broker.accountName}
+              {' · '}
+              {broker.brokerName}
+              <ExternalLink className="size-4" />
+            </a>
+          </div>
+
+          {/* ESMA risk warning — specifico del broker se disponibile */}
+          <div className="flex items-start gap-2 border-t border-amber-500/20 bg-amber-500/5 px-4 py-2.5">
+            <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-500" />
+            <p className="text-[10px] leading-4 text-amber-700 dark:text-amber-400/90">
+              <span className="font-semibold">Avvertenza rischio ESMA · </span>
+              {esmaLossRatePct !== undefined
+                ? (
+                    <>
+                      Il
+                      {' '}
+                      <strong>
+                        {esmaLossRatePct.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        %
+                      </strong>
+                      {' '}
+                      dei conti retail di investitori perde denaro facendo trading
+                      su CFD con
+                      {' '}
+                      {broker.brokerName}
+                      . Valuta se puoi permetterti di correre il rischio elevato di perdere il tuo denaro.
+                    </>
+                  )
+                : (
+                    <>
+                      I CFD sono strumenti complessi che comportano un alto rischio
+                      di perdere denaro rapidamente a causa della leva.
+                    </>
+                  )}
+            </p>
+          </div>
         </div>
       </div>
     </div>

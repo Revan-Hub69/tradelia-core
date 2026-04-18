@@ -195,10 +195,6 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
 
-  const totalBrokerAccounts = account
-    ? BROKER_ACCOUNTS.filter(a => a.brokerId === account.brokerId).length
-    : 1;
-
   const isMultiday = broker.breakdown.swapPerMonth > 0;
   const total = broker.breakdown.spreadPerMonth + broker.breakdown.commissionPerMonth + broker.breakdown.swapPerMonth;
   const spreadPct = total > 0 ? (broker.breakdown.spreadPerMonth / total) * 100 : 100;
@@ -219,16 +215,11 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
           <TierBadge tier={broker.tier} />
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground">
-          1 di
-          {' '}
-          {totalBrokerAccounts}
-          {' '}
-          {totalBrokerAccounts === 1 ? 'conto' : 'conti'}
+          Conto specifico
           {' '}
           {broker.brokerName}
           {' '}
-          analizzat
-          {totalBrokerAccounts === 1 ? 'o' : 'i'}
+          analizzato
           {broker.isWinner && (
             <>
               {' · '}

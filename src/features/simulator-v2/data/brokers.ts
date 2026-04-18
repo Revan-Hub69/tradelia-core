@@ -32,6 +32,12 @@ export type BrokerAccount = {
   platforms?: string[];
   /** Max leverage for retail (ESMA) */
   maxLeverageRetail?: number;
+  /** True se il broker è partner affiliato Tradelia (riceviamo commissioni). */
+  isAffiliate?: boolean;
+  /** % conti retail in perdita (disclaimer ESMA dichiarato dal broker). */
+  esmaLossRatePct?: number;
+  /** URL di apertura conto (eventualmente con tracking affiliate). */
+  signupUrl?: string;
 };
 
 export const BROKER_ACCOUNTS: BrokerAccount[] = [
@@ -47,6 +53,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 0,
     minLotSize: 0.01,
     regulator: 'CySEC · ASIC · FCA',
+    isAffiliate: true,
+    esmaLossRatePct: 73.06,
   },
   {
     id: 'exness-cent',
@@ -59,6 +67,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 0,
     minLotSize: 0.01,
     regulator: 'CySEC · FCA · FSCA',
+    isAffiliate: true,
+    esmaLossRatePct: 71.40,
   },
 
   // STARTER — per capitale 100-1.000€
@@ -73,6 +83,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 0,
     minLotSize: 0.01,
     regulator: 'CySEC · FCA · FSCA',
+    isAffiliate: true,
+    esmaLossRatePct: 77.50,
   },
   {
     id: 'octafx-standard',
@@ -85,6 +97,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 0,
     minLotSize: 0.01,
     regulator: 'CySEC',
+    isAffiliate: true,
+    esmaLossRatePct: 73.50,
   },
   {
     id: 'pepperstone-standard',
@@ -97,6 +111,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 0,
     minLotSize: 0.01,
     regulator: 'FCA · ASIC · CySEC',
+    isAffiliate: true,
+    esmaLossRatePct: 75.30,
   },
   {
     id: 'xtb-standard',
@@ -109,6 +125,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 0,
     minLotSize: 0.01,
     regulator: 'CySEC · KNF · FCA',
+    isAffiliate: false,
+    esmaLossRatePct: 78.00,
   },
   {
     id: 'oanda-core',
@@ -121,6 +139,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 0,
     minLotSize: 0.01,
     regulator: 'FCA · CFTC · ASIC',
+    isAffiliate: true,
+    esmaLossRatePct: 76.60,
   },
 
   // ECN RAW — conviene da 2.500€+ per via delle commissioni
@@ -135,6 +155,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 6,
     minLotSize: 0.01,
     regulator: 'ASIC · CySEC · FSA',
+    isAffiliate: true,
+    esmaLossRatePct: 70.64,
   },
   {
     id: 'pepperstone-razor',
@@ -147,6 +169,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 7,
     minLotSize: 0.01,
     regulator: 'FCA · ASIC · CySEC',
+    isAffiliate: true,
+    esmaLossRatePct: 75.30,
   },
   {
     id: 'tickmill-pro',
@@ -159,6 +183,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 4,
     minLotSize: 0.01,
     regulator: 'FCA · CySEC · FSA',
+    isAffiliate: true,
+    esmaLossRatePct: 72.10,
   },
 
   // PRO — VIP tiers con commissioni ridotte, min deposit alto
@@ -173,6 +199,8 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     commissionPerLotEur: 3,
     minLotSize: 0.01,
     regulator: 'ASIC · CySEC · FSA',
+    isAffiliate: true,
+    esmaLossRatePct: 70.64,
   },
 ];
 
