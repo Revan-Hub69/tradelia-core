@@ -44,6 +44,9 @@ type DetailViewProps = {
 export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
+  const totalBrokerAccounts = account
+    ? BROKER_ACCOUNTS.filter(a => a.brokerId === account.brokerId).length
+    : 1;
 
   return (
     <div className="flex h-full flex-col bg-background text-foreground">
@@ -77,18 +80,30 @@ export function DetailView({ broker, onBack, onClose }: DetailViewProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {/* Hero */}
+        {/* Hero — gerarchia invertita: il soggetto è il CONTO, non il broker */}
         <div className="border-b border-border/40 bg-gradient-to-br from-primary/5 via-card to-card p-5">
-          <div className="mb-3 flex items-center gap-3">
-            <div className="flex size-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground shadow-md shadow-primary/20">
+          <div className="mb-3 flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground">
               {broker.brokerName.charAt(0)}
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-xl font-bold text-foreground">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                 {broker.brokerName}
-              </h1>
-              <p className="text-sm text-muted-foreground">
+              </p>
+              <h1 className="truncate text-2xl font-bold leading-tight text-foreground">
                 {broker.accountName}
+              </h1>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                1 di
+                {' '}
+                {totalBrokerAccounts}
+                {' '}
+                {totalBrokerAccounts === 1 ? 'conto' : 'conti'}
+                {' '}
+                {broker.brokerName}
+                {' '}
+                analizzat
+                {totalBrokerAccounts === 1 ? 'o' : 'i'}
               </p>
             </div>
             <span

@@ -1,13 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronLeft, Info, X } from 'lucide-react';
-import { useState } from 'react';
+import { Check, ChevronLeft, Info, Pencil, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
 import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
 import { BrokerCard } from './BrokerCard';
+
+type EditableField = 'capital' | 'lotSize' | 'tradesPerMonth' | 'exposureDaysPerMonth';
 
 type CompareViewProps = {
   results: BrokerResult[];
@@ -15,6 +17,7 @@ type CompareViewProps = {
   onSelectBroker: (brokerId: string) => void;
   onBack: () => void;
   onClose: () => void;
+  onUpdateInput?: (patch: Partial<SimulatorInput>) => void;
 };
 
 export function CompareView({
@@ -23,12 +26,31 @@ export function CompareView({
   onSelectBroker,
   onBack,
   onClose,
+  onUpdateInput,
 }: CompareViewProps) {
   // Multi-expand: set di broker aperti. Winner aperto di default.
   const winnerId = results.find(r => r.isWinner)?.id;
   const [openIds, setOpenIds] = useState<Set<string>>(
     () => new Set(winnerId ? [winnerId] : []),
   );
+  const [editingField, setEditingField] = useState<EditableField | null>(null);
+
+  const commitEdit = (field: EditableField, raw: string) => {
+    setEditingField(null);
+    if (!onUpdateInput) {
+      return;
+    }
+    const num = Number.parseFloat(raw.replace(',', '.'));
+    if (Number.isNaN(num) || num < 0) {
+      return;
+    }
+    // Clamp esposizione 0-25
+    const value = field === 'exposureDaysPerMonth' ? Math.min(25, Math.max(0, Math.round(num))) : num;
+    if (value === input[field]) {
+      return;
+    }
+    onUpdateInput({ [field]: value });
+  };
 
   const toggle = (id: string) => {
     setOpenIds((prev) => {
@@ -76,19 +98,50 @@ export function CompareView({
         </button>
       </div>
 
-      {/* Context recap */}
+      {/* Context recap — ogni valore editabile inline via matita */}
       <div className="border-b border-border/40 bg-muted/20 px-5 py-2.5">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <Badge
-            label="Modalità"
-            value={input.exposureDaysPerMonth > 0
-              ? `Overnight · ${input.exposureDaysPerMonth}gg`
-              : 'Intraday'}
-            highlight
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
+          <EditableBadge
+            label="Capitale"
+            value={`€${input.capital.toLocaleString('it-IT')}`}
+            rawValue={String(input.capital)}
+            suffix="€"
+            isEditing={editingField === 'capital'}
+            onStartEdit={() => setEditingField('capital')}
+            onCommit={raw => commitEdit('capital', raw)}
+            onCancel={() => setEditingField(null)}
           />
-          <Badge label="Capitale" value={`€${input.capital.toLocaleString('it-IT')}`} />
-          <Badge label="Lotto" value={`${input.lotSize}`} />
-          <Badge label="Trade/mese" value={String(input.tradesPerMonth)} />
+          <EditableBadge
+            label="Lotto"
+            value={`${input.lotSize}`}
+            rawValue={String(input.lotSize)}
+            step={0.01}
+            isEditing={editingField === 'lotSize'}
+            onStartEdit={() => setEditingField('lotSize')}
+            onCommit={raw => commitEdit('lotSize', raw)}
+            onCancel={() => setEditingField(null)}
+          />
+          <EditableBadge
+            label="Trade/mese"
+            value={String(input.tradesPerMonth)}
+            rawValue={String(input.tradesPerMonth)}
+            step={1}
+            isEditing={editingField === 'tradesPerMonth'}
+            onStartEdit={() => setEditingField('tradesPerMonth')}
+            onCommit={raw => commitEdit('tradesPerMonth', raw)}
+            onCancel={() => setEditingField(null)}
+          />
+          <EditableBadge
+            label="Overnight"
+            value={input.exposureDaysPerMonth > 0 ? `${input.exposureDaysPerMonth}gg` : 'Intraday'}
+            rawValue={String(input.exposureDaysPerMonth)}
+            step={1}
+            highlight
+            isEditing={editingField === 'exposureDaysPerMonth'}
+            onStartEdit={() => setEditingField('exposureDaysPerMonth')}
+            onCommit={raw => commitEdit('exposureDaysPerMonth', raw)}
+            onCancel={() => setEditingField(null)}
+          />
           {input.pairSymbol && (
             <Badge label="Coppia" value={input.pairSymbol} />
           )}
@@ -178,5 +231,110 @@ function Badge({ label, value, highlight }: { label: string; value: string; high
       <span className={cn('text-muted-foreground/70', highlight && 'text-primary/80')}>{label}</span>
       <span className={cn('font-medium', highlight ? 'text-primary' : 'text-foreground')}>{value}</span>
     </span>
+  );
+}
+
+type EditableBadgeProps = {
+  label: string;
+  value: string;
+  rawValue: string;
+  step?: number;
+  suffix?: string;
+  highlight?: boolean;
+  isEditing: boolean;
+  onStartEdit: () => void;
+  onCommit: (raw: string) => void;
+  onCancel: () => void;
+};
+
+function EditableBadge({
+  label,
+  value,
+  rawValue,
+  step = 1,
+  highlight,
+  isEditing,
+  onStartEdit,
+  onCommit,
+  onCancel,
+}: EditableBadgeProps) {
+  const [draft, setDraft] = useState(rawValue);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing) {
+      setDraft(rawValue);
+      // Focus + select on next tick
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      });
+    }
+  }, [isEditing, rawValue]);
+
+  if (isEditing) {
+    return (
+      <span
+        className={cn(
+          'inline-flex items-center gap-1 rounded-full border px-2 py-0.5',
+          highlight ? 'border-primary/40 bg-primary/10' : 'border-primary/30 bg-primary/5',
+        )}
+      >
+        <span className={cn('text-[10px] uppercase tracking-wider', highlight ? 'text-primary/80' : 'text-muted-foreground/70')}>
+          {label}
+        </span>
+        <input
+          ref={inputRef}
+          type="number"
+          inputMode="decimal"
+          step={step}
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onCommit(draft);
+            } else if (e.key === 'Escape') {
+              onCancel();
+            }
+          }}
+          onBlur={() => onCommit(draft)}
+          className="w-16 bg-transparent text-xs font-semibold text-foreground outline-none"
+        />
+        <button
+          type="button"
+          onMouseDown={e => e.preventDefault()}
+          onClick={() => onCommit(draft)}
+          className="text-primary hover:text-primary/80"
+          aria-label="Conferma"
+        >
+          <Check className="size-3" />
+        </button>
+      </span>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onStartEdit}
+      className={cn(
+        'group inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-0.5 transition-colors',
+        'hover:border-border/60 hover:bg-card/60',
+        highlight && 'border-primary/30 bg-primary/10 hover:border-primary/40',
+      )}
+      aria-label={`Modifica ${label}`}
+    >
+      <span className={cn('text-[10px] uppercase tracking-wider', highlight ? 'text-primary/80' : 'text-muted-foreground/70')}>
+        {label}
+      </span>
+      <span className={cn('text-xs font-semibold', highlight ? 'text-primary' : 'text-foreground')}>
+        {value}
+      </span>
+      <Pencil className={cn(
+        'size-3 transition-opacity group-hover:opacity-100',
+        highlight ? 'text-primary/80' : 'text-muted-foreground',
+      )}
+      />
+    </button>
   );
 }

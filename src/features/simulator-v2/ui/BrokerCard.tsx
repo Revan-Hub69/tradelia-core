@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
   Clock,
-  ExternalLink,
   FileText,
   Info,
   Lock,
@@ -196,6 +195,10 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
   const account = BROKER_ACCOUNTS.find(a => a.id === broker.id);
   const qual = account ? getBrokerQualitative(account) : null;
 
+  const totalBrokerAccounts = account
+    ? BROKER_ACCOUNTS.filter(a => a.brokerId === account.brokerId).length
+    : 1;
+
   const isMultiday = broker.breakdown.swapPerMonth > 0;
   const total = broker.breakdown.spreadPerMonth + broker.breakdown.commissionPerMonth + broker.breakdown.swapPerMonth;
   const spreadPct = total > 0 ? (broker.breakdown.spreadPerMonth / total) * 100 : 100;
@@ -204,6 +207,37 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
 
   return (
     <>
+      {/* Header gerarchico: il soggetto è il CONTO, non il broker */}
+      <div className="-mx-1 -mt-1 border-b border-border/40 pb-3">
+        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          {broker.brokerName}
+        </p>
+        <div className="mt-0.5 flex items-center gap-2">
+          <h4 className="text-lg font-bold leading-tight text-foreground">
+            {broker.accountName}
+          </h4>
+          <TierBadge tier={broker.tier} />
+        </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          1 di
+          {' '}
+          {totalBrokerAccounts}
+          {' '}
+          {totalBrokerAccounts === 1 ? 'conto' : 'conti'}
+          {' '}
+          {broker.brokerName}
+          {' '}
+          analizzat
+          {totalBrokerAccounts === 1 ? 'o' : 'i'}
+          {broker.isWinner && (
+            <>
+              {' · '}
+              <span className="font-semibold text-primary">BEST VALUE</span>
+            </>
+          )}
+        </p>
+      </div>
+
       {/* Numeri chiave */}
       <div className="grid grid-cols-3 gap-2">
         <MetricTile label="Costo/mese" value={`€${broker.costPerMonth}`} primary />
@@ -293,24 +327,15 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetail }: Expa
         </div>
       )}
 
-      {/* CTAs */}
-      <div className="flex flex-col gap-2 pt-1 sm:flex-row">
-        <button
-          type="button"
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:shadow-md hover:shadow-primary/20"
-        >
-          Apri conto
-          {' '}
-          {broker.brokerName}
-          <ExternalLink className="size-3.5" />
-        </button>
+      {/* CTA: solo scheda completa del conto specifico */}
+      <div className="pt-1">
         <button
           type="button"
           onClick={onOpenDetail}
-          className="flex items-center justify-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-border hover:bg-muted"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-muted"
         >
           <FileText className="size-3.5" />
-          Scheda completa
+          Scheda completa conto specifico
         </button>
       </div>
     </>

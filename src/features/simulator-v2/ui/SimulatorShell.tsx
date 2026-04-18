@@ -3,12 +3,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
 
+import type { AssetId } from '../data/assets';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { BottomSheet } from '../layout/BottomSheet';
 import { Drawer } from '../layout/Drawer';
 import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
 import { computeResults } from '../state/useSimulatorState';
-import type { AssetId } from '../data/assets';
 import { CompareView } from './CompareView';
 import { DetailView } from './DetailView';
 import { Wizard } from './Wizard';
@@ -54,6 +54,17 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
     setView('results_compare');
   }, []);
 
+  const handleUpdateInput = useCallback((patch: Partial<SimulatorInput>) => {
+    setInput((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      const next = { ...prev, ...patch };
+      setResults(computeResults(next));
+      return next;
+    });
+  }, []);
+
   const handleSelectBroker = useCallback((brokerId: string) => {
     setSelectedBrokerId(brokerId);
     setView('results_detail');
@@ -96,6 +107,7 @@ export function SimulatorShell({ isOpen, onClose, assetId }: SimulatorShellProps
             onSelectBroker={handleSelectBroker}
             onBack={() => setView('wizard')}
             onClose={onClose}
+            onUpdateInput={handleUpdateInput}
           />
         );
       case 'results_detail': {
