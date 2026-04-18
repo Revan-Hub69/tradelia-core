@@ -81,8 +81,8 @@ export function CompareView({
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           <Badge
             label="Modalità"
-            value={input.mode === 'multiday'
-              ? `Overnight · ${input.exposureDaysPerMonth ?? 0}gg`
+            value={input.exposureDaysPerMonth > 0
+              ? `Overnight · ${input.exposureDaysPerMonth}gg`
               : 'Intraday'}
             highlight
           />

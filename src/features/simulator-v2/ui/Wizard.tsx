@@ -6,19 +6,16 @@ import {
   Calculator,
   CalendarClock,
   Gauge,
-  Moon,
   Pencil,
   Repeat,
-  Sun,
   Wallet,
   X,
 } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
 import type { AssetId } from '../data/assets';
-import type { TradingMode } from '../data/brokers';
 import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
 import type { SimulatorInput } from '../state/useSimulatorState';
 import { AssetSwitcher } from './AssetSwitcher';
@@ -31,70 +28,39 @@ type WizardProps = {
 };
 
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
-const TRADES_PRESETS_INTRADAY = [5, 10, 20, 50, 100];
-const TRADES_PRESETS_MULTIDAY = [1, 2, 5, 10, 20];
-/**
- * Giorni/mese in cui hai almeno una posizione aperta a cavallo del rollover.
- * Preset tipici: scalper/swing leggero 5gg, swing 10gg, swing pesante 20gg, position 30gg.
- */
-const EXPOSURE_PRESETS = [5, 10, 15, 20, 30];
-
-/**
- * Lot presets: step reali usati dal retail per account size.
- * Riflette pratica reale — non calcolo margin.
- */
-function getLotPresets(capital: number): number[] {
-  if (capital < 500) {
-    // Nano/micro account
-    return [0.001, 0.005, 0.01, 0.02, 0.05];
-  }
-  if (capital < 2000) {
-    // Small retail
-    return [0.01, 0.02, 0.05, 0.1, 0.2];
-  }
-  if (capital < 10000) {
-    // Mid retail
-    return [0.02, 0.05, 0.1, 0.2, 0.5];
-  }
-  if (capital < 50000) {
-    // Standard retail
-    return [0.05, 0.1, 0.2, 0.5, 1];
-  }
-  if (capital < 200000) {
-    // Large retail
-    return [0.1, 0.2, 0.5, 1, 2];
-  }
-  // Pro/institutional
-  return [0.5, 1, 2, 5, 10];
-}
+const LOT_PRESETS = [0.01, 0.05, 0.1, 0.5, 1, 2];
+const TRADES_PRESETS = [5, 10, 20, 50, 100];
+/** Giorni/mese in cui hai almeno una posizione aperta al rollover. 0 = solo intraday. */
+const EXPOSURE_PRESETS = [0, 5, 10, 15, 20, 25];
 
 export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
   const isForex = assetId === 'forex';
   const [pairSymbol, setPairSymbol] = useState<string>(
     DEFAULT_FOREX_PAIR.symbol,
   );
-  const [capital, setCapital] = useState<number>(1000);
-  const [lotSize, setLotSize] = useState<number>(0.1);
-  const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
-  const [mode, setMode] = useState<TradingMode>('intraday');
-  const [exposureDaysPerMonth, setExposureDaysPerMonth] = useState<number>(10);
+  const [capital, setCapital] = useState<number | null>(null);
+  const [lotSize, setLotSize] = useState<number | null>(null);
+  const [tradesPerMonth, setTradesPerMonth] = useState<number | null>(null);
+  const [exposureDaysPerMonth, setExposureDaysPerMonth] = useState<number | null>(null);
 
-  const tradesPresets = mode === 'multiday' ? TRADES_PRESETS_MULTIDAY : TRADES_PRESETS_INTRADAY;
-
-  // Handler switch mode: aggiusta default trades/mese per realismo.
-  const handleModeChange = (next: TradingMode) => {
-    setMode(next);
-    if (next === 'multiday' && tradesPerMonth > 20) {
-      setTradesPerMonth(5);
-    } else if (next === 'intraday' && tradesPerMonth < 5) {
-      setTradesPerMonth(20);
+  // Refs per auto-scroll tra step
+  const stepRefs = [
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+  ];
+  const scrollToStep = (idx: number) => {
+    if (idx < stepRefs.length) {
+      stepRefs[idx]?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
-  const lotPresets = useMemo(() => getLotPresets(capital), [capital]);
-
   const canSubmit
-    = capital >= 10 && lotSize >= 0.001 && tradesPerMonth > 0;
+    = capital !== null && capital >= 10
+    && lotSize !== null && lotSize >= 0.001
+    && tradesPerMonth !== null && tradesPerMonth > 0
+    && exposureDaysPerMonth !== null;
 
   const handleSubmit = () => {
     if (!canSubmit) {
@@ -103,11 +69,10 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
     onSubmit({
       assetId,
       pairSymbol: isForex ? pairSymbol : undefined,
-      capital,
-      tradesPerMonth,
-      lotSize,
-      mode,
-      exposureDaysPerMonth: mode === 'multiday' ? exposureDaysPerMonth : undefined,
+      capital: capital!,
+      tradesPerMonth: tradesPerMonth!,
+      lotSize: lotSize!,
+      exposureDaysPerMonth: exposureDaysPerMonth!,
     });
   };
 
@@ -144,8 +109,6 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
                 </span>
                 <PairChip value={pairSymbol} onSelect={setPairSymbol} />
               </div>
-              <div className="h-4 w-px bg-border/60" />
-              <ModeToggle value={mode} onSelect={handleModeChange} />
             </div>
           </div>
         )}
@@ -153,88 +116,107 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
 
       {/* Content */}
       <div className="flex-1 space-y-4 overflow-y-auto p-5">
-        {/* Account size */}
-        <InputCard
-          icon={Wallet}
-          accent="emerald"
-          label="Dimensione account"
-          hint="Il capitale del tuo conto trading"
-        >
-          <EditableAmount
-            prefix="€"
-            value={capital}
-            onChange={setCapital}
-            min={10}
-            step={10}
-          />
-          <PresetChips<number>
-            values={CAPITAL_PRESETS}
-            value={capital}
-            onSelect={v => setCapital(v)}
-            format={v => `€${v >= 1000 ? `${v / 1000}k` : v}`}
-          />
-        </InputCard>
+        {/* Step 1 — Account size */}
+        <div ref={stepRefs[0]}>
+          <InputCard
+            icon={Wallet}
+            accent="emerald"
+            label="Dimensione account"
+            hint="Il capitale del tuo conto trading"
+          >
+            <EditableAmount
+              prefix="€"
+              value={capital}
+              onChange={setCapital}
+              min={10}
+              step={10}
+              placeholder="Inserisci capitale"
+            />
+            <PresetChips<number>
+              values={CAPITAL_PRESETS}
+              value={capital}
+              onSelect={(v) => {
+                setCapital(v);
+                scrollToStep(1);
+              }}
+              format={v => `€${v >= 1000 ? `${v / 1000}k` : v}`}
+            />
+          </InputCard>
+        </div>
 
-        {/* Lot size — adaptive to account */}
-        <InputCard
-          icon={Gauge}
-          accent="teal"
-          label="Dimensione posizione"
-          hint={`Lotti per trade · ${formatLotLabel(lotSize)}`}
-        >
-          <EditableAmount
-            suffix="lot"
-            value={lotSize}
-            onChange={setLotSize}
-            min={0.001}
-            step={0.01}
-          />
-          <PresetChips<number>
-            values={lotPresets}
-            value={lotSize}
-            onSelect={v => setLotSize(v)}
-            format={v => String(v)}
-          />
-        </InputCard>
+        {/* Step 2 — Lot size */}
+        <div ref={stepRefs[1]}>
+          <InputCard
+            icon={Gauge}
+            accent="teal"
+            label="Dimensione posizione"
+            hint={lotSize !== null ? `Lotti per trade · ${formatLotLabel(lotSize)}` : 'Lotti per trade'}
+          >
+            <EditableAmount
+              suffix="lot"
+              value={lotSize}
+              onChange={setLotSize}
+              min={0.001}
+              step={0.01}
+              placeholder="Inserisci lotto"
+            />
+            <PresetChips<number>
+              values={LOT_PRESETS}
+              value={lotSize}
+              onSelect={(v) => {
+                setLotSize(v);
+                scrollToStep(2);
+              }}
+              format={v => String(v)}
+            />
+          </InputCard>
+        </div>
 
-        {/* Trades per month */}
-        <InputCard
-          icon={Repeat}
-          accent="emerald"
-          label="Trade al mese"
-          hint="Frequenza operativa media"
-        >
-          <EditableAmount
-            suffix="/mese"
-            value={tradesPerMonth}
-            onChange={setTradesPerMonth}
-            min={1}
-            max={500}
-            step={1}
-          />
-          <PresetChips<number>
-            values={tradesPresets}
-            value={tradesPerMonth}
-            onSelect={v => setTradesPerMonth(v)}
-            format={v => String(v)}
-          />
-        </InputCard>
+        {/* Step 3 — Trade al mese */}
+        <div ref={stepRefs[2]}>
+          <InputCard
+            icon={Repeat}
+            accent="emerald"
+            label="Trade al mese"
+            hint="Frequenza operativa media"
+          >
+            <EditableAmount
+              suffix="/mese"
+              value={tradesPerMonth}
+              onChange={setTradesPerMonth}
+              min={1}
+              max={500}
+              step={1}
+              placeholder="Inserisci frequenza"
+            />
+            <PresetChips<number>
+              values={TRADES_PRESETS}
+              value={tradesPerMonth}
+              onSelect={(v) => {
+                setTradesPerMonth(v);
+                scrollToStep(3);
+              }}
+              format={v => String(v)}
+            />
+          </InputCard>
+        </div>
 
-        {/* Esposizione overnight — solo multiday */}
-        {mode === 'multiday' && (
+        {/* Step 4 — Esposizione overnight (0 gg = intraday) */}
+        <div ref={stepRefs[3]}>
           <InputCard
             icon={CalendarClock}
             accent="teal"
             label="Esposizione overnight"
-            hint="Giorni al mese in cui hai almeno una posizione aperta al rollover"
+            hint="Giorni al mese con posizione aperta al rollover · 0 = solo intraday"
           >
             <EditableAmount
               suffix="gg/mese"
               value={exposureDaysPerMonth}
               onChange={setExposureDaysPerMonth}
               min={0}
-              max={30}
+              max={25}
               step={1}
+              placeholder="Inserisci giorni"
             />
             <PresetChips<number>
               values={EXPOSURE_PRESETS}
@@ -243,7 +225,7 @@ export function Wizard({ assetId, onSubmit, onClose }: WizardProps) {
               format={v => `${v}gg`}
             />
           </InputCard>
-        )}
+        </div>
       </div>
 
       {/* Footer CTA */}
@@ -298,50 +280,6 @@ type InputCardProps = {
   children: React.ReactNode;
 };
 
-type ModeToggleProps = {
-  value: TradingMode;
-  onSelect: (v: TradingMode) => void;
-};
-
-function ModeToggle({ value, onSelect }: ModeToggleProps) {
-  const options: { id: TradingMode; label: string; icon: React.ElementType; hint: string }[] = [
-    { id: 'intraday', label: 'Intraday', icon: Sun, hint: 'Senza overnight · no swap' },
-    { id: 'multiday', label: 'Multiday', icon: Moon, hint: 'Include swap markup broker' },
-  ];
-  return (
-    <div
-      role="radiogroup"
-      aria-label="Modalità operativa"
-      className="inline-flex items-center rounded-full border border-border/60 bg-card/60 p-0.5"
-    >
-      {options.map((opt) => {
-        const active = opt.id === value;
-        const Icon = opt.icon;
-        return (
-          <button
-            key={opt.id}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            onClick={() => onSelect(opt.id)}
-            title={opt.hint}
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              active
-                ? 'bg-primary text-primary-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground',
-            )}
-          >
-            <Icon className="size-3" />
-            {opt.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 function InputCard({ icon: Icon, accent, label, hint, children }: InputCardProps) {
   return (
     <div className="rounded-xl border border-border/60 bg-popover/40 p-4">
@@ -366,13 +304,14 @@ function InputCard({ icon: Icon, accent, label, hint, children }: InputCardProps
 }
 
 type EditableAmountProps = {
-  value: number;
-  onChange: (v: number) => void;
+  value: number | null;
+  onChange: (v: number | null) => void;
   prefix?: string;
   suffix?: string;
   min?: number;
   max?: number;
   step?: number;
+  placeholder?: string;
 };
 
 function EditableAmount({
@@ -383,6 +322,7 @@ function EditableAmount({
   min,
   max,
   step,
+  placeholder,
 }: EditableAmountProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const handlePencilClick = () => {
@@ -400,9 +340,13 @@ function EditableAmount({
       <input
         ref={inputRef}
         type="number"
-        value={value}
-        onChange={e => onChange(Number(e.target.value))}
-        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight text-foreground outline-none focus:ring-0"
+        value={value ?? ''}
+        placeholder={placeholder}
+        onChange={(e) => {
+          const v = e.target.value;
+          onChange(v === '' ? null : Number(v));
+        }}
+        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight text-foreground outline-none focus:ring-0 placeholder:text-muted-foreground/40 placeholder:text-base placeholder:font-medium"
         min={min}
         max={max}
         step={step}
@@ -427,7 +371,7 @@ function EditableAmount({
 
 type PresetChipsProps<T> = {
   values: T[];
-  value: T;
+  value: T | null;
   onSelect: (v: T) => void;
   format: (v: T) => string;
 };

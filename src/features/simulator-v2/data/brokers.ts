@@ -184,13 +184,10 @@ export const BROKER_TIERS: { id: BrokerTier; label: string; range: string }[] = 
   { id: 'pro', label: 'Pro', range: '€10k+' },
 ];
 
-export type TradingMode = 'intraday' | 'multiday';
-
 export type CostContext = {
   lotSize: number;
   tradesPerMonth: number;
-  mode: TradingMode;
-  /** Giorni medi di esposizione overnight al mese (0-30). Solo se mode=multiday. */
+  /** Giorni medi di esposizione overnight al mese (0-25). 0 = intraday (nessun swap). */
   exposureDaysPerMonth?: number;
 };
 
@@ -198,7 +195,7 @@ export type CostContext = {
  * Calcola costo mensile totale per un account broker.
  * pipValue = €10 per standard lot a EUR/USD (semplificazione).
  *
- * In multiday: aggiunge il solo **markup broker** × lot × giorni di esposizione mensile.
+ * Se exposureDaysPerMonth > 0: aggiunge il solo **markup broker** × lot × giorni.
  * L'interbank swap rate (identico per tutti i broker) non entra nel ranking perché
  * non è una componente broker-specifica. Il markup è l'unica variabile discriminante.
  */
@@ -206,13 +203,13 @@ export function estimateMonthlyCost(
   account: BrokerAccount,
   ctx: CostContext,
 ): number {
-  const { lotSize, tradesPerMonth, mode, exposureDaysPerMonth = 0 } = ctx;
+  const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
   const pipValuePerLot = 10;
   const spreadCostPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionCostPerTrade = account.commissionPerLotEur * lotSize;
   const tradingCost = (spreadCostPerTrade + commissionCostPerTrade) * tradesPerMonth;
   let swapCost = 0;
-  if (mode === 'multiday' && exposureDaysPerMonth > 0) {
+  if (exposureDaysPerMonth > 0) {
     const qual = getBrokerQualitative(account);
     swapCost = qual.swapMarkupPerLotEur * lotSize * exposureDaysPerMonth;
   }
@@ -226,14 +223,12 @@ export function computeCostBreakdown(
   account: BrokerAccount,
   ctx: CostContext,
 ) {
-  const { lotSize, tradesPerMonth, mode, exposureDaysPerMonth = 0 } = ctx;
+  const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
   const pipValuePerLot = 10;
   const spreadPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
   const commissionPerTrade = account.commissionPerLotEur * lotSize;
   const qual = getBrokerQualitative(account);
-  const swapMarkupPerLotNight = mode === 'multiday' && exposureDaysPerMonth > 0
-    ? qual.swapMarkupPerLotEur
-    : 0;
+  const swapMarkupPerLotNight = exposureDaysPerMonth > 0 ? qual.swapMarkupPerLotEur : 0;
   const swapPerMonth = swapMarkupPerLotNight * lotSize * exposureDaysPerMonth;
   return {
     spreadPerTrade: Number(spreadPerTrade.toFixed(2)),

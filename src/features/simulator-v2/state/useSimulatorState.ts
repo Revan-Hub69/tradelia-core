@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 
 import type { AssetId } from '../data/assets';
-import type { BrokerAccount, BrokerTier, TradingMode } from '../data/brokers';
+import type { BrokerAccount, BrokerTier } from '../data/brokers';
 import { BROKER_ACCOUNTS, computeCostBreakdown, estimateMonthlyCost } from '../data/brokers';
 
 export type SimState = 'closed' | 'wizard' | 'results_compare' | 'results_detail';
@@ -14,10 +14,8 @@ export type SimulatorInput = {
   capital: number;
   tradesPerMonth: number;
   lotSize: number;
-  /** Modalità operativa: intraday (nessuno swap) o multiday (swap incluso nel calcolo). */
-  mode: TradingMode;
-  /** Giorni medi di esposizione overnight al mese (0-30). Solo se mode=multiday. */
-  exposureDaysPerMonth?: number;
+  /** Giorni medi di esposizione overnight al mese (0-25). 0 = intraday (no swap). */
+  exposureDaysPerMonth: number;
   underlyingId?: string;
 };
 
@@ -81,8 +79,7 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
   const ctx = {
     lotSize: input.lotSize,
     tradesPerMonth: input.tradesPerMonth,
-    mode: input.mode,
-    exposureDaysPerMonth: input.exposureDaysPerMonth ?? 0,
+    exposureDaysPerMonth: input.exposureDaysPerMonth,
   };
   const scored = BROKER_ACCOUNTS.map((account: BrokerAccount) => {
     const costPerMonth = estimateMonthlyCost(account, ctx);
