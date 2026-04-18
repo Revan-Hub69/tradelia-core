@@ -39,28 +39,47 @@ export function CompareView({
   const [editingField, setEditingField] = useState<EditableField | null>(null);
   const [isEditingPair, setIsEditingPair] = useState(false);
 
-  // Scroll-aware header: slide-away on scroll-down, slide-in on scroll-up
+  // Scroll-aware header (2026 pattern):
+  // - hide quickly su scroll-down deciso
+  // - reveal solo con intenzione cumulata (>24px verso l'alto) e timing più lento
+  // - transizioni cubic-bezier coordinate, niente spring secco
   const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({ container: scrollRef });
   const [headerHidden, setHeaderHidden] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const lastY = useRef(0);
+  const upIntent = useRef(0); // accumulo delta negativo per evitare flicker
 
   useMotionValueEvent(scrollY, 'change', (y) => {
     const delta = y - lastY.current;
-    // Thresholds: ignore micro-scroll; ignore bounce at top
-    if (Math.abs(delta) < 4) {
+    lastY.current = y;
+    setHasScrolled(y > 4);
+
+    // Ignora micro-movimenti (tipico del rubber-band)
+    if (Math.abs(delta) < 2) {
       return;
     }
-    if (y < 16) {
+
+    // Vicino al top: sempre espanso, reset intent
+    if (y < 24) {
+      upIntent.current = 0;
       setHeaderHidden(false);
-    } else if (delta > 0 && y > 48) {
-      setHeaderHidden(true);
-    } else if (delta < 0) {
-      setHeaderHidden(false);
+      return;
     }
-    setHasScrolled(y > 4);
-    lastY.current = y;
+
+    if (delta > 0) {
+      // Scroll down: reset up-intent e collassa oltre una soglia
+      upIntent.current = 0;
+      if (y > 72) {
+        setHeaderHidden(true);
+      }
+    } else {
+      // Scroll up: accumula intenzione; rivela solo oltre 24px cumulativi
+      upIntent.current += -delta;
+      if (upIntent.current > 24) {
+        setHeaderHidden(false);
+      }
+    }
   });
 
   const commitEdit = (field: EditableField, raw: string) => {
@@ -103,9 +122,13 @@ export function CompareView({
         initial={false}
         animate={{
           opacity: headerHidden ? 1 : 0,
-          y: headerHidden ? 0 : -6,
+          y: headerHidden ? 0 : -8,
         }}
-        transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+        transition={{
+          duration: headerHidden ? 0.32 : 0.18,
+          ease: headerHidden ? [0.22, 1, 0.36, 1] : [0.4, 0, 1, 1],
+          delay: headerHidden ? 0.08 : 0,
+        }}
         className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-3 py-2"
         style={{ pointerEvents: headerHidden ? 'auto' : 'none' }}
         aria-hidden={!headerHidden}
@@ -129,14 +152,27 @@ export function CompareView({
         </button>
       </motion.div>
 
-      {/* Collapsible wrapper: header + recap collassano insieme liberando spazio alle card */}
+      {/* Collapsible wrapper: header + recap collassano insieme liberando spazio alle card.
+          Easing cubic-bezier asimmetrico (HIG 2026):
+          - hide veloce e deciso (easeIn ~220ms)
+          - show più lento e graduale (easeOutQuart ~420ms) per dare tempo di leggere */}
       <motion.div
         initial={false}
         animate={{
           height: headerHidden ? 0 : 'auto',
           opacity: headerHidden ? 0 : 1,
         }}
-        transition={{ type: 'spring', stiffness: 360, damping: 38, mass: 0.8 }}
+        transition={{
+          height: {
+            duration: headerHidden ? 0.22 : 0.42,
+            ease: headerHidden ? [0.4, 0, 1, 1] : [0.22, 1, 0.36, 1],
+          },
+          opacity: {
+            duration: headerHidden ? 0.16 : 0.32,
+            ease: headerHidden ? [0.4, 0, 1, 1] : [0.22, 1, 0.36, 1],
+            delay: headerHidden ? 0 : 0.06,
+          },
+        }}
         className="overflow-hidden"
         style={{ pointerEvents: headerHidden ? 'none' : 'auto' }}
       >
