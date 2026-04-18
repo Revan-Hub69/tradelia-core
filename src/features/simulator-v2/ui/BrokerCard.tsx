@@ -112,7 +112,7 @@ export function BrokerCard({
             </span>
             <TierBadge tier={broker.tier} />
             {isWinner && (
-              <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">
+              <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground">
                 Best
               </span>
             )}
@@ -121,13 +121,13 @@ export function BrokerCard({
           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
             <span className="flex items-center gap-1 font-semibold text-foreground">
               €
-              {broker.costPerMonth}
+              <span className="tabular-nums">{broker.costPerMonth}</span>
               <span className="font-normal text-muted-foreground">/mese</span>
             </span>
             {!isWinner && broker.deltaVsBestMonth > 0 && !locked && (
               <span className="text-muted-foreground">
                 · +€
-                {broker.deltaVsBestMonth.toFixed(2)}
+                <span className="tabular-nums">{broker.deltaVsBestMonth.toFixed(2)}</span>
                 {' '}
                 vs best
               </span>
@@ -339,7 +339,7 @@ function TierBadge({ tier }: { tier: BrokerTier }) {
   return (
     <span
       className={cn(
-        'rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider',
+        'rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider',
         TIER_STYLES[tier],
       )}
     >
@@ -355,8 +355,8 @@ function MetricTile({ label, value, primary }: { label: string; value: string; p
       primary ? 'border-primary/30 bg-primary/5' : 'border-border/60 bg-card/60',
     )}
     >
-      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={cn('mt-0.5 text-lg font-bold', primary ? 'text-primary' : 'text-foreground')}>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className={cn('mt-0.5 text-lg font-bold tabular-nums tracking-tight', primary ? 'text-primary' : 'text-foreground')}>
         {value}
       </p>
     </div>
@@ -380,7 +380,7 @@ function CostRow({
     <div>
       <div className="mb-1 flex items-baseline justify-between gap-2">
         <span className="text-xs font-medium text-foreground">{label}</span>
-        <span className="text-xs font-semibold text-foreground">
+        <span className="text-xs font-semibold tabular-nums text-foreground">
           €
           {amount.toFixed(2)}
           <span className="ml-1 font-normal text-muted-foreground">
@@ -396,7 +396,7 @@ function CostRow({
           style={{ width: `${Math.max(2, pct)}%` }}
         />
       </div>
-      <p className="mt-1 text-[10px] text-muted-foreground">{detail}</p>
+      <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{detail}</p>
     </div>
   );
 }
@@ -421,7 +421,7 @@ function QualRow({
           <span className="font-medium text-foreground">{value}</span>
         </div>
         {hint && (
-          <p className="text-[10px] text-muted-foreground/70">{hint}</p>
+          <p className="text-[11px] leading-snug text-muted-foreground">{hint}</p>
         )}
       </div>
     </div>
@@ -431,7 +431,7 @@ function QualRow({
 function SpecItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-border/40 bg-card/40 p-2">
-      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
       <p className="mt-0.5 truncate text-xs font-medium text-foreground" title={value}>
         {value}
       </p>

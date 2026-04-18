@@ -65,7 +65,7 @@ export function DetailView({ broker, onBackAction, onCloseAction }: DetailViewPr
 
         <div className="flex items-center gap-2">
           <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Scheda broker
           </p>
         </div>
@@ -105,7 +105,7 @@ export function DetailView({ broker, onBackAction, onCloseAction }: DetailViewPr
             </div>
             <span
               className={cn(
-                'rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider',
+                'rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider',
                 TIER_STYLES[broker.tier],
               )}
             >
@@ -277,7 +277,7 @@ export function DetailView({ broker, onBackAction, onCloseAction }: DetailViewPr
           {/* ESMA risk warning — specifico del broker se disponibile */}
           <div className="flex items-start gap-2 border-t border-amber-500/20 bg-amber-500/5 px-4 py-2.5">
             <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-500" />
-            <p className="text-[10px] leading-4 text-amber-700 dark:text-amber-400/90">
+            <p className="text-[11px] leading-snug text-amber-700 dark:text-amber-400">
               <span className="font-semibold">Avvertenza rischio ESMA · </span>
               {esmaLossRatePct !== undefined
                 ? (
@@ -355,8 +355,8 @@ function StatTile({
       primary ? 'border-primary/30 bg-primary/5' : 'border-border/60 bg-card/60',
     )}
     >
-      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={cn('mt-1 text-2xl font-bold', primary ? 'text-primary' : 'text-foreground')}>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className={cn('mt-1 text-2xl font-bold tabular-nums tracking-tight', primary ? 'text-primary' : 'text-foreground')}>
         {value}
       </p>
     </div>
@@ -425,7 +425,7 @@ function InfoRow({
 function SpecCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border/60 bg-card/60 p-3">
-      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
       <p className="mt-0.5 text-sm font-medium text-foreground">{value}</p>
     </div>
   );

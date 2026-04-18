@@ -1,7 +1,5 @@
 'use client';
 
-import '@/features/simulator-v2/styles/tokens.css';
-
 import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 

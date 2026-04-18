@@ -104,7 +104,7 @@ export function Wizard({ assetId, onSubmitAction, onCloseAction }: WizardProps) 
           <div className="border-t border-border/40 bg-popover/30 px-5 py-2.5">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Coppia
                 </span>
                 <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
@@ -331,7 +331,7 @@ function EditableAmount({
   };
 
   return (
-    <div className="group mb-3 flex items-baseline gap-2 border-b-2 border-border pb-1.5 transition-colors focus-within:border-primary">
+    <div className="group mb-3 flex items-baseline gap-2 rounded-sm border-b-2 border-border pb-1.5 transition-all focus-within:border-primary focus-within:bg-primary/5">
       {prefix && (
         <span className="text-xl font-semibold text-muted-foreground">
           {prefix}
@@ -346,7 +346,7 @@ function EditableAmount({
           const v = e.target.value;
           onChange(v === '' ? null : Number(v));
         }}
-        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/40 focus:ring-0"
+        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tabular-nums tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0"
         min={min}
         max={max}
         step={step}
@@ -360,10 +360,10 @@ function EditableAmount({
       <button
         type="button"
         onClick={handlePencilClick}
-        className="rounded p-0.5 text-muted-foreground/50 transition-colors hover:bg-muted hover:text-primary group-focus-within:text-primary"
-        aria-label="Modifica"
+        className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-primary group-focus-within:text-primary"
+        aria-label="Modifica valore"
       >
-        <Pencil className="size-3.5" />
+        <Pencil className="size-4" />
       </button>
     </div>
   );

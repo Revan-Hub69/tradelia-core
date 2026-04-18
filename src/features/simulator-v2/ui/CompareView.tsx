@@ -195,7 +195,7 @@ export function CompareView({
 
           <div className="flex items-center gap-2">
             <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Risultati
             </p>
           </div>
@@ -318,7 +318,7 @@ export function CompareView({
           <div className="pt-2">
             <div className="mb-2 flex items-center gap-2 px-1">
               <div className="h-px flex-1 bg-border/40" />
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Non accessibili con il tuo capitale
               </span>
               <div className="h-px flex-1 bg-border/40" />
@@ -387,7 +387,7 @@ function EditablePairBadge({ value, isEditing, onStartEdit, onCancel }: Editable
       aria-label="Modifica coppia"
       aria-expanded={isEditing}
     >
-      <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         Coppia
       </span>
       {pair && (
@@ -452,7 +452,7 @@ function EditableBadge({
           highlight ? 'border-primary/40 bg-primary/10' : 'border-primary/30 bg-primary/5',
         )}
       >
-        <span className={cn('text-[10px] uppercase tracking-wider', highlight ? 'text-primary/80' : 'text-muted-foreground/70')}>
+        <span className={cn('text-[11px] font-semibold uppercase tracking-wider', highlight ? 'text-primary' : 'text-muted-foreground')}>
           {label}
         </span>
         <input
@@ -470,7 +470,7 @@ function EditableBadge({
             }
           }}
           onBlur={() => onCommit(draft)}
-          className="w-16 bg-transparent text-xs font-semibold text-foreground outline-none"
+          className="w-16 rounded-sm bg-transparent text-xs font-semibold tabular-nums text-foreground outline-none ring-1 ring-primary/40 focus:ring-2 focus:ring-primary"
         />
         <button
           type="button"
@@ -496,10 +496,10 @@ function EditableBadge({
       )}
       aria-label={`Modifica ${label}`}
     >
-      <span className={cn('text-[10px] uppercase tracking-wider', highlight ? 'text-primary/80' : 'text-muted-foreground/70')}>
+      <span className={cn('text-[11px] font-semibold uppercase tracking-wider', highlight ? 'text-primary' : 'text-muted-foreground')}>
         {label}
       </span>
-      <span className={cn('text-xs font-semibold', highlight ? 'text-primary' : 'text-foreground')}>
+      <span className={cn('text-xs font-semibold tabular-nums', highlight ? 'text-primary' : 'text-foreground')}>
         {value}
       </span>
       <Pencil className={cn(

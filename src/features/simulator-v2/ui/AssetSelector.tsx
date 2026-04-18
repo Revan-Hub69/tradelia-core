@@ -1,7 +1,5 @@
 'use client';
 
-import '@/features/simulator-v2/styles/tokens.css';
-
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
@@ -106,7 +104,7 @@ export function AssetSelector({ onSelectAction, className }: AssetSelectorProps)
               className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/40 backdrop-blur-[2px]"
               aria-hidden="true"
             >
-              <span className="rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground shadow-lg">
+              <span className="rounded-full bg-primary/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary-foreground shadow-lg">
                 In arrivo
               </span>
             </div>
