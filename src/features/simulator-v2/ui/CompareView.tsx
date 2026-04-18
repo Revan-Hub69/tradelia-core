@@ -1,13 +1,12 @@
 'use client';
 
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import { Check, ChevronLeft, Info, Pencil, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Check, ChevronLeft, Info, Pencil, SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
 import { FOREX_PAIRS } from '../data/forex-pairs';
-import { useMediaQuery } from '../hooks/useMediaQuery';
 import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
 import { formatEURWhole } from '../utils/format';
 import { BrokerCard } from './BrokerCard';
@@ -42,56 +41,10 @@ export function CompareView({
   const [editingField, setEditingField] = useState<EditableField | null>(null);
   const [isEditingPair, setIsEditingPair] = useState(false);
 
-  // Scroll-aware header (2026 pattern) — attivo solo su mobile/tablet.
-  // Su desktop (>=1024px) l'header resta fisso: HIG/Material vogliono chrome
-  // persistente quando c'è spazio sufficiente.
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  // Bottom dashboard editing state (mobile-only expand)
+  const [bottomExpanded, setBottomExpanded] = useState(false);
+
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll({ container: scrollRef });
-  const [headerHidden, setHeaderHidden] = useState(false);
-  const [hasScrolled, setHasScrolled] = useState(false);
-  const lastY = useRef(0);
-  const upIntent = useRef(0); // accumulo delta negativo per evitare flicker
-
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    const delta = y - lastY.current;
-    lastY.current = y;
-    setHasScrolled(y > 4);
-
-    // Desktop: header sempre visibile
-    if (isDesktop) {
-      if (headerHidden) {
-        setHeaderHidden(false);
-      }
-      return;
-    }
-
-    // Ignora micro-movimenti (tipico del rubber-band)
-    if (Math.abs(delta) < 2) {
-      return;
-    }
-
-    // Vicino al top: sempre espanso, reset intent
-    if (y < 24) {
-      upIntent.current = 0;
-      setHeaderHidden(false);
-      return;
-    }
-
-    if (delta > 0) {
-      // Scroll down: reset up-intent e collassa oltre una soglia
-      upIntent.current = 0;
-      if (y > 72) {
-        setHeaderHidden(true);
-      }
-    } else {
-      // Scroll up: accumula intenzione; rivela solo oltre 24px cumulativi
-      upIntent.current += -delta;
-      if (upIntent.current > 24) {
-        setHeaderHidden(false);
-      }
-    }
-  });
 
   const commitEdit = (field: EditableField, raw: string) => {
     setEditingField(null);
@@ -127,97 +80,37 @@ export function CompareView({
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-background text-foreground">
-      {/* Floating mini-controls — appaiono solo quando header+recap sono collassati.
-          Due pill morbidi con backdrop-blur per rimanere leggibili sopra le card. */}
-      <motion.div
-        initial={false}
-        animate={{
-          opacity: headerHidden ? 1 : 0,
-          y: headerHidden ? 0 : -8,
-        }}
-        transition={{
-          ...TRANSITION.collapseAsymmetric(!headerHidden),
-          delay: headerHidden ? 0.08 : 0,
-        }}
-        className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-3 py-2"
-        style={{ pointerEvents: headerHidden ? 'auto' : 'none' }}
-        aria-hidden={!headerHidden}
-      >
+      {/* Header fisso — minimal, no scroll-aware */}
+      <div className="flex items-center justify-between border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-md">
         <button
           type="button"
           onClick={onBackAction}
-          className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background/80 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label="Torna al wizard"
         >
-          <ChevronLeft className="size-3.5" />
-          Indietro
+          <ChevronLeft className="size-4" />
+          Modifica
         </button>
+
+        <div className="flex items-center gap-2">
+          <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            Risultati
+          </p>
+        </div>
+
         <button
           type="button"
           onClick={onCloseAction}
-          className="rounded-full border border-border/60 bg-background/80 p-1.5 text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label="Chiudi"
         >
-          <X className="size-3.5" />
+          <X className="size-4" />
         </button>
-      </motion.div>
+      </div>
 
-      {/* Collapsible wrapper: header + recap collassano insieme liberando spazio alle card.
-          Easing cubic-bezier asimmetrico (HIG 2026):
-          - hide veloce e deciso (easeIn ~220ms)
-          - show più lento e graduale (easeOutQuart ~420ms) per dare tempo di leggere */}
-      <motion.div
-        initial={false}
-        animate={{
-          height: headerHidden ? 0 : 'auto',
-          opacity: headerHidden ? 0 : 1,
-        }}
-        transition={{
-          height: TRANSITION.collapseAsymmetric(!headerHidden),
-          opacity: {
-            ...TRANSITION.collapseAsymmetric(!headerHidden),
-            delay: headerHidden ? 0 : 0.06,
-          },
-        }}
-        className="overflow-hidden"
-        style={{ pointerEvents: headerHidden ? 'none' : 'auto' }}
-      >
-        {/* Header */}
-        <div
-          className={cn(
-            'flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-md',
-            hasScrolled && 'shadow-[0_1px_0_0_rgba(0,0,0,0.04)]',
-          )}
-        >
-          <button
-            type="button"
-            onClick={onBackAction}
-            className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Torna al wizard"
-          >
-            <ChevronLeft className="size-4" />
-            Modifica
-          </button>
-
-          <div className="flex items-center gap-2">
-            <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Risultati
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onCloseAction}
-            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Chiudi"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        {/* Context recap — editable badges */}
-        <div className="border-b border-border/40 bg-muted/40 px-5 py-2.5 backdrop-blur-md">
+      {/* Context recap — editable badges (desktop only, sticky) */}
+      <div className="hidden border-b border-border/40 bg-muted/40 px-5 py-2.5 backdrop-blur-md lg:block">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
           <EditableBadge
             label="Capitale"
@@ -270,7 +163,6 @@ export function CompareView({
           )}
         </div>
 
-        {/* Inline collapsible PairSelector — SOTA drawer-inside-pill pattern */}
         <AnimatePresence initial={false}>
           {isEditingPair && (
             <motion.div
@@ -295,8 +187,7 @@ export function CompareView({
             </motion.div>
           )}
         </AnimatePresence>
-        </div>
-      </motion.div>
+      </div>
 
       {/* Cards list — scroll container */}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
@@ -366,7 +257,239 @@ export function CompareView({
           </p>
         </div>
       </div>
+
+      {/* Bottom Fixed Dashboard — mobile only (< lg)
+          Pattern: compact summary bar che espande in editing overlay quando tap.
+          Mantiene contesto sempre visibile mentre si confrontano i broker. */}
+      <div className="border-t border-border/60 bg-card/95 backdrop-blur-md lg:hidden">
+        {/* Collapsed state: compact param bar */}
+        <AnimatePresence mode="wait">
+          {!bottomExpanded && (
+            <motion.div
+              key="collapsed"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 4 }}
+              transition={TRANSITION.standard}
+              className="flex items-center justify-between px-4 py-2.5"
+            >
+              <div className="flex items-center gap-3 overflow-x-auto">
+                <CompactParam
+                  icon={<span className="text-[10px]">💶</span>}
+                  value={formatEURWhole(input.capital)}
+                  onClick={() => {
+ setBottomExpanded(true); setEditingField('capital');
+}}
+                />
+                <CompactParam
+                  icon={<span className="text-[10px]">📊</span>}
+                  value={input.lotSize.toFixed(2)}
+                  onClick={() => {
+ setBottomExpanded(true); setEditingField('lotSize');
+}}
+                />
+                <CompactParam
+                  icon={<span className="text-[10px]">🔁</span>}
+                  value={`${input.tradesPerMonth}`}
+                  onClick={() => {
+ setBottomExpanded(true); setEditingField('tradesPerMonth');
+}}
+                />
+                <CompactParam
+                  icon={<span className="text-[10px]">{input.exposureDaysPerMonth > 0 ? '🌙' : '☀️'}</span>}
+                  value={input.exposureDaysPerMonth > 0 ? `${input.exposureDaysPerMonth}gg` : 'Intraday'}
+                  onClick={() => {
+ setBottomExpanded(true); setEditingField('exposureDaysPerMonth');
+}}
+                  highlight={input.exposureDaysPerMonth > 0}
+                />
+                {input.pairSymbol && (
+                  <CompactParam
+                    icon={(
+                      <span className="flex -space-x-1">
+                        <CurrencyFlag code={FOREX_PAIRS.find(p => p.symbol === input.pairSymbol)?.base ?? 'EUR'} size="xs" />
+                        <CurrencyFlag code={FOREX_PAIRS.find(p => p.symbol === input.pairSymbol)?.quote ?? 'USD'} size="xs" />
+                      </span>
+                    )}
+                    value={input.pairSymbol}
+                    onClick={() => {
+ setBottomExpanded(true); setIsEditingPair(true);
+}}
+                  />
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setBottomExpanded(true)}
+                className="ml-3 flex shrink-0 items-center gap-1 rounded-lg bg-muted px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label="Modifica parametri"
+              >
+                <SlidersHorizontal className="size-3.5" />
+                <span className="hidden sm:inline">Modifica</span>
+              </button>
+            </motion.div>
+          )}
+
+          {/* Expanded state: inline editing drawer */}
+          {bottomExpanded && (
+            <motion.div
+              key="expanded"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={TRANSITION.enter}
+              className="overflow-hidden"
+            >
+              <div className="space-y-3 px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Parametri simulazione
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+ setBottomExpanded(false); setEditingField(null); setIsEditingPair(false);
+}}
+                    className="rounded-lg p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label="Chiudi editing"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+
+                {/* Grid editing pills */}
+                <div className="grid grid-cols-2 gap-2">
+                  <EditableBadge
+                    label="Capitale"
+                    value={formatEURWhole(input.capital)}
+                    rawValue={String(input.capital)}
+                    suffix="€"
+                    isEditing={editingField === 'capital'}
+                    onStartEdit={() => setEditingField('capital')}
+                    onCommit={(raw) => {
+ commitEdit('capital', raw); setBottomExpanded(false);
+}}
+                    onCancel={() => {
+ setEditingField(null); setBottomExpanded(false);
+}}
+                  />
+                  <EditableBadge
+                    label="Lotto"
+                    value={`${input.lotSize}`}
+                    rawValue={String(input.lotSize)}
+                    step={0.01}
+                    isEditing={editingField === 'lotSize'}
+                    onStartEdit={() => setEditingField('lotSize')}
+                    onCommit={(raw) => {
+ commitEdit('lotSize', raw); setBottomExpanded(false);
+}}
+                    onCancel={() => {
+ setEditingField(null); setBottomExpanded(false);
+}}
+                  />
+                  <EditableBadge
+                    label="Trade/mese"
+                    value={String(input.tradesPerMonth)}
+                    rawValue={String(input.tradesPerMonth)}
+                    step={1}
+                    isEditing={editingField === 'tradesPerMonth'}
+                    onStartEdit={() => setEditingField('tradesPerMonth')}
+                    onCommit={(raw) => {
+ commitEdit('tradesPerMonth', raw); setBottomExpanded(false);
+}}
+                    onCancel={() => {
+ setEditingField(null); setBottomExpanded(false);
+}}
+                  />
+                  <EditableBadge
+                    label="Overnight"
+                    value={input.exposureDaysPerMonth > 0 ? `${input.exposureDaysPerMonth}gg` : 'Intraday'}
+                    rawValue={String(input.exposureDaysPerMonth)}
+                    step={1}
+                    highlight={input.exposureDaysPerMonth > 0}
+                    isEditing={editingField === 'exposureDaysPerMonth'}
+                    onStartEdit={() => setEditingField('exposureDaysPerMonth')}
+                    onCommit={(raw) => {
+ commitEdit('exposureDaysPerMonth', raw); setBottomExpanded(false);
+}}
+                    onCancel={() => {
+ setEditingField(null); setBottomExpanded(false);
+}}
+                  />
+                </div>
+
+                {input.pairSymbol && (
+                  <>
+                    <EditablePairBadge
+                      value={input.pairSymbol}
+                      isEditing={isEditingPair}
+                      onStartEdit={() => setIsEditingPair(true)}
+                      onCancel={() => {
+ setIsEditingPair(false); setBottomExpanded(false);
+}}
+                    />
+                    <AnimatePresence initial={false}>
+                      {isEditingPair && (
+                        <motion.div
+                          key="pair-editor-mobile"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={TRANSITION.standard}
+                          className="overflow-hidden"
+                        >
+                          <div className="rounded-xl border border-border/60 bg-card/80 p-3 backdrop-blur-sm">
+                            <PairSelector
+                              value={input.pairSymbol ?? null}
+                              onSelectAction={(symbol) => {
+                                setIsEditingPair(false);
+                                setBottomExpanded(false);
+                                if (symbol !== input.pairSymbol) {
+                                  onUpdateInputAction?.({ pairSymbol: symbol });
+                                }
+                              }}
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
+  );
+}
+
+function CompactParam({
+  icon,
+  value,
+  onClick,
+  highlight,
+}: {
+  icon: React.ReactNode;
+  value: string;
+  onClick: () => void;
+  highlight?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-1 transition-colors',
+        highlight
+          ? 'border-primary/30 bg-primary/10'
+          : 'border-border/60 bg-muted/50 hover:bg-muted',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+      )}
+    >
+      <span className="leading-none">{icon}</span>
+      <span className="text-[11px] font-semibold tabular-nums text-foreground">{value}</span>
+    </button>
   );
 }
 

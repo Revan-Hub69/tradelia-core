@@ -21,7 +21,7 @@ const CURRENCY_COLORS: Record<string, string> = {
 
 type CurrencyFlagProps = {
   code: string;
-  size?: 'sm' | 'md';
+  size?: 'xs' | 'sm' | 'md';
   className?: string;
 };
 
@@ -32,9 +32,11 @@ type CurrencyFlagProps = {
  */
 export function CurrencyFlag({ code, size = 'sm', className }: CurrencyFlagProps) {
   const colors = CURRENCY_COLORS[code] || 'from-slate-500 to-slate-400';
-  const sizeClasses = size === 'sm'
-    ? 'w-5 h-5 text-[9px]'
-    : 'w-6 h-6 text-[10px]';
+  const sizeClasses = size === 'xs'
+    ? 'w-4 h-4 text-[8px]'
+    : size === 'sm'
+      ? 'w-5 h-5 text-[9px]'
+      : 'w-6 h-6 text-[10px]';
 
   return (
     <span
