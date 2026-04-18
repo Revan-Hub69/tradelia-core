@@ -97,65 +97,85 @@ export function CompareView({
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-background text-foreground">
-      {/* Floating edge-glow guide when scrolled — adds SOTA depth cue */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 z-30 h-8 bg-gradient-to-b from-background/80 to-transparent"
-        animate={{ opacity: hasScrolled ? 1 : 0 }}
-        transition={{ duration: 0.25 }}
-      />
-
-      {/* Scroll-aware header — collapses on scroll down, re-appears on scroll up */}
+      {/* Floating mini-controls — appaiono solo quando header+recap sono collassati.
+          Due pill morbidi con backdrop-blur per rimanere leggibili sopra le card. */}
       <motion.div
         initial={false}
         animate={{
-          y: headerHidden ? -56 : 0,
-          opacity: headerHidden ? 0 : 1,
+          opacity: headerHidden ? 1 : 0,
+          y: headerHidden ? 0 : -6,
         }}
-        transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.7 }}
-        className={cn(
-          'relative z-20 flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-md',
-          hasScrolled && 'shadow-[0_1px_0_0_rgba(0,0,0,0.04)]',
-        )}
-        style={{ pointerEvents: headerHidden ? 'none' : 'auto' }}
+        transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+        className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-3 py-2"
+        style={{ pointerEvents: headerHidden ? 'auto' : 'none' }}
+        aria-hidden={!headerHidden}
       >
         <button
           type="button"
           onClick={onBackAction}
-          className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background/80 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card"
           aria-label="Torna al wizard"
         >
-          <ChevronLeft className="size-4" />
-          Modifica
+          <ChevronLeft className="size-3.5" />
+          Indietro
         </button>
-
-        <div className="flex items-center gap-2">
-          <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-            Risultati
-          </p>
-        </div>
-
         <button
           type="button"
           onClick={onCloseAction}
-          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="rounded-full border border-border/60 bg-background/80 p-1.5 text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-card"
           aria-label="Chiudi"
         >
-          <X className="size-4" />
+          <X className="size-3.5" />
         </button>
       </motion.div>
 
-      {/* Context recap — ogni valore editabile inline via matita.
-          Resta sempre visibile: il layout sale elegantemente quando l'header collassa. */}
+      {/* Collapsible wrapper: header + recap collassano insieme liberando spazio alle card */}
       <motion.div
-        animate={{ y: headerHidden ? -56 : 0 }}
-        transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.7 }}
-        className={cn(
-          'sticky top-0 z-10 border-b border-border/40 bg-muted/40 px-5 py-2.5 backdrop-blur-md transition-shadow',
-          headerHidden && 'shadow-[0_1px_0_0_rgba(0,0,0,0.06)]',
-        )}
+        initial={false}
+        animate={{
+          height: headerHidden ? 0 : 'auto',
+          opacity: headerHidden ? 0 : 1,
+        }}
+        transition={{ type: 'spring', stiffness: 360, damping: 38, mass: 0.8 }}
+        className="overflow-hidden"
+        style={{ pointerEvents: headerHidden ? 'none' : 'auto' }}
       >
+        {/* Header */}
+        <div
+          className={cn(
+            'flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-md',
+            hasScrolled && 'shadow-[0_1px_0_0_rgba(0,0,0,0.04)]',
+          )}
+        >
+          <button
+            type="button"
+            onClick={onBackAction}
+            className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Torna al wizard"
+          >
+            <ChevronLeft className="size-4" />
+            Modifica
+          </button>
+
+          <div className="flex items-center gap-2">
+            <span className="inline-flex size-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              Risultati
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onCloseAction}
+            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Chiudi"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+
+        {/* Context recap — editable badges */}
+        <div className="border-b border-border/40 bg-muted/40 px-5 py-2.5 backdrop-blur-md">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
           <EditableBadge
             label="Capitale"
@@ -233,6 +253,7 @@ export function CompareView({
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </motion.div>
 
       {/* Cards list — scroll container */}
