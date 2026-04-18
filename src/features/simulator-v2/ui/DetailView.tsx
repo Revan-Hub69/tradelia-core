@@ -1,9 +1,11 @@
 'use client';
 
 import {
+  AlertTriangle,
   ChevronLeft,
   Clock,
   ExternalLink,
+  Info,
   Layers,
   Percent,
   ShieldCheck,
