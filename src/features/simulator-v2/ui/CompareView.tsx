@@ -1,13 +1,16 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { Check, ChevronLeft, Info, Pencil, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
+import { FOREX_PAIRS } from '../data/forex-pairs';
 import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
 import { BrokerCard } from './BrokerCard';
+import { CurrencyFlag } from './CurrencyFlag';
+import { PairSelector } from './PairSelector';
 
 type EditableField = 'capital' | 'lotSize' | 'tradesPerMonth' | 'exposureDaysPerMonth';
 
@@ -34,6 +37,31 @@ export function CompareView({
     () => new Set(winnerId ? [winnerId] : []),
   );
   const [editingField, setEditingField] = useState<EditableField | null>(null);
+  const [isEditingPair, setIsEditingPair] = useState(false);
+
+  // Scroll-aware header: slide-away on scroll-down, slide-in on scroll-up
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll({ container: scrollRef });
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const lastY = useRef(0);
+
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const delta = y - lastY.current;
+    // Thresholds: ignore micro-scroll; ignore bounce at top
+    if (Math.abs(delta) < 4) {
+      return;
+    }
+    if (y < 16) {
+      setHeaderHidden(false);
+    } else if (delta > 0 && y > 48) {
+      setHeaderHidden(true);
+    } else if (delta < 0) {
+      setHeaderHidden(false);
+    }
+    setHasScrolled(y > 4);
+    lastY.current = y;
+  });
 
   const commitEdit = (field: EditableField, raw: string) => {
     setEditingField(null);
@@ -68,9 +96,29 @@ export function CompareView({
   const locked = results.filter(r => !r.isEligible);
 
   return (
-    <div className="flex h-full flex-col bg-background text-foreground">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-sm">
+    <div className="relative flex h-full flex-col overflow-hidden bg-background text-foreground">
+      {/* Floating edge-glow guide when scrolled — adds SOTA depth cue */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 z-30 h-8 bg-gradient-to-b from-background/80 to-transparent"
+        animate={{ opacity: hasScrolled ? 1 : 0 }}
+        transition={{ duration: 0.25 }}
+      />
+
+      {/* Scroll-aware header — collapses on scroll down, re-appears on scroll up */}
+      <motion.div
+        initial={false}
+        animate={{
+          y: headerHidden ? -56 : 0,
+          opacity: headerHidden ? 0 : 1,
+        }}
+        transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.7 }}
+        className={cn(
+          'relative z-20 flex items-center justify-between border-b border-border/60 bg-card/80 px-5 py-3 backdrop-blur-md',
+          hasScrolled && 'shadow-[0_1px_0_0_rgba(0,0,0,0.04)]',
+        )}
+        style={{ pointerEvents: headerHidden ? 'none' : 'auto' }}
+      >
         <button
           type="button"
           onClick={onBackAction}
@@ -96,10 +144,18 @@ export function CompareView({
         >
           <X className="size-4" />
         </button>
-      </div>
+      </motion.div>
 
-      {/* Context recap — ogni valore editabile inline via matita */}
-      <div className="border-b border-border/40 bg-muted/20 px-5 py-2.5">
+      {/* Context recap — ogni valore editabile inline via matita.
+          Resta sempre visibile: il layout sale elegantemente quando l'header collassa. */}
+      <motion.div
+        animate={{ y: headerHidden ? -56 : 0 }}
+        transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.7 }}
+        className={cn(
+          'sticky top-0 z-10 border-b border-border/40 bg-muted/40 px-5 py-2.5 backdrop-blur-md transition-shadow',
+          headerHidden && 'shadow-[0_1px_0_0_rgba(0,0,0,0.06)]',
+        )}
+      >
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
           <EditableBadge
             label="Capitale"
@@ -143,13 +199,44 @@ export function CompareView({
             onCancel={() => setEditingField(null)}
           />
           {input.pairSymbol && (
-            <Badge label="Coppia" value={input.pairSymbol} />
+            <EditablePairBadge
+              value={input.pairSymbol}
+              isEditing={isEditingPair}
+              onStartEdit={() => setIsEditingPair(true)}
+              onCancel={() => setIsEditingPair(false)}
+            />
           )}
         </div>
-      </div>
 
-      {/* Cards list */}
-      <div className="flex-1 space-y-3 overflow-y-auto p-4">
+        {/* Inline collapsible PairSelector — SOTA drawer-inside-pill pattern */}
+        <AnimatePresence initial={false}>
+          {isEditingPair && (
+            <motion.div
+              key="pair-editor"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.24, ease: [0.2, 0, 0.2, 1] }}
+              className="overflow-hidden"
+            >
+              <div className="mt-3 rounded-xl border border-border/60 bg-card/80 p-3 backdrop-blur-sm">
+                <PairSelector
+                  value={input.pairSymbol ?? null}
+                  onSelectAction={(symbol) => {
+                    setIsEditingPair(false);
+                    if (symbol !== input.pairSymbol) {
+                      onUpdateInputAction?.({ pairSymbol: symbol });
+                    }
+                  }}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Cards list — scroll container */}
+      <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
         {eligible.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -220,17 +307,45 @@ export function CompareView({
   );
 }
 
-function Badge({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+type EditablePairBadgeProps = {
+  value: string;
+  isEditing: boolean;
+  onStartEdit: () => void;
+  onCancel: () => void;
+};
+
+function EditablePairBadge({ value, isEditing, onStartEdit, onCancel }: EditablePairBadgeProps) {
+  const pair = FOREX_PAIRS.find(p => p.symbol === value);
+
   return (
-    <span
+    <button
+      type="button"
+      onClick={isEditing ? onCancel : onStartEdit}
       className={cn(
-        'inline-flex items-center gap-1',
-        highlight && 'rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5',
+        'group inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 transition-colors',
+        isEditing
+          ? 'border-primary/40 bg-primary/10'
+          : 'border-transparent hover:border-border/60 hover:bg-card/60',
       )}
+      aria-label="Modifica coppia"
+      aria-expanded={isEditing}
     >
-      <span className={cn('text-muted-foreground/70', highlight && 'text-primary/80')}>{label}</span>
-      <span className={cn('font-medium', highlight ? 'text-primary' : 'text-foreground')}>{value}</span>
-    </span>
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70">
+        Coppia
+      </span>
+      {pair && (
+        <span className="flex items-center -space-x-1">
+          <CurrencyFlag code={pair.base} size="sm" />
+          <CurrencyFlag code={pair.quote} size="sm" />
+        </span>
+      )}
+      <span className="font-mono text-xs font-semibold text-foreground">{value}</span>
+      <Pencil className={cn(
+        'size-3 transition-colors',
+        isEditing ? 'text-primary' : 'text-muted-foreground',
+      )}
+      />
+    </button>
   );
 }
 
