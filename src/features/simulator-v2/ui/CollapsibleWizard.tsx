@@ -39,12 +39,24 @@ const EXPOSURE_PRESETS = [0, 5, 10, 15, 20, 25];
  * Regole: <500 → 50 · <2k → 100 · <5k → 250 · <10k → 500 · <25k → 1000 · <100k → 2500 · >=100k → 5000.
  */
 function capitalStep(v: number): number {
-  if (v < 500) return 50;
-  if (v < 2000) return 100;
-  if (v < 5000) return 250;
-  if (v < 10000) return 500;
-  if (v < 25000) return 1000;
-  if (v < 100000) return 2500;
+  if (v < 500) {
+ return 50;
+}
+  if (v < 2000) {
+ return 100;
+}
+  if (v < 5000) {
+ return 250;
+}
+  if (v < 10000) {
+ return 500;
+}
+  if (v < 25000) {
+ return 1000;
+}
+  if (v < 100000) {
+ return 2500;
+}
   return 5000;
 }
 
@@ -54,9 +66,15 @@ function capitalStep(v: number): number {
  * <0.01 → 0.001 (nano) · <0.1 → 0.01 (micro) · <1 → 0.1 (mini) · >=1 → 1 (standard).
  */
 function lotStep(v: number): number {
-  if (v < 0.01 - 1e-9) return 0.001;
-  if (v < 0.1 - 1e-9) return 0.01;
-  if (v < 1 - 1e-9) return 0.1;
+  if (v < 0.01 - 1e-9) {
+ return 0.001;
+}
+  if (v < 0.1 - 1e-9) {
+ return 0.01;
+}
+  if (v < 1 - 1e-9) {
+ return 0.1;
+}
   return 1;
 }
 
@@ -65,11 +83,21 @@ function lotStep(v: number): number {
  * <10 → 1 · <50 → 5 · <100 → 10 · <200 → 25 · <500 → 50 · >=500 → 100.
  */
 function tradesStep(v: number): number {
-  if (v < 10) return 1;
-  if (v < 50) return 5;
-  if (v < 100) return 10;
-  if (v < 200) return 25;
-  if (v < 500) return 50;
+  if (v < 10) {
+ return 1;
+}
+  if (v < 50) {
+ return 5;
+}
+  if (v < 100) {
+ return 10;
+}
+  if (v < 200) {
+ return 25;
+}
+  if (v < 500) {
+ return 50;
+}
   return 100;
 }
 
@@ -77,17 +105,29 @@ function tradesStep(v: number): number {
  * Preset lotto adattivi al capitale. Include nano (0.001) per conti piccoli.
  */
 function getLotPresets(capital: number): number[] {
-  if (capital < 500) return [0.001, 0.005, 0.01, 0.05, 0.1];
-  if (capital < 2500) return [0.01, 0.05, 0.1, 0.25, 0.5];
-  if (capital < 10000) return [0.05, 0.1, 0.25, 0.5, 1, 2];
-  if (capital < 50000) return [0.1, 0.5, 1, 2, 5, 10];
+  if (capital < 500) {
+ return [0.001, 0.005, 0.01, 0.05, 0.1];
+}
+  if (capital < 2500) {
+ return [0.01, 0.05, 0.1, 0.25, 0.5];
+}
+  if (capital < 10000) {
+ return [0.05, 0.1, 0.25, 0.5, 1, 2];
+}
+  if (capital < 50000) {
+ return [0.1, 0.5, 1, 2, 5, 10];
+}
   return [0.5, 1, 2, 5, 10, 20];
 }
 
 function formatLot(v: number): string {
   // 0.001 → "0.001", 0.01 → "0.01", 1 → "1", 2 → "2"
-  if (v < 0.01) return v.toFixed(3);
-  if (v < 1) return v.toFixed(2).replace(/0$/, '').replace(/\.$/, '');
+  if (v < 0.01) {
+ return v.toFixed(3);
+}
+  if (v < 1) {
+ return v.toFixed(2).replace(/0$/, '').replace(/\.$/, '');
+}
   return String(v);
 }
 
@@ -118,7 +158,9 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   // Helper to scroll element into view within the scrollable container
   const scrollIntoView = (element: HTMLElement) => {
     const container = scrollContainerRef.current;
-    if (!container || !element) return;
+    if (!container || !element) {
+ return;
+}
     const containerRect = container.getBoundingClientRect();
     const elementRect = element.getBoundingClientRect();
     const relativeTop = elementRect.top - containerRect.top + container.scrollTop;
@@ -188,7 +230,9 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
 
   // Transizione artificiale skeleton → results (400ms, accessibility-aware)
   useEffect(() => {
-    if (viewState !== 'computing') return;
+    if (viewState !== 'computing') {
+ return;
+}
     const t = setTimeout(() => {
       setViewState('results');
     }, 400);
@@ -234,22 +278,24 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   return (
     <TooltipProvider delayDuration={400}>
     <div className="flex h-full min-h-0 flex-col bg-card text-foreground">
-      {/* Header: titolo + close */}
-      <div className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
-        <h2 className="text-sm font-semibold text-foreground">Configura simulazione</h2>
-        <button
-          type="button"
-          onClick={onCloseAction}
-          className="inline-flex size-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          aria-label="Chiudi simulatore"
-        >
-          <X className="size-5" />
-        </button>
-      </div>
+      {/* Header: titolo + close — nascosto in detail per massima focus sulla scheda conto */}
+      {!isDetail && (
+        <div className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
+          <h2 className="text-sm font-semibold text-foreground">Configura simulazione</h2>
+          <button
+            type="button"
+            onClick={onCloseAction}
+            className="inline-flex size-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            aria-label="Chiudi simulatore"
+          >
+            <X className="size-5" />
+          </button>
+        </div>
+      )}
 
-      {/* Collapsible Section - unisce asset, coppia, filtri */}
+      {/* Collapsible Section - unisce asset, coppia, filtri. Nascosta in detail. */}
       <AnimatePresence mode="wait">
-        {isExpanded ? (
+        {isDetail ? null : isExpanded ? (
           <motion.div
             key="expanded"
             ref={scrollContainerRef}
@@ -501,6 +547,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
               lotSize={lotSize}
               tradesPerMonth={tradesPerMonth}
               onBackAction={handleBackToCompare}
+              onCloseAction={onCloseAction}
             />
           </div>
         )}
@@ -795,13 +842,15 @@ function PresetChips<T>({ values, value, onSelect, format, onPresetSelect, onSel
     <div
       role="group"
       aria-label="Valori preimpostati"
-      className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&::-ms-overflow-style]:none"
+      className="[&::-ms-overflow-style]:none -mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden"
     >
       {values.map(v => (
         <button
           key={String(v)}
           ref={(el) => {
-            if (el) buttonRefs.current.set(v, el);
+            if (el) {
+ buttonRefs.current.set(v, el);
+}
           }}
           type="button"
           onClick={() => handleClick(v)}
