@@ -162,6 +162,20 @@ export function ResultsDetail({
                     Best
                   </span>
                 )}
+                {esmaLossRatePct !== undefined && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      document.getElementById('esma-disclaimer')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }}
+                    className="flex items-center gap-1 rounded-full border border-border/60 bg-background px-2 py-0.5 text-[10px] font-semibold tabular-nums text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
+                    title="Leggi il disclaimer ESMA"
+                  >
+                    <ShieldAlert className="size-2.5" />
+                    {esmaLossRatePct.toFixed(0)}
+                    % perde
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -273,39 +287,23 @@ export function ResultsDetail({
           </section>
         )}
 
-        {/* Affiliate disclosure — trasparenza prima della CTA */}
-        {isAffiliate && (
-          <div className="flex items-start gap-2.5 rounded-xl border border-border/40 bg-muted/30 p-3.5">
-            <Handshake className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">
-                Partner Tradelia
-              </p>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                Potremmo ricevere una commissione se apri un conto tramite questo link. Questo
-                {' '}
-                <strong className="font-semibold text-foreground/80">non influenza il ranking</strong>
-                {' '}
-                né i costi calcolati, basati sui parametri pubblici del broker e rilevazioni autonome.
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Sticky CTA footer — conforme ESMA/CONSOB: disclaimer integrale prima della CTA */}
-      <div className="relative flex-shrink-0 border-t border-border/60 bg-card/95 backdrop-blur-md">
-        {/* Gradient accent top */}
-        {broker.isWinner && (
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-        )}
-
-        <div className="space-y-2.5 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-5">
-          {/* ESMA/CONSOB disclaimer — testo integrale obbligatorio per ogni broker CFD.
-              Riferimento: ESMA Decision (EU) 2018/796 e orientamenti CONSOB.
-              Font standard del sito (text-xs = 12px), leggibilità WCAG AA. */}
+        {/* Final CTA Card — inline, non sticky. Pattern "momento decisionale":
+            disclaimer ESMA integrale + affiliate + CTA insieme a fine scroll.
+            Compliance garantita (utente deve scrollare per arrivare alla CTA). */}
+        <section
+          className={cn(
+            'relative overflow-hidden rounded-2xl border p-4 sm:p-5',
+            broker.isWinner
+              ? 'border-primary/20 bg-gradient-to-br from-primary/[0.04] via-card to-card'
+              : 'border-border/60 bg-card/60',
+          )}
+        >
+          {/* ESMA/CONSOB disclaimer integrale — ancor di scroll dalla risk pill */}
           {esmaLossRatePct !== undefined && (
-            <div className="flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 px-3 py-2.5">
+            <div
+              id="esma-disclaimer"
+              className="flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 px-3 py-2.5"
+            >
               <ShieldAlert className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
               <p className="text-xs leading-relaxed text-muted-foreground">
                 I CFD sono strumenti complessi che presentano un elevato rischio di perdere rapidamente denaro a causa della leva finanziaria.
@@ -327,34 +325,46 @@ export function ResultsDetail({
             </div>
           )}
 
-          {/* CTA principale */}
-          {signupUrl
-            ? (
-                <a
-                  href={signupUrl}
-                  target="_blank"
-                  rel={isAffiliate ? 'noopener noreferrer sponsored' : 'noopener noreferrer'}
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.99]"
-                >
-                  <ExternalLink className="size-4" />
-                  <span>
-                    Vai a
-                    {' '}
-                    {broker.brokerName}
-                  </span>
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-                </a>
-              )
-            : (
-                <button
-                  type="button"
-                  disabled
-                  className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-border/60 bg-muted/40 px-4 py-3 text-sm font-medium text-muted-foreground"
-                >
-                  Link di apertura conto non disponibile
-                </button>
-              )}
-        </div>
+          {/* Affiliate disclosure inline compatto */}
+          {isAffiliate && (
+            <p className="mt-2.5 flex items-start gap-1.5 text-[11px] leading-relaxed text-muted-foreground">
+              <Handshake className="mt-0.5 size-3 shrink-0" />
+              <span>
+                Potremmo ricevere una commissione se apri un conto tramite questo link. Non influenza il ranking né i costi calcolati, basati sui parametri pubblici del broker e rilevazioni autonome.
+              </span>
+            </p>
+          )}
+
+          {/* CTA */}
+          <div className="mt-3.5">
+            {signupUrl
+              ? (
+                  <a
+                    href={signupUrl}
+                    target="_blank"
+                    rel={isAffiliate ? 'noopener noreferrer sponsored' : 'noopener noreferrer'}
+                    className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.99]"
+                  >
+                    <ExternalLink className="size-4" />
+                    <span>
+                      Vai a
+                      {' '}
+                      {broker.brokerName}
+                    </span>
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                )
+              : (
+                  <button
+                    type="button"
+                    disabled
+                    className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-border/60 bg-muted/40 px-4 py-3 text-sm font-medium text-muted-foreground"
+                  >
+                    Link di apertura conto non disponibile
+                  </button>
+                )}
+          </div>
+        </section>
       </div>
     </motion.div>
   );
