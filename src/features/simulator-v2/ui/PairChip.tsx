@@ -85,7 +85,7 @@ export function PairChip({ value, onSelectAction }: PairChipProps) {
             transition={{ duration: 0.22, ease: [0.2, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div ref={contentRef} className="mt-3 max-h-[40vh] overflow-y-auto rounded-xl border border-border/60 bg-popover/60 p-3 backdrop-blur-sm">
+            <div ref={contentRef} className="mt-3 max-h-[50vh] overflow-y-auto">
               <PairSelector value={value} onSelectAction={handleSelect} />
             </div>
           </motion.div>

@@ -550,7 +550,7 @@ type InputCardProps = {
 
 function InputCard({ icon: Icon, accent, label, hint, children, htmlFor, tooltip }: InputCardProps) {
   return (
-    <div className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md">
+    <div data-input-card className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md">
       <div className="mb-3 flex items-center gap-2.5">
         <div
           className={cn(
@@ -689,9 +689,13 @@ function EditableAmount({
           onFocus={() => {
             setDraft(value === 0 ? '' : String(value));
             setFocused(true);
-            if (inputRef.current) {
-              inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            // Defer to next tick so keyboard/layout is stable, then scroll parent card
+            setTimeout(() => {
+              const card = inputRef.current?.closest('[data-input-card]');
+              if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 100);
           }}
           onChange={(e) => {
             const raw = e.target.value;
