@@ -4,11 +4,16 @@
  * Source: typical spreads / commissions / min deposits pubblicati sulle pagine
  * ufficiali dei broker (aggregato manualmente · snapshot 2026-04).
  * NON sono misurazioni real-time. UI deve etichettarli come "dati aggregati".
+ *
+ * Schema V2: campi ricchi (entity, company, execution, instruments, fees, features)
+ * sono opzionali e additivi. Vengono compilati gradualmente broker-per-broker.
  */
+
+import type { BrokerAccountV2Additions } from './broker-v2-types';
 
 export type BrokerTier = 'cent' | 'starter' | 'standard' | 'ecn' | 'pro';
 
-export type BrokerAccount = {
+export type BrokerAccount = BrokerAccountV2Additions & {
   id: string;
   brokerId: string;
   brokerName: string;
@@ -55,6 +60,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'CySEC · ASIC · FCA',
     isAffiliate: true,
     esmaLossRatePct: 73.06,
+    entity: {
+      legalName: 'Trading Point of Financial Instruments Ltd',
+      jurisdictionCity: 'Limassol',
+      jurisdictionCountry: 'Cipro',
+      regulator: 'CySEC',
+      licenseNumber: '120/10',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'XM',
+      groupName: 'XM Group',
+      foundedYear: 2009,
+      publiclyListed: false,
+    },
   },
   {
     id: 'exness-cent',
@@ -69,6 +90,21 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'CySEC · FCA · FSCA',
     isAffiliate: true,
     esmaLossRatePct: 71.40,
+    entity: {
+      legalName: 'Exness (Cy) Ltd',
+      jurisdictionCity: 'Limassol',
+      jurisdictionCountry: 'Cipro',
+      regulator: 'CySEC',
+      licenseNumber: '178/12',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'Exness',
+      foundedYear: 2008,
+      publiclyListed: false,
+    },
   },
 
   // STARTER — per capitale 100-1.000€
@@ -85,6 +121,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'CySEC · FCA · FSCA',
     isAffiliate: true,
     esmaLossRatePct: 77.50,
+    entity: {
+      legalName: 'ForexTime Ltd',
+      jurisdictionCity: 'Limassol',
+      jurisdictionCountry: 'Cipro',
+      regulator: 'CySEC',
+      licenseNumber: '185/12',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'FXTM',
+      groupName: 'Exinity Group',
+      foundedYear: 2011,
+      publiclyListed: false,
+    },
   },
   {
     id: 'octafx-standard',
@@ -99,6 +151,21 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'CySEC',
     isAffiliate: true,
     esmaLossRatePct: 73.50,
+    entity: {
+      legalName: 'Octa Markets Cyprus Ltd',
+      jurisdictionCity: 'Limassol',
+      jurisdictionCountry: 'Cipro',
+      regulator: 'CySEC',
+      licenseNumber: '372/18',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'OctaFX',
+      foundedYear: 2011,
+      publiclyListed: false,
+    },
   },
   {
     id: 'pepperstone-standard',
@@ -113,6 +180,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'FCA · ASIC · CySEC',
     isAffiliate: true,
     esmaLossRatePct: 75.30,
+    entity: {
+      legalName: 'Pepperstone EU Ltd',
+      jurisdictionCity: 'Limassol',
+      jurisdictionCountry: 'Cipro',
+      regulator: 'CySEC',
+      licenseNumber: '388/20',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'Pepperstone',
+      groupName: 'Pepperstone Group Ltd',
+      foundedYear: 2010,
+      publiclyListed: false,
+    },
   },
   {
     id: 'xtb-standard',
@@ -127,6 +210,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'CySEC · KNF · FCA',
     isAffiliate: false,
     esmaLossRatePct: 78.00,
+    entity: {
+      legalName: 'X-Trade Brokers DM SA',
+      jurisdictionCity: 'Varsavia',
+      jurisdictionCountry: 'Polonia',
+      regulator: 'KNF',
+      licenseNumber: 'DI-1/1-14-76/95',
+      investorCompensationEur: 22000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'XTB',
+      foundedYear: 2002,
+      publiclyListed: true,
+      listedOn: 'WSE Varsavia',
+    },
   },
   {
     id: 'oanda-core',
@@ -141,6 +240,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'FCA · CFTC · ASIC',
     isAffiliate: true,
     esmaLossRatePct: 76.60,
+    entity: {
+      legalName: 'OANDA Europe Markets Ltd',
+      jurisdictionCity: 'Sliema',
+      jurisdictionCountry: 'Malta',
+      regulator: 'CONSOB',
+      licenseNumber: 'C95813',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'OANDA',
+      groupName: 'OANDA Global Corporation',
+      foundedYear: 1996,
+      publiclyListed: false,
+    },
   },
 
   // ECN RAW — conviene da 2.500€+ per via delle commissioni
@@ -157,6 +272,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'ASIC · CySEC · FSA',
     isAffiliate: true,
     esmaLossRatePct: 70.64,
+    entity: {
+      legalName: 'Raw Trading Ltd',
+      jurisdictionCity: 'Mahé',
+      jurisdictionCountry: 'Seychelles',
+      regulator: 'FSA-Seychelles',
+      licenseNumber: 'SD018',
+      investorCompensationEur: 0,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'IC Markets',
+      groupName: 'International Capital Markets',
+      foundedYear: 2007,
+      publiclyListed: false,
+    },
   },
   {
     id: 'pepperstone-razor',
@@ -171,6 +302,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'FCA · ASIC · CySEC',
     isAffiliate: true,
     esmaLossRatePct: 75.30,
+    entity: {
+      legalName: 'Pepperstone EU Ltd',
+      jurisdictionCity: 'Limassol',
+      jurisdictionCountry: 'Cipro',
+      regulator: 'CySEC',
+      licenseNumber: '388/20',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'Pepperstone',
+      groupName: 'Pepperstone Group Ltd',
+      foundedYear: 2010,
+      publiclyListed: false,
+    },
   },
   {
     id: 'tickmill-pro',
@@ -185,6 +332,68 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'FCA · CySEC · FSA',
     isAffiliate: true,
     esmaLossRatePct: 72.10,
+    // ─── V2 reference completo ────────────────────────────────────
+    entity: {
+      legalName: 'Tickmill Europe Ltd',
+      jurisdictionCity: 'Limassol',
+      jurisdictionCountry: 'Cipro',
+      regulator: 'CySEC',
+      licenseNumber: '278/15',
+      regulatorCheckUrl: 'https://www.cysec.gov.cy/en-GB/entities/investment-firms/cypriot/78666/',
+      investorCompensationEur: 20000,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+      segregationBankName: 'Barclays',
+    },
+    company: {
+      brandName: 'Tickmill',
+      groupName: 'Tickmill Group Ltd',
+      foundedYear: 2014,
+      publiclyListed: false,
+    },
+    accountTrading: {
+      minDepositEur: 100,
+      minLotSize: 0.01,
+      maxLotSize: 100,
+      maxLeverageRetail: 30,
+      marginCallLevelPct: 100,
+      stopOutLevelPct: 50,
+    },
+    accountFees: {
+      fxConversionPct: 0.003,
+      deposit: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      withdrawal: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      gslAvailable: false,
+      tripleSwapDay: 'wednesday',
+    },
+    features: {
+      swapFree: true,
+      hedgingAllowed: true,
+      scalpingAllowed: true,
+      eaAllowed: true,
+      copyTradingAvailable: false,
+      demoAccountAvailable: true,
+    },
+    execution: {
+      type: 'NDD',
+      serverLocations: ['LD4 Equinix (Londra)', 'NY4 Equinix (New York)'],
+      avgExecutionMs: { value: 180, source: 'broker-official', measuredAt: '2025-09', sourceUrl: 'https://www.tickmill.eu/execution-statistics' },
+      priceImprovementRate: { value: 0.65, source: 'broker-official', measuredAt: '2025-09' },
+      requotePolicy: 'no-requote',
+      publishesExecutionStats: true,
+      executionStatsUrl: 'https://www.tickmill.eu/execution-statistics',
+    },
+    executionPolicies: {
+      vps: { freeWithDepositEur: 5000, freeWithVolumeLotsPerMonth: 3, paidCostEurPerMonth: 25 },
+    },
+    instruments: [
+      { symbol: 'EURUSD', assetClass: 'forex', label: 'EUR/USD', spreadAvg: 0.2, unitValuePerLotEur: 10, commissionEurPerLotRoundTrip: 4, lastMeasuredAt: '2025-09' },
+      { symbol: 'GBPUSD', assetClass: 'forex', label: 'GBP/USD', spreadAvg: 0.4, unitValuePerLotEur: 10, commissionEurPerLotRoundTrip: 4, lastMeasuredAt: '2025-09' },
+      { symbol: 'USDJPY', assetClass: 'forex', label: 'USD/JPY', spreadAvg: 0.3, unitValuePerLotEur: 10, commissionEurPerLotRoundTrip: 4, lastMeasuredAt: '2025-09' },
+      { symbol: 'XAUUSD', assetClass: 'commodities', label: 'Oro (XAU/USD)', spreadAvg: 15, unitValuePerLotEur: 1, commissionEurPerLotRoundTrip: 4, lastMeasuredAt: '2025-09' },
+      { symbol: 'SPX500', assetClass: 'indices', label: 'S&P 500', spreadAvg: 0.4, unitValuePerLotEur: 1, commissionEurPerLotRoundTrip: 0, lastMeasuredAt: '2025-09' },
+      { symbol: 'NAS100', assetClass: 'indices', label: 'Nasdaq 100', spreadAvg: 1.5, unitValuePerLotEur: 1, commissionEurPerLotRoundTrip: 0, lastMeasuredAt: '2025-09' },
+    ],
   },
 
   // PRO — VIP tiers con commissioni ridotte, min deposit alto
@@ -201,6 +410,22 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
     regulator: 'ASIC · CySEC · FSA',
     isAffiliate: true,
     esmaLossRatePct: 70.64,
+    entity: {
+      legalName: 'Raw Trading Ltd',
+      jurisdictionCity: 'Mahé',
+      jurisdictionCountry: 'Seychelles',
+      regulator: 'FSA-Seychelles',
+      licenseNumber: 'SD018',
+      investorCompensationEur: 0,
+      negativeBalanceProtection: true,
+      segregatedFunds: true,
+    },
+    company: {
+      brandName: 'IC Markets',
+      groupName: 'International Capital Markets',
+      foundedYear: 2007,
+      publiclyListed: false,
+    },
   },
 ];
 
@@ -316,6 +541,26 @@ const TIER_DEFAULTS: Record<BrokerTier, {
     maxLeverageRetail: 30,
   },
 };
+
+/**
+ * Calcola costo mensile per uno specifico strumento del broker,
+ * usando lo stesso setup operativo dell'utente. Per Blocco 3 multi-asset.
+ */
+export function estimateInstrumentMonthlyCost(
+  instrument: NonNullable<BrokerAccount['instruments']>[number],
+  ctx: CostContext,
+): number {
+  const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
+  const spreadPerTrade = instrument.spreadAvg * instrument.unitValuePerLotEur * lotSize;
+  const commissionPerTrade = instrument.commissionEurPerLotRoundTrip * lotSize;
+  const tradingCost = (spreadPerTrade + commissionPerTrade) * tradesPerMonth;
+  let swapCost = 0;
+  if (exposureDaysPerMonth > 0) {
+    const markupLong = instrument.swapMarkupPerLotLongEur ?? 0;
+    swapCost = markupLong * lotSize * exposureDaysPerMonth;
+  }
+  return tradingCost + swapCost;
+}
 
 /**
  * Risolve i campi qualitativi con fallback ai default per tier.

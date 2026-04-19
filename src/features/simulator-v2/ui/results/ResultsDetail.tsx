@@ -17,7 +17,6 @@ import {
   Trophy,
   Wallet,
   X,
-  Zap,
 } from 'lucide-react';
 
 import { cn } from '@/utils/Helpers';
@@ -28,6 +27,9 @@ import { TIER_LABELS, TIER_STYLES, TIER_TOOLTIPS } from '../../data/tiers';
 import type { BrokerResult } from '../../state/useSimulatorState';
 import { formatEUR, formatEURWhole, formatInt, formatNum2 } from '../../utils/format';
 import { AnimatedCounter } from './AnimatedCounter';
+import { BlockExecution } from './BlockExecution';
+import { BlockMultiAsset } from './BlockMultiAsset';
+import { BlockSafety } from './BlockSafety';
 import { CostBreakdownBar } from './CostBreakdownBar';
 
 type ResultsDetailProps = {
@@ -305,50 +307,73 @@ export function ResultsDetail({
           </div>
         </section>
 
-        {/* Non incluso */}
-        {qual && (
-          <section className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
-            <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-500">
+        {/* Blocco 1B — Info operative non nel calcolo */}
+        {(account?.accountFees || qual) && (
+          <section className="rounded-xl border border-border/60 bg-muted/20 p-3">
+            <h2 className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               <Info className="size-3" />
-              Stime indicative (non nel calcolo)
+              Info operative (fuori calcolo)
             </h2>
             <div className="space-y-1.5 text-xs">
-              {!isMultiday && (
+              {!isMultiday && qual && (
                 <QualRow
                   icon={Clock}
-                  label="Swap markup broker"
+                  label="Swap markup se overnight"
                   value={`+${formatEUR(qual.swapMarkupPerLotEur)}/lot/notte`}
                 />
               )}
-              <QualRow
-                icon={Zap}
-                label="Esecuzione media"
-                value={`~${qual.avgExecutionMs} ms`}
-              />
-              <QualRow
-                icon={Wallet}
-                label="Depositi & prelievi"
-                value={qual.depositNote}
-              />
+              {account?.accountFees?.tripleSwapDay && (
+                <QualRow
+                  icon={Clock}
+                  label="Triple swap day"
+                  value={account.accountFees.tripleSwapDay === 'wednesday' ? 'Mercoledì' : 'Venerdì'}
+                />
+              )}
+              {account?.accountFees?.fxConversionPct !== undefined && (
+                <QualRow
+                  icon={Percent}
+                  label="Conversione valuta"
+                  value={`${(account.accountFees.fxConversionPct * 100).toFixed(2)}% su notional (se conto ≠ valuta strumento)`}
+                />
+              )}
+              {account?.accountFees?.inactivityFeeEurPerMonth !== undefined && account.accountFees.inactivityFeeEurPerMonth > 0 && (
+                <QualRow
+                  icon={Wallet}
+                  label="Fee inattività"
+                  value={`€${account.accountFees.inactivityFeeEurPerMonth}/mese dopo ${account.accountFees.inactivityAfterMonths ?? '?'} mesi`}
+                />
+              )}
+              {account?.accountFees?.minCommissionPerOrderEur !== undefined && (
+                <QualRow
+                  icon={Percent}
+                  label="Commissione minima"
+                  value={`${formatEUR(account.accountFees.minCommissionPerOrderEur)}/ordine`}
+                />
+              )}
+              {qual && (
+                <QualRow
+                  icon={Wallet}
+                  label="Depositi & prelievi"
+                  value={qual.depositNote}
+                />
+              )}
             </div>
           </section>
         )}
 
-        {/* Specifiche conto */}
-        {qual && (
-          <section>
-            <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Specifiche conto
-            </h2>
-            <div className="grid grid-cols-2 gap-2">
-              <SpecItem label="Regolatori" value={broker.regulator} />
-              <SpecItem label="Leva max (ESMA)" value={`${qual.maxLeverageRetail}:1`} />
-              <SpecItem label="Piattaforme" value={qual.platforms.join(' · ')} />
-              <SpecItem label="Lotto minimo" value={`${account?.minLotSize ?? 0.01}`} />
-              <SpecItem label="Deposito minimo" value={formatEURWhole(broker.minDepositEur)} />
-            </div>
-          </section>
+        {/* Blocco 3 — Stesso setup su altri strumenti */}
+        {account && (
+          <BlockMultiAsset
+            account={account}
+            ctx={{ lotSize, tradesPerMonth, exposureDaysPerMonth }}
+          />
         )}
+
+        {/* Blocco 2 — Qualità esecuzione */}
+        {account && <BlockExecution account={account} />}
+
+        {/* Blocco 4 — Sicurezza e compliance */}
+        {account && <BlockSafety account={account} />}
 
         {/* Final CTA Card — inline, non sticky. Pattern "momento decisionale":
             disclaimer ESMA integrale + affiliate + CTA insieme a fine scroll.
@@ -526,13 +551,3 @@ function QualRow({
   );
 }
 
-function SpecItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border/40 bg-card/40 p-2.5">
-      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-0.5 truncate text-xs font-semibold text-foreground">{value}</p>
-    </div>
-  );
-}
