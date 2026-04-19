@@ -93,7 +93,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   return (
     <div className="flex h-full flex-col bg-card text-foreground">
       {/* Close button - sempre visibile */}
-      <div className="flex items-center justify-end px-4 py-2 sm:px-5">
+      <div className="flex items-center justify-end px-4 py-2 sm:px-5 flex-shrink-0">
         <button
           type="button"
           onClick={onCloseAction}
@@ -113,7 +113,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={TRANSITION.standard}
-            className="border-b border-border/60"
+            className="border-b border-border/60 overflow-hidden flex-shrink-0"
           >
             <div className="space-y-4 p-4 sm:p-5">
               {/* Asset Switcher */}

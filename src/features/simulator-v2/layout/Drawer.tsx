@@ -60,10 +60,11 @@ function DrawerContent({
               'bg-card border-l border-border',
               'shadow-2xl shadow-black/50',
               'pb-[env(safe-area-inset-bottom)]',
+              'flex flex-col',
             )}
           >
             {/* Content — inner views provide their own close button */}
-            <div className="h-full overflow-hidden" style={{ maxHeight: 'calc(100dvh - env(safe-area-inset-bottom))' }}>
+            <div className="flex-1 overflow-y-auto min-h-0">
               {children}
             </div>
           </motion.div>

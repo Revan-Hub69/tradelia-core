@@ -69,20 +69,21 @@ function BottomSheetContent({ isOpen, onClose, children }: BottomSheetProps) {
             onDragEnd={handleDragEnd}
             className={cn(
               'fixed bottom-0 left-0 right-0 z-[101]',
-              'max-h-[92dvh] rounded-t-3xl',
+              'rounded-t-3xl',
               'bg-card border-t border-border',
               'shadow-2xl shadow-black/50',
               'pb-[env(safe-area-inset-bottom)]',
+              'flex flex-col',
             )}
-            style={{ height: 'auto', maxHeight: '92dvh' }}
+            style={{ height: 'auto', maxHeight: 'calc(100dvh - env(safe-area-inset-bottom))' }}
           >
             {/* Handle */}
-            <div className="flex justify-center pb-1 pt-3">
+            <div className="flex justify-center pb-1 pt-3 shrink-0">
               <div className="h-1.5 w-12 rounded-full bg-muted" />
             </div>
 
             {/* Content */}
-            <div className="overflow-hidden" style={{ maxHeight: 'calc(92dvh - 24px - env(safe-area-inset-bottom))' }}>
+            <div className="overflow-y-auto flex-1 min-h-0">
               {children}
             </div>
           </motion.div>
