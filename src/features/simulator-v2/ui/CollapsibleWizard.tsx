@@ -115,7 +115,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             transition={TRANSITION.standard}
             className="border-b border-border/60 overflow-hidden flex-shrink-0"
           >
-            <div className="space-y-4 p-4 sm:p-5 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+            <div className="space-y-4 p-4 sm:p-5 overflow-y-auto max-h-[60dvh]">
               {/* Asset Switcher */}
               <div className="flex items-center gap-3">
                 <span className="inline-flex size-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
