@@ -459,7 +459,10 @@ export function estimateMonthlyCost(
   const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
   const pipValuePerLot = 10;
   const spreadCostPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
-  const commissionCostPerTrade = account.commissionPerLotEur * lotSize;
+  const rawCommissionPerTrade = account.commissionPerLotEur * lotSize;
+  // Applica commissione minima per ordine, se presente.
+  const minCommission = account.accountFees?.minCommissionPerOrderEur ?? 0;
+  const commissionCostPerTrade = Math.max(rawCommissionPerTrade, minCommission);
   const tradingCost = (spreadCostPerTrade + commissionCostPerTrade) * tradesPerMonth;
   let swapCost = 0;
   if (exposureDaysPerMonth > 0) {
@@ -479,7 +482,9 @@ export function computeCostBreakdown(
   const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
   const pipValuePerLot = 10;
   const spreadPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
-  const commissionPerTrade = account.commissionPerLotEur * lotSize;
+  const rawCommissionPerTrade = account.commissionPerLotEur * lotSize;
+  const minCommission = account.accountFees?.minCommissionPerOrderEur ?? 0;
+  const commissionPerTrade = Math.max(rawCommissionPerTrade, minCommission);
   const qual = getBrokerQualitative(account);
   const swapMarkupPerLotNight = exposureDaysPerMonth > 0 ? qual.swapMarkupPerLotEur : 0;
   const swapPerMonth = swapMarkupPerLotNight * lotSize * exposureDaysPerMonth;

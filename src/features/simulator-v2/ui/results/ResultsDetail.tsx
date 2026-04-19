@@ -167,6 +167,47 @@ export function ResultsDetail({
 
       {/* Scrollable content */}
       <div className="flex-1 space-y-4 overflow-y-auto p-4 pb-6 sm:p-5">
+        {/* Banner ineligibility — se il broker non è adatto al setup scelto */}
+        {!broker.isEligible && broker.ineligibilityReasons.length > 0 && (
+          <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
+            <ShieldAlert className="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-500" />
+            <div className="flex-1 text-xs">
+              <p className="font-semibold text-amber-700 dark:text-amber-400">
+                Questo conto non è compatibile con il tuo setup
+              </p>
+              <ul className="mt-1 space-y-0.5 text-amber-700/90 dark:text-amber-400/90">
+                {broker.ineligibilityReasons.includes('capital-below-min-deposit') && (
+                  <li>
+                    • Capitale richiesto:
+                    {' '}
+                    <strong>{formatEURWhole(broker.minDepositEur)}</strong>
+                    {' '}
+                    (tuo:
+                    {' '}
+                    {formatEURWhole(capital)}
+                    )
+                  </li>
+                )}
+                {broker.ineligibilityReasons.includes('lot-below-min-lot') && (
+                  <li>
+                    • Lotto minimo:
+                    {' '}
+                    <strong>{broker.minLotSize}</strong>
+                    {' '}
+                    (tuo:
+                    {' '}
+                    {formatNum2(lotSize)}
+                    ). I costi qui sotto sono calcolati al lotto minimo
+                    {' '}
+                    <strong>{broker.minLotSize}</strong>
+                    , non al tuo.
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+        )}
+
         {/* Hero compatto */}
         <div
           className={cn(
@@ -550,4 +591,3 @@ function QualRow({
     </div>
   );
 }
-

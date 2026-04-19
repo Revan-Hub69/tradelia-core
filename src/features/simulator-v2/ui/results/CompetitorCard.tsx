@@ -5,9 +5,9 @@ import { ChevronRight, Lock } from 'lucide-react';
 
 import { cn } from '@/utils/Helpers';
 
+import { TIER_LABELS, TIER_STYLES } from '../../data/tiers';
 import type { BrokerResult } from '../../state/useSimulatorState';
 import { formatEUR, formatEURWhole } from '../../utils/format';
-import { TIER_LABELS, TIER_STYLES } from '../../data/tiers';
 import { CostBreakdownBar } from './CostBreakdownBar';
 
 type CompetitorCardProps = {
@@ -111,13 +111,20 @@ export function CompetitorCard({
               {formatEUR(broker.deltaVsBestMonth)}
             </span>
           )}
-          {locked && (
-            <span className="mt-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-              Min
-              {' '}
-              {formatEURWhole(broker.minDepositEur)}
-            </span>
-          )}
+          {locked && (() => {
+            const hasCap = broker.ineligibilityReasons.includes('capital-below-min-deposit');
+            const hasLot = broker.ineligibilityReasons.includes('lot-below-min-lot');
+            const label = hasCap && hasLot
+              ? `Min ${formatEURWhole(broker.minDepositEur)} · Lot ≥ ${broker.minLotSize}`
+              : hasLot
+                ? `Lot min ${broker.minLotSize}`
+                : `Min ${formatEURWhole(broker.minDepositEur)}`;
+            return (
+              <span className="mt-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {label}
+              </span>
+            );
+          })()}
         </div>
 
         {!locked && (

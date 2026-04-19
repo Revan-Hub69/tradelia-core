@@ -106,29 +106,38 @@ export function ResultsView({
         </div>
       )}
 
-      {/* Locked */}
-      {locked.length > 0 && (
-        <div className="space-y-2 pt-2">
-          <div className="flex items-center gap-2 px-1">
-            <div className="h-px flex-1 bg-border/40" />
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Non accessibili con il tuo capitale
-            </span>
-            <div className="h-px flex-1 bg-border/40" />
+      {/* Locked — ineligibili per capitale o lot minimo */}
+      {locked.length > 0 && (() => {
+        const hasCapitalIssue = locked.some(r => r.ineligibilityReasons.includes('capital-below-min-deposit'));
+        const hasLotIssue = locked.some(r => r.ineligibilityReasons.includes('lot-below-min-lot'));
+        const label = hasCapitalIssue && hasLotIssue
+          ? 'Non adatti al tuo setup (capitale o lotto)'
+          : hasLotIssue
+            ? 'Lotto minimo superiore al tuo'
+            : 'Non accessibili con il tuo capitale';
+        return (
+          <div className="space-y-2 pt-2">
+            <div className="flex items-center gap-2 px-1">
+              <div className="h-px flex-1 bg-border/40" />
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {label}
+              </span>
+              <div className="h-px flex-1 bg-border/40" />
+            </div>
+            <div className="space-y-2">
+              {locked.map((broker, idx) => (
+                <CompetitorCard
+                  key={broker.id}
+                  broker={broker}
+                  index={competitors.length + idx}
+                  onOpenDetailAction={() => onSelectBrokerAction(broker.id)}
+                  locked
+                />
+              ))}
+            </div>
           </div>
-          <div className="space-y-2">
-            {locked.map((broker, idx) => (
-              <CompetitorCard
-                key={broker.id}
-                broker={broker}
-                index={competitors.length + idx}
-                onOpenDetailAction={() => onSelectBrokerAction(broker.id)}
-                locked
-              />
-            ))}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Disclaimer */}
       <motion.div
