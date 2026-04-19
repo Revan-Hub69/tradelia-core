@@ -1,10 +1,12 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/utils/Helpers';
+
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 type DrawerProps = {
   isOpen: boolean;
@@ -19,6 +21,9 @@ function DrawerContent({
   children,
   width = '520px',
 }: DrawerProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(containerRef, isOpen);
+
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -50,6 +55,9 @@ function DrawerContent({
 
           {/* Drawer */}
           <motion.div
+            ref={containerRef}
+            role="dialog"
+            aria-modal="true"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}

@@ -4,9 +4,10 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   Calculator,
   CalendarClock,
-  ChevronUp,
   ChevronDown,
+  ChevronUp,
   Gauge,
+  Info,
   Minus,
   Pencil,
   Plus,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useId, useRef, useState } from 'react';
 
+import { TooltipProvider, TooltipWrapper } from '@/components/ui/tooltip';
 import { cn } from '@/utils/Helpers';
 
 import type { AssetId } from '../data/assets';
@@ -24,8 +26,8 @@ import type { SimulatorInput } from '../state/useSimulatorState';
 import { computeResults } from '../state/useSimulatorState';
 import { AssetSwitcher } from './AssetSwitcher';
 import { BrokerCard } from './BrokerCard';
-import { PairChip } from './PairChip';
 import { TRANSITION } from './motion';
+import { PairChip } from './PairChip';
 
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
 const LOT_PRESETS = [0.01, 0.05, 0.1, 0.5, 1, 2];
@@ -116,6 +118,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
       };
 
   return (
+    <TooltipProvider delayDuration={400}>
     <div className="flex h-full min-h-0 flex-col bg-card text-foreground">
       {/* Header: titolo + close */}
       <div className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
@@ -139,7 +142,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="border-b border-border flex-1 min-h-0 overflow-y-auto"
+            className="min-h-0 flex-1 overflow-y-auto border-b border-border"
           >
             <motion.div
               {...stagger}
@@ -201,6 +204,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   label="Dimensione posizione"
                   hint={`Lotti per trade · ${formatLotLabel(lotSize)}`}
                   htmlFor={lotId}
+                  tooltip="1 lotto standard = 100.000 unità della valuta base. Mini = 0.1, micro = 0.01, nano < 0.01."
                 >
                   <EditableAmount
                     id={lotId}
@@ -252,6 +256,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   label="Esposizione overnight"
                   hint="Giorni/mese con posizione aperta al rollover"
                   htmlFor={daysId}
+                  tooltip="Le posizioni aperte dopo le 23:00 (rollover) pagano uno swap giornaliero. 0 = solo intraday, nessun costo swap."
                 >
                   <EditableAmount
                     id={daysId}
@@ -288,7 +293,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
               <button
                 type="button"
                 onClick={handleExpand}
-                className="flex w-full items-center justify-between gap-2 text-left transition-colors hover:bg-muted/50 rounded-lg px-2 py-1.5"
+                className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-muted/50"
               >
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs tabular-nums">
                   <div className="flex items-center gap-1.5">
@@ -387,15 +392,24 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Costo/mese</span>
-                  <span className="font-semibold">{selectedBroker.costPerMonth}€</span>
+                  <span className="font-semibold">
+{selectedBroker.costPerMonth}
+€
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Costo/trade</span>
-                  <span className="font-semibold">{selectedBroker.costPerTrade}€</span>
+                  <span className="font-semibold">
+{selectedBroker.costPerTrade}
+€
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Score</span>
-                  <span className="font-semibold">{selectedBroker.score}/100</span>
+                  <span className="font-semibold">
+{selectedBroker.score}
+/100
+                  </span>
                 </div>
               </div>
             </div>
@@ -411,14 +425,14 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="border-t border-border bg-card/95 p-4 backdrop-blur-md flex-shrink-0 shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.15)]"
+            className="flex-shrink-0 border-t border-border bg-card/95 p-4 shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.15)] backdrop-blur-md"
           >
             <motion.button
               type="button"
               onClick={handleSubmit}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className="group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Calculator className="size-4" />
               Calcola stima
@@ -427,15 +441,22 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
         )}
       </AnimatePresence>
     </div>
+    </TooltipProvider>
   );
 }
 
 // Helpers
 
 function formatLotLabel(lot: number): string {
-  if (lot < 0.01) return 'nano';
-  if (lot < 0.1) return 'micro';
-  if (lot < 1) return 'mini';
+  if (lot < 0.01) {
+ return 'nano';
+}
+  if (lot < 0.1) {
+ return 'micro';
+}
+  if (lot < 1) {
+ return 'mini';
+}
   return 'standard';
 }
 
@@ -448,12 +469,13 @@ type InputCardProps = {
   hint: string;
   children: React.ReactNode;
   htmlFor?: string;
+  tooltip?: string;
 };
 
-function InputCard({ icon: Icon, accent, label, hint, children, htmlFor }: InputCardProps) {
+function InputCard({ icon: Icon, accent, label, hint, children, htmlFor, tooltip }: InputCardProps) {
   return (
     <div className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md">
-      <label htmlFor={htmlFor} className="mb-3 flex cursor-pointer items-center gap-2.5">
+      <div className="mb-3 flex items-center gap-2.5">
         <div
           className={cn(
             'flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors',
@@ -463,11 +485,25 @@ function InputCard({ icon: Icon, accent, label, hint, children, htmlFor }: Input
         >
           <Icon className="size-4" />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground">{label}</p>
+        <label htmlFor={htmlFor} className="min-w-0 flex-1 cursor-pointer">
+          <p className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
+            {label}
+            {tooltip && (
+              <TooltipWrapper content={<span className="max-w-[220px] block text-pretty">{tooltip}</span>} side="top">
+                <button
+                  type="button"
+                  aria-label={`Info su ${label}`}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  className="inline-flex size-5 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <Info className="size-3.5" />
+                </button>
+              </TooltipWrapper>
+            )}
+          </p>
           <p className="truncate text-xs text-muted-foreground">{hint}</p>
-        </div>
-      </label>
+        </label>
+      </div>
       {children}
     </div>
   );
@@ -497,15 +533,35 @@ function EditableAmount({
   placeholder,
 }: EditableAmountProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [focused, setFocused] = useState(false);
+  const [draft, setDraft] = useState<string>('');
+
+  const integerValue = Number.isInteger(value);
+  const formatter = new Intl.NumberFormat('it-IT', {
+    maximumFractionDigits: integerValue ? 0 : 4,
+    minimumFractionDigits: 0,
+  });
+  const displayValue = focused
+    ? draft
+    : value === 0
+      ? ''
+      : formatter.format(value);
+  const inputType = focused ? 'number' : 'text';
 
   const hapticTick = () => {
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(8);
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+ navigator.vibrate(8);
+}
   };
 
   const clamp = (v: number) => {
     let n = v;
-    if (typeof min === 'number') n = Math.max(min, n);
-    if (typeof max === 'number') n = Math.min(max, n);
+    if (typeof min === 'number') {
+ n = Math.max(min, n);
+}
+    if (typeof max === 'number') {
+ n = Math.min(max, n);
+}
     return n;
   };
 
@@ -525,7 +581,7 @@ function EditableAmount({
         onClick={decrement}
         disabled={typeof min === 'number' && value <= min}
         aria-label="Diminuisci"
-        className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:hover:bg-background disabled:hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-40 disabled:hover:bg-background disabled:hover:text-muted-foreground"
       >
         <Minus className="size-4" />
       </button>
@@ -536,14 +592,27 @@ function EditableAmount({
         <input
           id={id}
           ref={inputRef}
-          type="number"
-          value={value === 0 ? '' : value}
+          type={inputType}
+          value={displayValue}
           placeholder={placeholder}
-          onChange={(e) => {
-            const v = e.target.value;
-            onChange(v === '' ? 0 : Number(v));
+          onFocus={() => {
+            setDraft(value === 0 ? '' : String(value));
+            setFocused(true);
           }}
-          className="min-w-0 flex-1 border-0 bg-transparent text-xl font-bold tabular-nums tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          onChange={(e) => {
+            const raw = e.target.value;
+            setDraft(raw);
+            if (raw === '') {
+              onChange(0);
+              return;
+            }
+            const parsed = Number(raw);
+            if (!Number.isNaN(parsed)) onChange(parsed);
+          }}
+          onBlur={() => {
+            setFocused(false);
+          }}
+          className="min-w-0 flex-1 border-0 bg-transparent text-xl font-bold tabular-nums tracking-tight text-foreground outline-none [appearance:textfield] placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           min={min}
           max={max}
           step={step}
@@ -559,7 +628,7 @@ function EditableAmount({
         onClick={increment}
         disabled={typeof max === 'number' && value >= max}
         aria-label="Aumenta"
-        className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:hover:bg-background disabled:hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-40 disabled:hover:bg-background disabled:hover:text-muted-foreground"
       >
         <Plus className="size-4" />
       </button>

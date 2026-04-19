@@ -2,10 +2,13 @@
 
 import type { PanInfo } from 'framer-motion';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/utils/Helpers';
+
+import { useFocusTrap } from '../hooks/useFocusTrap';
+import { useVisualViewportHeight } from '../hooks/useVisualViewportHeight';
 
 type BottomSheetProps = {
   isOpen: boolean;
@@ -15,6 +18,10 @@ type BottomSheetProps = {
 
 function BottomSheetContent({ isOpen, onClose, children }: BottomSheetProps) {
   const [dragY, setDragY] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(containerRef, isOpen);
+  const vvHeight = useVisualViewportHeight(isOpen);
+  const sheetHeight = vvHeight != null ? `${Math.round(vvHeight * 0.92)}px` : '92dvh';
 
   // Handle escape key
   useEffect(() => {
@@ -58,6 +65,9 @@ function BottomSheetContent({ isOpen, onClose, children }: BottomSheetProps) {
 
           {/* Sheet */}
           <motion.div
+            ref={containerRef}
+            role="dialog"
+            aria-modal="true"
             initial={{ y: '100%' }}
             animate={{ y: dragY > 0 ? dragY : 0 }}
             exit={{ y: '100%' }}
@@ -75,7 +85,7 @@ function BottomSheetContent({ isOpen, onClose, children }: BottomSheetProps) {
               'pb-[env(safe-area-inset-bottom)]',
               'flex flex-col overflow-hidden',
             )}
-            style={{ height: '92dvh' }}
+            style={{ height: sheetHeight }}
           >
             {/* Handle */}
             <div className="flex shrink-0 justify-center pb-1 pt-3">
