@@ -18,7 +18,7 @@ import { cn } from '@/utils/Helpers';
 
 import type { AssetId } from '../data/assets';
 import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
-import type { BrokerResult, SimulatorInput } from '../state/useSimulatorState';
+import type { SimulatorInput } from '../state/useSimulatorState';
 import { computeResults } from '../state/useSimulatorState';
 import { AssetSwitcher } from './AssetSwitcher';
 import { BrokerCard } from './BrokerCard';
@@ -81,46 +81,166 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
 
   return (
     <div className="flex h-full flex-col bg-card text-foreground">
-      {/* Header - sempre visibile */}
-      <div className="border-b border-border/60">
-        <div className="flex items-center gap-3 px-4 py-2 sm:px-5">
-          <span className="inline-flex size-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-          <div className="min-w-0 flex-1">
-            <AssetSwitcher
-              value={assetId}
-              onSelectAction={() => {
-                // Per ora solo Forex è attivo
-              }}
-            />
-          </div>
-          <button
-            type="button"
-            onClick={onCloseAction}
-            className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Chiudi"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        {isForex && (
-          <div className="border-t border-border/40 bg-popover/30 px-4 py-2 sm:px-5 sm:py-2.5">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Coppia
-                </span>
-                <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
-              </div>
-            </div>
-          </div>
-        )}
+      {/* Close button - sempre visibile */}
+      <div className="flex items-center justify-end px-4 py-2 sm:px-5">
+        <button
+          type="button"
+          onClick={onCloseAction}
+          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          aria-label="Chiudi"
+        >
+          <X className="size-4" />
+        </button>
       </div>
 
-      {/* Summary Bar - visibile quando collassato */}
+      {/* Collapsible Section - unisce asset, coppia, filtri */}
       <AnimatePresence mode="wait">
-        {!isExpanded && (
+        {isExpanded ? (
           <motion.div
+            key="expanded"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={TRANSITION.standard}
+            className="border-b border-border/60"
+          >
+            <div className="space-y-4 p-4 sm:p-5">
+              {/* Asset Switcher */}
+              <div className="flex items-center gap-3">
+                <span className="inline-flex size-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
+                <div className="min-w-0 flex-1">
+                  <AssetSwitcher
+                    value={assetId}
+                    onSelectAction={() => {
+                      // Per ora solo Forex è attivo
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Coppia (solo forex) */}
+              {isForex && (
+                <div className="rounded-xl border border-border/60 bg-popover/40 p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Coppia
+                    </span>
+                    <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
+                  </div>
+                </div>
+              )}
+
+              {/* Parametri - grid layout per desktop */}
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <InputCard
+                  icon={Wallet}
+                  accent="emerald"
+                  label="Dimensione account"
+                  hint="Il capitale del tuo conto trading"
+                >
+                  <EditableAmount
+                    prefix="€"
+                    value={capital}
+                    onChange={setCapital}
+                    min={10}
+                    step={10}
+                    placeholder="Inserisci capitale"
+                  />
+                  <PresetChips<number>
+                    values={CAPITAL_PRESETS}
+                    value={capital}
+                    onSelect={setCapital}
+                    format={formatCapital}
+                  />
+                </InputCard>
+
+                <InputCard
+                  icon={Gauge}
+                  accent="teal"
+                  label="Dimensione posizione"
+                  hint={`Lotti per trade · ${formatLotLabel(lotSize)}`}
+                >
+                  <EditableAmount
+                    suffix="lot"
+                    value={lotSize}
+                    onChange={setLotSize}
+                    min={0.001}
+                    step={0.01}
+                    placeholder="Inserisci lotto"
+                  />
+                  <PresetChips<number>
+                    values={LOT_PRESETS}
+                    value={lotSize}
+                    onSelect={setLotSize}
+                    format={v => String(v)}
+                  />
+                </InputCard>
+
+                <InputCard
+                  icon={Repeat}
+                  accent="emerald"
+                  label="Trade al mese"
+                  hint="Frequenza operativa media"
+                >
+                  <EditableAmount
+                    suffix="/mese"
+                    value={tradesPerMonth}
+                    onChange={setTradesPerMonth}
+                    min={1}
+                    max={500}
+                    step={1}
+                    placeholder="Inserisci frequenza"
+                  />
+                  <PresetChips<number>
+                    values={TRADES_PRESETS}
+                    value={tradesPerMonth}
+                    onSelect={setTradesPerMonth}
+                    format={v => String(v)}
+                  />
+                </InputCard>
+
+                <InputCard
+                  icon={CalendarClock}
+                  accent="teal"
+                  label="Esposizione overnight"
+                  hint="Giorni al mese con posizione aperta al rollover · 0 = solo intraday"
+                >
+                  <EditableAmount
+                    suffix="gg/mese"
+                    value={exposureDaysPerMonth}
+                    onChange={setExposureDaysPerMonth}
+                    min={0}
+                    max={25}
+                    step={1}
+                    placeholder="Inserisci giorni"
+                  />
+                  <PresetChips<number>
+                    values={EXPOSURE_PRESETS}
+                    value={exposureDaysPerMonth}
+                    onSelect={setExposureDaysPerMonth}
+                    format={v => `${v}gg`}
+                  />
+                </InputCard>
+              </div>
+            </div>
+
+            {/* Footer CTA */}
+            <div className="border-t border-border/60 bg-card/80 p-4 backdrop-blur-sm">
+              <motion.button
+                type="button"
+                onClick={handleSubmit}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className="group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <Calculator className="size-4" />
+                Calcola stima
+              </motion.button>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="collapsed"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -152,6 +272,12 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     <CalendarClock className="size-3.5 text-muted-foreground" />
                     <span className="font-semibold text-foreground">{exposureDaysPerMonth}gg</span>
                   </div>
+                  {isForex && (
+                    <>
+                      <span className="text-muted-foreground/40">·</span>
+                      <span className="font-semibold text-foreground">{pairSymbol}</span>
+                    </>
+                  )}
                 </div>
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Pencil className="size-3.5" />
@@ -159,109 +285,6 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                 </div>
               </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Wizard Content - visibile quando espanso */}
-      <AnimatePresence mode="wait">
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={TRANSITION.standard}
-            className="flex-1 space-y-4 overflow-y-auto p-4 sm:p-5"
-          >
-            <InputCard
-              icon={Wallet}
-              accent="emerald"
-              label="Dimensione account"
-              hint="Il capitale del tuo conto trading"
-            >
-              <EditableAmount
-                prefix="€"
-                value={capital}
-                onChange={setCapital}
-                min={10}
-                step={10}
-                placeholder="Inserisci capitale"
-              />
-              <PresetChips<number>
-                values={CAPITAL_PRESETS}
-                value={capital}
-                onSelect={setCapital}
-                format={formatCapital}
-              />
-            </InputCard>
-
-            <InputCard
-              icon={Gauge}
-              accent="teal"
-              label="Dimensione posizione"
-              hint={`Lotti per trade · ${formatLotLabel(lotSize)}`}
-            >
-              <EditableAmount
-                suffix="lot"
-                value={lotSize}
-                onChange={setLotSize}
-                min={0.001}
-                step={0.01}
-                placeholder="Inserisci lotto"
-              />
-              <PresetChips<number>
-                values={LOT_PRESETS}
-                value={lotSize}
-                onSelect={setLotSize}
-                format={v => String(v)}
-              />
-            </InputCard>
-
-            <InputCard
-              icon={Repeat}
-              accent="emerald"
-              label="Trade al mese"
-              hint="Frequenza operativa media"
-            >
-              <EditableAmount
-                suffix="/mese"
-                value={tradesPerMonth}
-                onChange={setTradesPerMonth}
-                min={1}
-                max={500}
-                step={1}
-                placeholder="Inserisci frequenza"
-              />
-              <PresetChips<number>
-                values={TRADES_PRESETS}
-                value={tradesPerMonth}
-                onSelect={setTradesPerMonth}
-                format={v => String(v)}
-              />
-            </InputCard>
-
-            <InputCard
-              icon={CalendarClock}
-              accent="teal"
-              label="Esposizione overnight"
-              hint="Giorni al mese con posizione aperta al rollover · 0 = solo intraday"
-            >
-              <EditableAmount
-                suffix="gg/mese"
-                value={exposureDaysPerMonth}
-                onChange={setExposureDaysPerMonth}
-                min={0}
-                max={25}
-                step={1}
-                placeholder="Inserisci giorni"
-              />
-              <PresetChips<number>
-                values={EXPOSURE_PRESETS}
-                value={exposureDaysPerMonth}
-                onSelect={setExposureDaysPerMonth}
-                format={v => `${v}gg`}
-              />
-            </InputCard>
           </motion.div>
         )}
       </AnimatePresence>
@@ -369,10 +392,6 @@ function formatLotLabel(lot: number): string {
   return 'standard';
 }
 
-function formatCapital(v: number): string {
-  return v >= 1000 ? `${v / 1000}k` : String(v);
-}
-
 // Subcomponents
 
 type InputCardProps = {
@@ -465,14 +484,14 @@ type PresetChipsProps<T> = {
 
 function PresetChips<T>({ values, value, onSelect, format }: PresetChipsProps<T>) {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-wrap gap-2">
       {values.map(v => (
         <button
           key={String(v)}
           type="button"
           onClick={() => onSelect(v)}
           className={cn(
-            'rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all',
+            'rounded-lg px-3 py-1.5 text-xs font-medium transition-all sm:px-4 sm:py-2 sm:text-sm',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
             value === v
               ? 'bg-primary text-primary-foreground shadow-sm'
