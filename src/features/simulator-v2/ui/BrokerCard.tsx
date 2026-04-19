@@ -194,10 +194,12 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }
   const qual = account ? getBrokerQualitative(account) : null;
 
   const isMultiday = broker.breakdown.swapPerMonth > 0;
-  const total = broker.breakdown.spreadPerMonth + broker.breakdown.commissionPerMonth + broker.breakdown.swapPerMonth;
+  const hasFx = broker.breakdown.fxConversionPerMonth > 0;
+  const total = broker.breakdown.spreadPerMonth + broker.breakdown.commissionPerMonth + broker.breakdown.swapPerMonth + broker.breakdown.fxConversionPerMonth;
   const spreadPct = total > 0 ? (broker.breakdown.spreadPerMonth / total) * 100 : 100;
   const commissionPct = total > 0 ? (broker.breakdown.commissionPerMonth / total) * 100 : 0;
   const swapPct = total > 0 ? (broker.breakdown.swapPerMonth / total) * 100 : 0;
+  const fxPct = total > 0 ? (broker.breakdown.fxConversionPerMonth / total) * 100 : 0;
 
   return (
     <>
@@ -265,6 +267,15 @@ function ExpandedContent({ broker, lotSize, tradesPerMonth, onOpenDetailAction }
               pct={swapPct}
               detail={`+${formatEUR(broker.breakdown.swapMarkupPerLotNight)}/lot/notte × ${formatNum2(lotSize)} lot × esposizione`}
               color="bg-amber-500"
+            />
+          )}
+          {hasFx && (
+            <CostRow
+              label="Conversione valuta"
+              amount={broker.breakdown.fxConversionPerMonth}
+              pct={fxPct}
+              detail={`${account?.accountFees?.fxConversionPct ? Math.round(account.accountFees.fxConversionPct * 100) : 0}% su notional · conto ≠ valuta strumento`}
+              color="bg-purple-500"
             />
           )}
         </div>

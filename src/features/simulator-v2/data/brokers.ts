@@ -482,21 +482,19 @@ function getAssetMetrics(
 
 /**
  * Calcola il costo FX conversion se presente e rilevante.
- * Applica solo se il conto ha fxConversionPct e stiamo tradando cross-currency.
- * Semplificazione: assumiamo sempre cross per asset non-EUR denominated.
+ * NOTA: DISABILITATO - il calcolo corretto deve applicarsi al P&L, non al notional.
+ * TODO: reimplementare con logica realistica (0.30% sul P&L convertito, non sul notional).
  */
-function computeFxConversionCost(
-  account: BrokerAccount,
-  ctx: CostContext,
-): number {
-  const fxPct = account.accountFees?.fxConversionPct;
-  if (!fxPct || fxPct <= 0) return 0;
-  // Notional per trade: assumiamo sempre 100k per lot (standard)
-  // Per asset diversi, il notional reale varia ma usiamo questa approssimazione
-  const notionalPerTrade = ctx.lotSize * 100000;
-  const fxCostPerTrade = notionalPerTrade * fxPct;
-  return fxCostPerTrade * ctx.tradesPerMonth;
-}
+// function computeFxConversionCost(
+//   account: BrokerAccount,
+//   ctx: CostContext,
+// ): number {
+//   const fxPct = account.accountFees?.fxConversionPct;
+//   if (!fxPct || fxPct <= 0) return 0;
+//   const notionalPerTrade = ctx.lotSize * 100000;
+//   const fxCostPerTrade = notionalPerTrade * fxPct;
+//   return fxCostPerTrade * ctx.tradesPerMonth;
+// }
 
 /**
  * Calcola i giorni di swap effettivi includendo triple swap day.
@@ -538,8 +536,9 @@ export function estimateMonthlyCost(
   const minCommission = account.accountFees?.minCommissionPerOrderEur ?? 0;
   const commissionCostPerTrade = Math.max(rawCommissionPerTrade, minCommission);
   const tradingCost = (spreadCostPerTrade + commissionCostPerTrade) * tradesPerMonth;
-  // FX conversion fee
-  const fxCost = computeFxConversionCost(account, ctx);
+  // FX conversion fee - NOTA: calcolo disabilitato, richiede logica corretta su P&L non notional
+  // TODO: implementare calcolo FX realistico sul solo P&L quando conto ≠ valuta strumento
+  const fxCost = 0; // computeFxConversionCost(account, ctx);
   // Swap cost
   let swapCost = 0;
   if (exposureDaysPerMonth > 0) {
@@ -574,8 +573,8 @@ export function computeCostBreakdown(
   );
   const swapMarkupPerLotNight = exposureDaysPerMonth > 0 ? qual.swapMarkupPerLotEur : 0;
   const swapPerMonth = swapMarkupPerLotNight * lotSize * effectiveDays;
-  // FX conversion breakdown
-  const fxCostPerMonth = computeFxConversionCost(account, ctx);
+  // FX conversion breakdown - DISABILITATO: richiede calcolo corretto su P&L non notional
+  const fxCostPerMonth = 0; // computeFxConversionCost(account, ctx);
   const notionalPerTrade = lotSize * 100000;
   return {
     spreadPerTrade: Number(spreadPerTrade.toFixed(2)),
