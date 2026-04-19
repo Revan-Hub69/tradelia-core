@@ -91,7 +91,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   };
 
   return (
-    <div className="flex h-full flex-col bg-card text-foreground">
+    <div className="flex flex-col bg-card text-foreground min-h-full">
       {/* Close button - sempre visibile */}
       <div className="flex items-center justify-end px-4 py-2 sm:px-5 flex-shrink-0">
         <button
