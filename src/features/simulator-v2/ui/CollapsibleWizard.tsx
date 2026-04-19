@@ -435,7 +435,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
               className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Calculator className="size-4" />
-              Calcola stima
+              Analizza costi
             </motion.button>
           </motion.div>
         )}

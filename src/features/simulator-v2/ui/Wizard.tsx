@@ -245,7 +245,7 @@ export function Wizard({ assetId, onSubmitAction, onCloseAction }: WizardProps) 
           )}
         >
           <Calculator className="size-4" />
-          Calcola stima
+          Analizza costi
           <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
         </motion.button>
       </div>
