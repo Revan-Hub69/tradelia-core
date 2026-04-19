@@ -30,7 +30,7 @@ import { TRANSITION } from './motion';
 import { PairCommandSelector } from './PairCommandSelector';
 
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
-const TRADES_PRESETS = [5, 10, 20, 50, 100];
+const TRADES_PRESETS = [5, 10, 20, 50, 100, 200, 500];
 const EXPOSURE_PRESETS = [0, 5, 10, 15, 20, 25];
 
 /**
@@ -48,11 +48,12 @@ function capitalStep(v: number): number {
 /**
  * Step a scaglioni per il lotto: rispetta la granularità reale del broker.
  * <0.01 → 0.001 (nano) · <0.1 → 0.01 (micro) · <1 → 0.1 (mini) · >=1 → 0.5 (std).
+ * Gestisce correttamente i confini tra tier (es. 0.009→0.01, 0.01→0.009).
  */
 function lotStep(v: number): number {
-  if (v < 0.01) return 0.001;
-  if (v < 0.1) return 0.01;
-  if (v < 1) return 0.1;
+  if (v <= 0.009) return 0.001;
+  if (v <= 0.09) return 0.01;
+  if (v <= 0.9) return 0.1;
   return 0.5;
 }
 
