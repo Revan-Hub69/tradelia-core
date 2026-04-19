@@ -15,7 +15,7 @@ type AssetSwitcherProps = {
  */
 export function AssetSwitcher({ value, onSelectAction }: AssetSwitcherProps) {
   return (
-    <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">
+    <div className="flex items-center gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {ASSETS.map((asset) => {
         const active = asset.id === value;
         const Icon = asset.icon;

@@ -15,7 +15,7 @@ import {
   Wallet,
   X,
 } from 'lucide-react';
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { TooltipProvider, TooltipWrapper } from '@/components/ui/tooltip';
 import { cn } from '@/utils/Helpers';
@@ -30,9 +30,51 @@ import { TRANSITION } from './motion';
 import { PairChip } from './PairChip';
 
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
-const LOT_PRESETS = [0.01, 0.05, 0.1, 0.5, 1, 2];
 const TRADES_PRESETS = [5, 10, 20, 50, 100];
 const EXPOSURE_PRESETS = [0, 5, 10, 15, 20, 25];
+
+/**
+ * Step a scaglioni per il capitale: evita +10 su conto da 10k.
+ * Regole: <100 → 10 · <1k → 50 · <10k → 500 · <100k → 1000 · >=100k → 5000.
+ */
+function capitalStep(v: number): number {
+  if (v < 100) return 10;
+  if (v < 1000) return 50;
+  if (v < 10000) return 500;
+  if (v < 100000) return 1000;
+  return 5000;
+}
+
+/**
+ * Step a scaglioni per il lotto: rispetta la granularità reale del broker.
+ * <0.01 → 0.001 (nano) · <0.1 → 0.01 (micro) · <1 → 0.1 (mini) · >=1 → 0.5 (std).
+ */
+function lotStep(v: number): number {
+  if (v < 0.01) return 0.001;
+  if (v < 0.1) return 0.01;
+  if (v < 1) return 0.1;
+  return 0.5;
+}
+
+/**
+ * Preset lotto adattivi al capitale. Segue una regola di buon senso: max
+ * ~1 lotto standard ogni 50k di equity (risk-aware, ~2% per trade con SL 100 pip).
+ * Garantisce che per conti piccoli il primo preset sia 0.001 (nano).
+ */
+function getLotPresets(capital: number): number[] {
+  if (capital < 500) return [0.001, 0.005, 0.01, 0.02, 0.05, 0.1];
+  if (capital < 2500) return [0.01, 0.02, 0.05, 0.1, 0.2, 0.5];
+  if (capital < 10000) return [0.05, 0.1, 0.25, 0.5, 1, 2];
+  if (capital < 50000) return [0.1, 0.5, 1, 2, 5, 10];
+  return [0.5, 1, 2, 5, 10, 20];
+}
+
+function formatLot(v: number): string {
+  // 0.001 → "0.001", 0.01 → "0.01", 1 → "1", 2 → "2"
+  if (v < 0.01) return v.toFixed(3);
+  if (v < 1) return v.toFixed(2).replace(/0$/, '').replace(/\.$/, '');
+  return String(v);
+}
 
 type CollapsibleWizardProps = {
   assetId: AssetId;
@@ -50,6 +92,19 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   const [lotSize, setLotSize] = useState<number>(0.1);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
   const [exposureDaysPerMonth, setExposureDaysPerMonth] = useState<number>(0);
+
+  /**
+   * Snap-down automatico: se il capitale cala e il lotto corrente supera il
+   * max preset del tier, lo riporta al max consentito. Evita stati "ridicoli"
+   * (es. 2 lotti su 100€). Non fa snap-up: l'utente può sempre aumentare a mano.
+   */
+  useEffect(() => {
+    const presets = getLotPresets(capital);
+    const maxAllowed = presets[presets.length - 1]!;
+    if (lotSize > maxAllowed) {
+      setLotSize(maxAllowed);
+    }
+  }, [capital, lotSize]);
 
   const input: SimulatorInput = {
     assetId,
@@ -186,7 +241,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={capital}
                     onChange={setCapital}
                     min={10}
-                    step={10}
+                    step={capitalStep}
                     placeholder="Inserisci capitale"
                   />
                   <PresetChips<number>
@@ -212,14 +267,14 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={lotSize}
                     onChange={setLotSize}
                     min={0.001}
-                    step={0.01}
+                    step={lotStep}
                     placeholder="Inserisci lotto"
                   />
                   <PresetChips<number>
-                    values={LOT_PRESETS}
+                    values={getLotPresets(capital)}
                     value={lotSize}
                     onSelect={setLotSize}
-                    format={v => String(v)}
+                    format={formatLot}
                     onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
@@ -489,11 +544,14 @@ function InputCard({ icon: Icon, accent, label, hint, children, htmlFor, tooltip
           <p className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
             {label}
             {tooltip && (
-              <TooltipWrapper content={<span className="max-w-[220px] block text-pretty">{tooltip}</span>} side="top">
+              <TooltipWrapper content={<span className="block max-w-[220px] text-pretty">{tooltip}</span>} side="top">
                 <button
                   type="button"
                   aria-label={`Info su ${label}`}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
                   className="inline-flex size-5 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <Info className="size-3.5" />
@@ -517,7 +575,8 @@ type EditableAmountProps = {
   suffix?: string;
   min?: number;
   max?: number;
-  step?: number;
+  /** Numero fisso oppure funzione che calcola lo step in base al valore corrente (tiered). */
+  step?: number | ((v: number) => number);
   placeholder?: string;
 };
 
@@ -565,13 +624,24 @@ function EditableAmount({
     return n;
   };
 
+  const resolveStep = (v: number) => (typeof step === 'function' ? step(v) : step);
+
+  /** Snap al multiplo di step più vicino così da uscire da valori "sporchi" (es. 1010 → 1000/1500). */
+  const snapTo = (v: number, s: number) => Math.round(v / s) * s;
+
   const decrement = () => {
     hapticTick();
-    onChange(clamp(Number((value - step).toFixed(4))));
+    const s = resolveStep(value);
+    const snapped = snapTo(value, s);
+    const next = snapped < value ? snapped : snapped - s;
+    onChange(clamp(Number(next.toFixed(4))));
   };
   const increment = () => {
     hapticTick();
-    onChange(clamp(Number((value + step).toFixed(4))));
+    const s = resolveStep(value);
+    const snapped = snapTo(value, s);
+    const next = snapped > value ? snapped : snapped + s;
+    onChange(clamp(Number(next.toFixed(4))));
   };
 
   return (
@@ -607,7 +677,9 @@ function EditableAmount({
               return;
             }
             const parsed = Number(raw);
-            if (!Number.isNaN(parsed)) onChange(parsed);
+            if (!Number.isNaN(parsed)) {
+              onChange(parsed);
+            }
           }}
           onBlur={() => {
             setFocused(false);
@@ -615,7 +687,7 @@ function EditableAmount({
           className="min-w-0 flex-1 border-0 bg-transparent text-xl font-bold tabular-nums tracking-tight text-foreground outline-none [appearance:textfield] placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           min={min}
           max={max}
-          step={step}
+          step={typeof step === 'function' ? step(value) : step}
           inputMode="decimal"
           aria-label={placeholder}
         />
@@ -657,7 +729,7 @@ function PresetChips<T>({ values, value, onSelect, format, onPresetSelect }: Pre
     <div
       role="group"
       aria-label="Valori preimpostati"
-      className="scrollbar-none -mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible"
+      className="-mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&::-ms-overflow-style]:none"
     >
       {values.map(v => (
         <button
