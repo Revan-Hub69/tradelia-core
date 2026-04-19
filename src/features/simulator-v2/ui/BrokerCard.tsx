@@ -84,7 +84,7 @@ export function BrokerCard({
                 : 'bg-secondary text-secondary-foreground',
           )}
         >
-          {locked ? <Lock className="size-3.5" /> : isWinner ? <Trophy className="size-4" /> : broker.rank}
+          {locked ? <Lock className="size-3.5" /> : isWinner ? <Trophy className="size-4" /> : (broker.rank ?? '—')}
         </div>
 
         {/* Info — gerarchia: broker/conto a sx, prezzo dominante a dx */}

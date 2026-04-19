@@ -5,5 +5,5 @@ export { SimulatorLauncher } from './SimulatorLauncher';
 export { SimulatorShell } from './SimulatorShell';
 export { AssetCardSkeleton } from './skeletons/AssetCardSkeleton';
 export { ErrorState, NoResultsState } from './states';
-export { Wizard } from './Wizard';
+// Note: Wizard component removed — using CollapsibleWizard instead
 export { BrokerComparisonChart, CostBreakdownChart } from './charts';

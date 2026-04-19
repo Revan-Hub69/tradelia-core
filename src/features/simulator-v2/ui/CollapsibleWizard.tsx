@@ -63,6 +63,24 @@ function validateLot(lot: number): { kind: 'info' | 'warn'; message: string } | 
 }
 
 /**
+ * Valuta se il capitale copre il margine richiesto per la leva.
+ * Notional: 100k per lot forex, 10k per altri asset.
+ * Leva minima considerata: 30 (ESMA).
+ */
+function validateCapitalMargin(capital: number, lot: number): { kind: 'warn'; message: string } | null {
+  const NOTIONAL_PER_LOT = 100000; // Forex standard
+  const LEVERAGE = 30; // ESMA min
+  const marginRequired = (lot * NOTIONAL_PER_LOT) / LEVERAGE;
+  if (marginRequired > capital + 0.01) {
+    return {
+      kind: 'warn',
+      message: `Margine richiesto: €${Math.round(marginRequired).toLocaleString()}. Con il tuo capitale (€${Math.round(capital).toLocaleString()}) la posizione non è coperta — aumenta capitale o riduci lotto.`,
+    };
+  }
+  return null;
+}
+
+/**
  * Step a scaglioni per il capitale: salti più ampi per cambiare valore più velocemente.
  * Regole: <500 → 50 · <2k → 100 · <5k → 250 · <10k → 500 · <25k → 1000 · <100k → 2500 · >=100k → 5000.
  */
@@ -384,6 +402,16 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     onPresetSelect={handlePresetSelect}
                     onSelectScroll={scrollIntoView}
                   />
+                  {(() => {
+                    const v = validateCapitalMargin(capital, lotSize);
+                    if (!v) return null;
+                    return (
+                      <div className="mt-2 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-[11px] text-amber-700 dark:text-amber-400">
+                        <Info className="mt-0.5 size-3 shrink-0" />
+                        <span>{v.message}</span>
+                      </div>
+                    );
+                  })()}
                 </InputCard>
 
                 <InputCard
@@ -460,6 +488,12 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     onSelectScroll={scrollIntoView}
                     onPresetSelect={handlePresetSelect}
                   />
+                  {tradesPerMonth > 500 && (
+                    <div className="mt-2 flex items-start gap-2 rounded-lg border border-border/60 bg-muted/30 px-2.5 py-1.5 text-[11px] text-muted-foreground">
+                      <Info className="mt-0.5 size-3 shrink-0" />
+                      <span>Frequenza molto alta: {Math.round(tradesPerMonth / 22)} trade/giorno lavorativo. Verifica che il tuo setup sia realistico.</span>
+                    </div>
+                  )}
                 </InputCard>
 
                 <InputCard

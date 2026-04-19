@@ -48,11 +48,15 @@ export function ResultsView({
     );
   }
 
-  // Calcolo risparmio vs peggiore eligibile
-  const worst = eligible[eligible.length - 1];
-  const savingsPerMonth = worst && worst.id !== winner.id
-    ? worst.costPerMonth - winner.costPerMonth
+  // Calcolo risparmio vs mediana eligibile (più realistico del worst)
+  // Mostra solo se >= 3 eligibili e risparmio >= €50/anno
+  const medianIdx = Math.floor(eligible.length / 2);
+  const median = eligible[medianIdx];
+  const savingsPerMonth = median && median.id !== winner.id
+    ? median.costPerMonth - winner.costPerMonth
     : 0;
+  const yearlySavings = savingsPerMonth * 12;
+  const showSavings = eligible.length >= 3 && yearlySavings >= 50;
 
   return (
     <div className="space-y-4 p-4 sm:p-5">
@@ -67,7 +71,11 @@ export function ResultsView({
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {eligible.length}
           {' '}
-          {eligible.length === 1 ? 'conto analizzato' : 'conti analizzati'}
+          {eligible.length === 1 ? 'compatibile' : 'compatibili'}
+          {' '}
+          su
+          {' '}
+          {results.length}
         </p>
       </motion.div>
 
@@ -77,11 +85,11 @@ export function ResultsView({
         onOpenDetailAction={() => onSelectBrokerAction(winner.id)}
       />
 
-      {/* Savings callout */}
-      {savingsPerMonth > 0 && (
+      {/* Savings callout — solo se utile (>€50/anno) e confronto significativo (>=3 broker) */}
+      {showSavings && (
         <SavingsCallout
           savingsPerMonth={savingsPerMonth}
-          worstBrokerName={worst?.brokerName}
+          worstBrokerName={median?.brokerName}
         />
       )}
 

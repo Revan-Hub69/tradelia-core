@@ -39,14 +39,15 @@ export function BlockMultiAsset({ account, ctx }: BlockMultiAssetProps) {
                 <thead>
                   <tr className="border-b border-border/60 bg-muted/30 text-left">
                     <th className="px-3 py-2 font-semibold text-muted-foreground">Strumento</th>
-                    <th className="px-2 py-2 text-right font-semibold text-muted-foreground">Spread</th>
-                    <th className="px-2 py-2 text-right font-semibold text-muted-foreground">Comm.</th>
+                    <th className="p-2 text-right font-semibold text-muted-foreground">Spread</th>
+                    <th className="p-2 text-right font-semibold text-muted-foreground">Comm.</th>
                     <th className="px-3 py-2 text-right font-semibold text-muted-foreground">€/mese</th>
                   </tr>
                 </thead>
                 <tbody>
                   {instruments.map((instr, idx) => {
-                    const cost = estimateInstrumentMonthlyCost(instr, ctx);
+                    const minComm = account.accountFees?.minCommissionPerOrderEur;
+                    const cost = estimateInstrumentMonthlyCost(instr, ctx, minComm);
                     const isLast = idx === instruments.length - 1;
                     const unit = instr.assetClass === 'forex' ? 'pip' : 'pt';
                     return (
@@ -58,12 +59,12 @@ export function BlockMultiAsset({ account, ctx }: BlockMultiAssetProps) {
                           <div className="font-semibold text-foreground">{instr.label}</div>
                           <div className="text-[10px] text-muted-foreground">{instr.symbol}</div>
                         </td>
-                        <td className="px-2 py-2 text-right tabular-nums text-muted-foreground">
+                        <td className="p-2 text-right tabular-nums text-muted-foreground">
                           {formatNum2(instr.spreadAvg)}
                           {' '}
                           {unit}
                         </td>
-                        <td className="px-2 py-2 text-right tabular-nums text-muted-foreground">
+                        <td className="p-2 text-right tabular-nums text-muted-foreground">
                           {instr.commissionEurPerLotRoundTrip > 0
                             ? `${formatInt(instr.commissionEurPerLotRoundTrip)}€/lot`
                             : '—'}

@@ -76,7 +76,7 @@ export function CompetitorCard({
             locked ? 'bg-muted text-muted-foreground' : 'bg-secondary text-secondary-foreground',
           )}
         >
-          {locked ? <Lock className="size-3.5" /> : broker.rank}
+          {locked ? <Lock className="size-3.5" /> : (broker.rank ?? '—')}
         </div>
 
         {/* Broker info */}
@@ -127,13 +127,21 @@ export function CompetitorCard({
               bits.push(`Margine ${formatEURWhole(broker.marginRequiredEur)}`);
             }
             const label = bits.length > 0 ? bits.join(' · ') : 'Non disponibile';
+            const minBroker = r.includes('lot-below-min-lot');
             return (
-              <span
-                title={label}
-                className="mt-1 max-w-[160px] truncate rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
-              >
-                {label}
-              </span>
+              <div className="mt-1 flex flex-col items-end gap-1">
+                <span
+                  title={label}
+                  className="max-w-[160px] truncate rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+                >
+                  {label}
+                </span>
+                {minBroker && (
+                  <span className="text-[9px] text-amber-600 dark:text-amber-500">
+                    *calcolato al min broker
+                  </span>
+                )}
+              </div>
             );
           })()}
         </div>

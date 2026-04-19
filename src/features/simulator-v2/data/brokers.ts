@@ -442,52 +442,141 @@ export type CostContext = {
   tradesPerMonth: number;
   /** Giorni medi di esposizione overnight al mese (0-25). 0 = intraday (nessun swap). */
   exposureDaysPerMonth?: number;
+  /** Coppia selezionata (es. 'EURUSD') per lookup spread specifico. */
+  pairSymbol?: string;
+  /** Asset class per determinare pip value e swap formula. */
+  assetId?: 'forex' | 'indices' | 'commodities' | 'crypto' | 'equities';
+  /** Capitale per calcolo FX conversion fee. */
+  capital?: number;
 };
 
 /**
+ * Determina lo spread e il pip value per asset/coppia.
+ * Se l'account ha instruments[] e c'è match su pairSymbol, usa quello.
+ * Altrimenti fallback allo spread EUR/USD legacy.
+ */
+function getAssetMetrics(
+  account: BrokerAccount,
+  ctx: CostContext,
+): { spread: number; pipValuePerLot: number; isForexMajor: boolean } {
+  const { pairSymbol, assetId = 'forex' } = ctx;
+  // Cerca match in instruments V2
+  if (pairSymbol && account.instruments) {
+    const inst = account.instruments.find(i => i.symbol === pairSymbol);
+    if (inst) {
+      return {
+        spread: inst.spreadAvg,
+        pipValuePerLot: inst.unitValuePerLotEur,
+        isForexMajor: inst.assetClass === 'forex',
+      };
+    }
+  }
+  // Fallback: calcola pip value per asset class
+  const pipValuePerLot = assetId === 'forex' ? 10 : 1; // forex €10, altri ~€1
+  return {
+    spread: account.spreadEurUsdPip,
+    pipValuePerLot,
+    isForexMajor: assetId === 'forex',
+  };
+}
+
+/**
+ * Calcola il costo FX conversion se presente e rilevante.
+ * Applica solo se il conto ha fxConversionPct e stiamo tradando cross-currency.
+ * Semplificazione: assumiamo sempre cross per asset non-EUR denominated.
+ */
+function computeFxConversionCost(
+  account: BrokerAccount,
+  ctx: CostContext,
+): number {
+  const fxPct = account.accountFees?.fxConversionPct;
+  if (!fxPct || fxPct <= 0) return 0;
+  // Notional per trade: assumiamo sempre 100k per lot (standard)
+  // Per asset diversi, il notional reale varia ma usiamo questa approssimazione
+  const notionalPerTrade = ctx.lotSize * 100000;
+  const fxCostPerTrade = notionalPerTrade * fxPct;
+  return fxCostPerTrade * ctx.tradesPerMonth;
+}
+
+/**
+ * Calcola i giorni di swap effettivi includendo triple swap day.
+ * Mercoledì (o giorno configurato) conta 3 giorni.
+ */
+function computeEffectiveSwapDays(
+  exposureDaysPerMonth: number,
+  tripleSwapDay?: 'wednesday' | 'friday',
+): number {
+  if (exposureDaysPerMonth <= 0) return 0;
+  // Approssimazione: in ~30 giorni, ci sono ~4 mercoledì
+  // In 20 giorni esposizione, ~2.7 mercoledì in media
+  const weeks = exposureDaysPerMonth / 7;
+  // Ogni mercoledì vale 3 invece di 1, quindi +2 giorni per ogni mercoledì
+  const extraDays = Math.max(0, Math.round(weeks) * 2);
+  // Se triple swap è venerdì (raro), stesso calcolo ma più raro
+  const _tripleSwapDay = tripleSwapDay; // preservato per futuro raffinamento
+  void _tripleSwapDay;
+  return exposureDaysPerMonth + extraDays;
+}
+
+/**
  * Calcola costo mensile totale per un account broker.
- * pipValue = €10 per standard lot a EUR/USD (semplificazione).
+ * Ora asset-aware: usa spread e pip value corretti per coppia/asset.
  *
- * Se exposureDaysPerMonth > 0: aggiunge il solo **markup broker** × lot × giorni.
- * L'interbank swap rate (identico per tutti i broker) non entra nel ranking perché
- * non è una componente broker-specifica. Il markup è l'unica variabile discriminante.
+ * Se exposureDaysPerMonth > 0: aggiunge il solo **markup broker** × lot × giorni
+ * (con conteggio triple swap day).
+ * L'interbank swap rate non entra nel ranking.
  */
 export function estimateMonthlyCost(
   account: BrokerAccount,
   ctx: CostContext,
 ): number {
   const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
-  const pipValuePerLot = 10;
-  const spreadCostPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
+  const metrics = getAssetMetrics(account, ctx);
+  const spreadCostPerTrade = metrics.spread * metrics.pipValuePerLot * lotSize;
   const rawCommissionPerTrade = account.commissionPerLotEur * lotSize;
   // Applica commissione minima per ordine, se presente.
   const minCommission = account.accountFees?.minCommissionPerOrderEur ?? 0;
   const commissionCostPerTrade = Math.max(rawCommissionPerTrade, minCommission);
   const tradingCost = (spreadCostPerTrade + commissionCostPerTrade) * tradesPerMonth;
+  // FX conversion fee
+  const fxCost = computeFxConversionCost(account, ctx);
+  // Swap cost
   let swapCost = 0;
   if (exposureDaysPerMonth > 0) {
     const qual = getBrokerQualitative(account);
-    swapCost = qual.swapMarkupPerLotEur * lotSize * exposureDaysPerMonth;
+    const effectiveDays = computeEffectiveSwapDays(
+      exposureDaysPerMonth,
+      account.accountFees?.tripleSwapDay,
+    );
+    swapCost = qual.swapMarkupPerLotEur * lotSize * effectiveDays;
   }
-  return tradingCost + swapCost;
+  return tradingCost + fxCost + swapCost;
 }
 
 /**
  * Breakdown dettagliato del costo calcolato (componenti incluse nel motore).
+ * Ora include FX conversion e effective swap days.
  */
 export function computeCostBreakdown(
   account: BrokerAccount,
   ctx: CostContext,
 ) {
   const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
-  const pipValuePerLot = 10;
-  const spreadPerTrade = account.spreadEurUsdPip * pipValuePerLot * lotSize;
+  const metrics = getAssetMetrics(account, ctx);
+  const spreadPerTrade = metrics.spread * metrics.pipValuePerLot * lotSize;
   const rawCommissionPerTrade = account.commissionPerLotEur * lotSize;
   const minCommission = account.accountFees?.minCommissionPerOrderEur ?? 0;
   const commissionPerTrade = Math.max(rawCommissionPerTrade, minCommission);
   const qual = getBrokerQualitative(account);
+  const effectiveDays = computeEffectiveSwapDays(
+    exposureDaysPerMonth,
+    account.accountFees?.tripleSwapDay,
+  );
   const swapMarkupPerLotNight = exposureDaysPerMonth > 0 ? qual.swapMarkupPerLotEur : 0;
-  const swapPerMonth = swapMarkupPerLotNight * lotSize * exposureDaysPerMonth;
+  const swapPerMonth = swapMarkupPerLotNight * lotSize * effectiveDays;
+  // FX conversion breakdown
+  const fxCostPerMonth = computeFxConversionCost(account, ctx);
+  const notionalPerTrade = lotSize * 100000;
   return {
     spreadPerTrade: Number(spreadPerTrade.toFixed(2)),
     commissionPerTrade: Number(commissionPerTrade.toFixed(2)),
@@ -496,6 +585,12 @@ export function computeCostBreakdown(
     swapPerMonth: Number(swapPerMonth.toFixed(2)),
     /** Markup broker €/lot/notte (0 se intraday). È la metrica di discriminazione del ranking swap. */
     swapMarkupPerLotNight: Number(swapMarkupPerLotNight.toFixed(2)),
+    /** Effective swap days contando triple swap. */
+    effectiveSwapDays: effectiveDays,
+    /** FX conversion cost mensile (0 se non applicabile). */
+    fxConversionPerMonth: Number(fxCostPerMonth.toFixed(2)),
+    /** Notional per trade per riferimento. */
+    notionalPerTrade: Number(notionalPerTrade.toFixed(2)),
   };
 }
 
@@ -550,19 +645,27 @@ const TIER_DEFAULTS: Record<BrokerTier, {
 /**
  * Calcola costo mensile per uno specifico strumento del broker,
  * usando lo stesso setup operativo dell'utente. Per Blocco 3 multi-asset.
+ * Ora applica anche la commissione minima per ordine dell'account.
  */
 export function estimateInstrumentMonthlyCost(
   instrument: NonNullable<BrokerAccount['instruments']>[number],
   ctx: CostContext,
+  minCommissionPerOrderEur?: number,
 ): number {
   const { lotSize, tradesPerMonth, exposureDaysPerMonth = 0 } = ctx;
   const spreadPerTrade = instrument.spreadAvg * instrument.unitValuePerLotEur * lotSize;
-  const commissionPerTrade = instrument.commissionEurPerLotRoundTrip * lotSize;
+  const rawCommissionPerTrade = instrument.commissionEurPerLotRoundTrip * lotSize;
+  // Applica commissione minima per ordine se disponibile
+  const commissionPerTrade = Math.max(rawCommissionPerTrade, minCommissionPerOrderEur ?? 0);
   const tradingCost = (spreadPerTrade + commissionPerTrade) * tradesPerMonth;
   let swapCost = 0;
   if (exposureDaysPerMonth > 0) {
     const markupLong = instrument.swapMarkupPerLotLongEur ?? 0;
-    swapCost = markupLong * lotSize * exposureDaysPerMonth;
+    // Triple swap day factor applicato
+    const weeks = exposureDaysPerMonth / 7;
+    const extraDays = Math.max(0, Math.round(weeks) * 2);
+    const effectiveDays = exposureDaysPerMonth + extraDays;
+    swapCost = markupLong * lotSize * effectiveDays;
   }
   return tradingCost + swapCost;
 }

@@ -27,7 +27,8 @@ export type IneligibilityCode =
 
 export type BrokerResult = {
   id: string;
-  rank: number;
+  /** Rank solo per broker eligibili. Ineligibili = null. */
+  rank: number | null;
   brokerName: string;
   accountName: string;
   tier: BrokerTier;
@@ -52,13 +53,22 @@ export type BrokerResult = {
     swapPerMonth: number;
     /** Markup broker €/lot/notte — metrica discriminante per swap ranking. */
     swapMarkupPerLotNight: number;
+    /** Effective swap days contando triple swap day. */
+    effectiveSwapDays: number;
+    /** FX conversion cost mensile (0 se non applicabile). */
+    fxConversionPerMonth: number;
+    /** Notional per trade per riferimento. */
+    notionalPerTrade: number;
   };
   score: number;
   isWinner?: boolean;
   isEligible: boolean;
   /** Codici motivo ineligibilità (vuoto se eligible). */
   ineligibilityReasons: IneligibilityCode[];
+  /** Regolatore principale (da entity V2) */
   regulator: string;
+  /** License number se disponibile */
+  licenseNumber?: string;
 };
 
 // Back-compat alias
@@ -92,6 +102,9 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
     lotSize: input.lotSize,
     tradesPerMonth: input.tradesPerMonth,
     exposureDaysPerMonth: input.exposureDaysPerMonth,
+    pairSymbol: input.pairSymbol,
+    assetId: input.assetId,
+    capital: input.capital,
   };
   // Tolleranza per confronto lot (evita errori floating-point).
   const LOT_EPS = 1e-9;
@@ -105,7 +118,7 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
     // se l'utente chiede 0.001 ma broker min 0.01, il costo reale sarebbe a 0.01.
     // Tuttavia marchiamo ineligible per trasparenza.
     const effectiveLot = Math.max(input.lotSize, account.minLotSize);
-    const effectiveCtx = { ...ctx, lotSize: effectiveLot };
+    const effectiveCtx = { ...ctx, lotSize: effectiveLot, pairSymbol: input.pairSymbol, assetId: input.assetId };
     const costPerMonth = estimateMonthlyCost(account, effectiveCtx);
     const costPerTrade = costPerMonth / Math.max(1, input.tradesPerMonth);
 
@@ -149,14 +162,24 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
   const worstCost = scored[scored.length - 1]?.costPerMonth ?? bestCost;
   const range = Math.max(1, worstCost - bestCost);
 
+  // Rank counter solo per eligibili
+  let eligibleRankCounter = 0;
+
   return scored.map((s, idx) => {
     const normalized = 1 - (s.costPerMonth - bestCost) / range;
     const score = Math.round(Math.max(30, Math.min(100, normalized * 100)));
     const effectiveLot = Math.max(input.lotSize, s.account.minLotSize);
-    const breakdown = computeCostBreakdown(s.account, { ...ctx, lotSize: effectiveLot });
+    const breakdown = computeCostBreakdown(s.account, { ...ctx, lotSize: effectiveLot, pairSymbol: input.pairSymbol, assetId: input.assetId });
+    // Rank solo per eligibili
+    if (s.isEligible) {
+      eligibleRankCounter += 1;
+    }
+    // Regolatore V2 se disponibile, altrimenti legacy
+    const regulatorV2 = s.account.entity?.regulator;
+    const licenseV2 = s.account.entity?.licenseNumber;
     return {
       id: s.account.id,
-      rank: idx + 1,
+      rank: s.isEligible ? eligibleRankCounter : null,
       brokerName: s.account.brokerName,
       accountName: s.account.accountName,
       tier: s.account.tier,
@@ -174,7 +197,8 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
       isWinner: idx === 0 && s.isEligible,
       isEligible: s.isEligible,
       ineligibilityReasons: s.reasons,
-      regulator: s.account.regulator,
+      regulator: regulatorV2 ?? s.account.regulator,
+      licenseNumber: licenseV2,
     };
   });
 }
