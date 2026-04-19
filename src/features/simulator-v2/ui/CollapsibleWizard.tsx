@@ -15,7 +15,7 @@ import {
   Wallet,
   X,
 } from 'lucide-react';
-import { useEffect, useId, useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 
 import { TooltipProvider, TooltipWrapper } from '@/components/ui/tooltip';
 import { cn } from '@/utils/Helpers';
@@ -92,6 +92,9 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   const [lotSize, setLotSize] = useState<number>(0);
   const [tradesPerMonth, setTradesPerMonth] = useState<number>(0);
   const [exposureDaysPerMonth, setExposureDaysPerMonth] = useState<number>(0);
+
+  // Validation: CTA disabled if required fields are empty
+  const isValid = capital > 0 && lotSize > 0 && tradesPerMonth > 0;
 
   /**
    * Aggiorna capitale + adatta il lotto al nuovo tier.
@@ -227,13 +230,11 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   }}
                 />
                 {isForex && (
-                  <div className="rounded-xl border border-border bg-muted/40 p-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                        Coppia
-                      </span>
-                      <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Coppia
+                    </span>
+                    <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
                   </div>
                 )}
               </motion.section>
@@ -499,9 +500,15 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             <motion.button
               type="button"
               onClick={handleSubmit}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              disabled={!isValid}
+              whileHover={{ scale: isValid ? 1.01 : 1 }}
+              whileTap={{ scale: isValid ? 0.99 : 1 }}
+              className={cn(
+                'group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold shadow-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                isValid
+                  ? 'bg-primary text-primary-foreground shadow-primary/20 hover:shadow-xl hover:shadow-primary/30'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed opacity-60',
+              )}
             >
               <Calculator className="size-4" />
               Analizza costi
@@ -542,20 +549,8 @@ type InputCardProps = {
 };
 
 function InputCard({ icon: Icon, accent, label, hint, children, htmlFor, tooltip }: InputCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleClick = () => {
-    if (cardRef.current) {
-      cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
-
   return (
-    <div
-      ref={cardRef}
-      onClick={handleClick}
-      className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md"
-    >
+    <div className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md">
       <div className="mb-3 flex items-center gap-2.5">
         <div
           className={cn(
@@ -694,6 +689,9 @@ function EditableAmount({
           onFocus={() => {
             setDraft(value === 0 ? '' : String(value));
             setFocused(true);
+            if (inputRef.current) {
+              inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
           }}
           onChange={(e) => {
             const raw = e.target.value;
