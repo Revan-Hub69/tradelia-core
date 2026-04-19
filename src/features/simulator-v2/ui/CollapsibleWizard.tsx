@@ -27,7 +27,7 @@ import { computeResults } from '../state/useSimulatorState';
 import { AssetSwitcher } from './AssetSwitcher';
 import { BrokerCard } from './BrokerCard';
 import { TRANSITION } from './motion';
-import { PairChip } from './PairChip';
+import { PairCommandSelector } from './PairCommandSelector';
 
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
 const TRADES_PRESETS = [5, 10, 20, 50, 100];
@@ -246,12 +246,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   }}
                 />
                 {isForex && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      Coppia
-                    </span>
-                    <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
-                  </div>
+                  <PairCommandSelector value={pairSymbol} onSelectAction={setPairSymbol} />
                 )}
               </motion.section>
 
