@@ -106,15 +106,9 @@ export function ResultsView({
         </div>
       )}
 
-      {/* Locked — ineligibili per capitale o lot minimo */}
+      {/* Locked — ineligibili per capitale, lot o leva */}
       {locked.length > 0 && (() => {
-        const hasCapitalIssue = locked.some(r => r.ineligibilityReasons.includes('capital-below-min-deposit'));
-        const hasLotIssue = locked.some(r => r.ineligibilityReasons.includes('lot-below-min-lot'));
-        const label = hasCapitalIssue && hasLotIssue
-          ? 'Non adatti al tuo setup (capitale o lotto)'
-          : hasLotIssue
-            ? 'Lotto minimo superiore al tuo'
-            : 'Non accessibili con il tuo capitale';
+        const label = 'Non compatibili con il tuo setup';
         return (
           <div className="space-y-2 pt-2">
             <div className="flex items-center gap-2 px-1">

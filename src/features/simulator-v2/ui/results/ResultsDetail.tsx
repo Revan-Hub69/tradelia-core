@@ -203,6 +203,30 @@ export function ResultsDetail({
                     , non al tuo.
                   </li>
                 )}
+                {broker.ineligibilityReasons.includes('lot-above-max-lot') && broker.maxLotSize !== undefined && (
+                  <li>
+                    • Lotto massimo per posizione:
+                    {' '}
+                    <strong>{broker.maxLotSize}</strong>
+                    {' '}
+                    (tuo:
+                    {' '}
+                    {formatNum2(lotSize)}
+                    ). Dovrai splittare in più ordini.
+                  </li>
+                )}
+                {broker.ineligibilityReasons.includes('capital-insufficient-for-leverage') && broker.marginRequiredEur !== undefined && (
+                  <li>
+                    • Margine richiesto per questa posizione:
+                    {' '}
+                    <strong>{formatEURWhole(broker.marginRequiredEur)}</strong>
+                    {' '}
+                    (tuo capitale:
+                    {' '}
+                    {formatEURWhole(capital)}
+                    ). Leva disponibile insufficiente.
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -317,7 +341,7 @@ export function ResultsDetail({
             <span className="font-bold text-foreground">
               {pairSymbol ?? ASSET_LABELS[assetId]}
             </span>
-            <span className="text-muted-foreground/60 normal-case tracking-normal">
+            <span className="normal-case tracking-normal text-muted-foreground/60">
               · setup sopra
             </span>
           </h2>

@@ -19,7 +19,11 @@ export type SimulatorInput = {
   underlyingId?: string;
 };
 
-export type IneligibilityCode = 'capital-below-min-deposit' | 'lot-below-min-lot';
+export type IneligibilityCode =
+  | 'capital-below-min-deposit'
+  | 'lot-below-min-lot'
+  | 'lot-above-max-lot'
+  | 'capital-insufficient-for-leverage';
 
 export type BrokerResult = {
   id: string;
@@ -29,6 +33,9 @@ export type BrokerResult = {
   tier: BrokerTier;
   minDepositEur: number;
   minLotSize: number;
+  maxLotSize?: number;
+  /** Margine richiesto (€) sul capitale per aprire la posizione su questo account. */
+  marginRequiredEur?: number;
   costPerTrade: number;
   costPerMonth: number;
   /** Delta vs best eligible broker (€/mese). 0 per il winner. */
@@ -89,6 +96,10 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
   // Tolleranza per confronto lot (evita errori floating-point).
   const LOT_EPS = 1e-9;
 
+  // Notional standard per 1 lot (forex major = 100.000 unità base).
+  // Per asset non-forex questa formula è semplificata; affineremo in futuro.
+  const NOTIONAL_PER_LOT_EUR = input.assetId === 'forex' ? 100000 : 10000;
+
   const scored = BROKER_ACCOUNTS.map((account: BrokerAccount) => {
     // Calcolo costo usando il MAX tra lot richiesto e lot minimo broker —
     // se l'utente chiede 0.001 ma broker min 0.01, il costo reale sarebbe a 0.01.
@@ -98,6 +109,14 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
     const costPerMonth = estimateMonthlyCost(account, effectiveCtx);
     const costPerTrade = costPerMonth / Math.max(1, input.tradesPerMonth);
 
+    // Margine richiesto = notional / leva. Confronto con capitale.
+    const leverage = account.accountTrading?.maxLeverageRetail
+      ?? account.maxLeverageRetail
+      ?? 30;
+    const marginRequiredEur = (input.lotSize * NOTIONAL_PER_LOT_EUR) / leverage;
+
+    const maxLotSize = account.accountTrading?.maxLotSize;
+
     const reasons: IneligibilityCode[] = [];
     if (input.capital < account.minDepositEur) {
       reasons.push('capital-below-min-deposit');
@@ -105,8 +124,15 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
     if (input.lotSize + LOT_EPS < account.minLotSize) {
       reasons.push('lot-below-min-lot');
     }
+    if (maxLotSize !== undefined && input.lotSize > maxLotSize + LOT_EPS) {
+      reasons.push('lot-above-max-lot');
+    }
+    // Capitale insufficiente a coprire il margine (usa almeno il 100% del capitale per 1 posizione).
+    if (marginRequiredEur > input.capital + 0.01) {
+      reasons.push('capital-insufficient-for-leverage');
+    }
     const isEligible = reasons.length === 0;
-    return { account, costPerMonth, costPerTrade, isEligible, reasons };
+    return { account, costPerMonth, costPerTrade, isEligible, reasons, marginRequiredEur, maxLotSize };
   });
 
   // Sort: eligible first (by cost asc), then ineligible (by cost asc)
@@ -136,6 +162,8 @@ export function computeResults(input: SimulatorInput): BrokerResult[] {
       tier: s.account.tier,
       minDepositEur: s.account.minDepositEur,
       minLotSize: s.account.minLotSize,
+      maxLotSize: s.maxLotSize,
+      marginRequiredEur: Number(s.marginRequiredEur.toFixed(2)),
       costPerTrade: Number(s.costPerTrade.toFixed(2)),
       costPerMonth: Number(s.costPerMonth.toFixed(2)),
       deltaVsBestMonth: Number((s.costPerMonth - bestCost).toFixed(2)),

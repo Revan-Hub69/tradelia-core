@@ -112,15 +112,26 @@ export function CompetitorCard({
             </span>
           )}
           {locked && (() => {
-            const hasCap = broker.ineligibilityReasons.includes('capital-below-min-deposit');
-            const hasLot = broker.ineligibilityReasons.includes('lot-below-min-lot');
-            const label = hasCap && hasLot
-              ? `Min ${formatEURWhole(broker.minDepositEur)} · Lot ≥ ${broker.minLotSize}`
-              : hasLot
-                ? `Lot min ${broker.minLotSize}`
-                : `Min ${formatEURWhole(broker.minDepositEur)}`;
+            const r = broker.ineligibilityReasons;
+            const bits: string[] = [];
+            if (r.includes('capital-below-min-deposit')) {
+              bits.push(`Min ${formatEURWhole(broker.minDepositEur)}`);
+            }
+            if (r.includes('lot-below-min-lot')) {
+              bits.push(`Lot ≥ ${broker.minLotSize}`);
+            }
+            if (r.includes('lot-above-max-lot') && broker.maxLotSize !== undefined) {
+              bits.push(`Lot ≤ ${broker.maxLotSize}`);
+            }
+            if (r.includes('capital-insufficient-for-leverage') && broker.marginRequiredEur !== undefined) {
+              bits.push(`Margine ${formatEURWhole(broker.marginRequiredEur)}`);
+            }
+            const label = bits.length > 0 ? bits.join(' · ') : 'Non disponibile';
             return (
-              <span className="mt-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+              <span
+                title={label}
+                className="mt-1 max-w-[160px] truncate rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+              >
                 {label}
               </span>
             );

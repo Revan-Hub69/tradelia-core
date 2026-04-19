@@ -20,6 +20,7 @@ import { TooltipProvider, TooltipWrapper } from '@/components/ui/tooltip';
 import { cn } from '@/utils/Helpers';
 
 import type { AssetId } from '../data/assets';
+import { BROKER_ACCOUNTS } from '../data/brokers';
 import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
 import type { SimulatorInput } from '../state/useSimulatorState';
 import { computeResults } from '../state/useSimulatorState';
@@ -33,6 +34,33 @@ import { ResultsView } from './results/ResultsView';
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
 const TRADES_PRESETS = [5, 10, 20, 50, 100, 200, 500];
 const EXPOSURE_PRESETS = [0, 5, 10, 15, 20, 25];
+
+// Range lot supportato dal dataset broker.
+const MIN_LOT_ANY_BROKER = Math.min(...BROKER_ACCOUNTS.map(a => a.minLotSize));
+const MAX_LOT_ANY_BROKER = Math.max(
+  ...BROKER_ACCOUNTS.map(a => a.accountTrading?.maxLotSize ?? Number.POSITIVE_INFINITY),
+);
+
+/**
+ * Valuta se il lot scelto è fuori range dataset broker.
+ * Restituisce un messaggio user-friendly o null se ok.
+ */
+function validateLot(lot: number): { kind: 'info' | 'warn'; message: string } | null {
+  const EPS = 1e-9;
+  if (lot > 0 && lot + EPS < MIN_LOT_ANY_BROKER) {
+    return {
+      kind: 'warn',
+      message: `Nessun broker del nostro dataset opera sotto ${MIN_LOT_ANY_BROKER} lot. I risultati saranno tutti non compatibili.`,
+    };
+  }
+  if (Number.isFinite(MAX_LOT_ANY_BROKER) && lot > MAX_LOT_ANY_BROKER + EPS) {
+    return {
+      kind: 'info',
+      message: `Alcuni broker limitano la singola posizione a ${MAX_LOT_ANY_BROKER} lot. Dovrai splittare in più ordini.`,
+    };
+  }
+  return null;
+}
 
 /**
  * Step a scaglioni per il capitale: salti più ampi per cambiare valore più velocemente.
@@ -384,6 +412,26 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     onSelectScroll={scrollIntoView}
                     onPresetSelect={handlePresetSelect}
                   />
+                  {(() => {
+                    const v = validateLot(lotSize);
+                    if (!v) {
+                      return null;
+                    }
+                    const isWarn = v.kind === 'warn';
+                    return (
+                      <div
+                        className={cn(
+                          'mt-2 flex items-start gap-2 rounded-lg border px-2.5 py-1.5 text-[11px]',
+                          isWarn
+                            ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                            : 'border-border/60 bg-muted/30 text-muted-foreground',
+                        )}
+                      >
+                        <Info className="mt-0.5 size-3 shrink-0" />
+                        <span>{v.message}</span>
+                      </div>
+                    );
+                  })()}
                 </InputCard>
 
                 <InputCard
