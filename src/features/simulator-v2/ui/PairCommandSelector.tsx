@@ -155,84 +155,55 @@ export function PairCommandSelector({ value, onSelectAction, placeholder = "Cerc
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.15, ease: [0.2, 0, 0.2, 1] }}
             className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-popover shadow-xl"
-            style={{ maxHeight: 'min(70vh, 400px)' }}
+            style={{ maxHeight: 'min(60vh, 320px)' }}
+            onKeyDown={handleKeyDown}
+            tabIndex={-1}
           >
-            {/* Search bar - sticky */}
-            <div className="sticky top-0 z-10 border-b border-border bg-popover px-3 py-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Cerca EUR, USD, GBP..."
-                  className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-9 text-sm outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary"
-                />
-                {query && (
-                  <button
-                    type="button"
-                    onClick={handleClear}
-                    className="absolute right-2 top-1/2 inline-flex size-5 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  >
-                    <X className="size-3" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Results list */}
+            {/* Results list - flat, no search */}
             <div
               ref={listRef}
               className="overflow-y-auto p-1"
-              style={{ maxHeight: 'calc(min(70vh, 400px) - 60px)' }}
+              style={{ maxHeight: 'calc(min(60vh, 320px) - 28px)' }}
             >
-              {filteredPairs.length === 0 ? (
-                <div className="px-3 py-8 text-center text-sm text-muted-foreground">
-                  Nessuna coppia trovata
-                </div>
-              ) : (
-                <div role="listbox" className="space-y-0.5">
-                  {filteredPairs.map((pair, index) => {
-                    const selected = pair.symbol === value;
-                    const highlighted = index === highlightedIndex;
+              <div role="listbox" className="space-y-0.5">
+                {filteredPairs.map((pair, index) => {
+                  const selected = pair.symbol === value;
+                  const highlighted = index === highlightedIndex;
 
-                    return (
-                      <button
-                        key={pair.symbol}
-                        type="button"
-                        role="option"
-                        aria-selected={selected}
-                        onClick={() => handleSelect(pair.symbol)}
-                        onMouseEnter={() => setHighlightedIndex(index)}
-                        className={cn(
-                          'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
-                          highlighted && 'bg-accent',
-                          selected && !highlighted && 'bg-primary/5',
-                          !highlighted && !selected && 'hover:bg-muted'
-                        )}
-                      >
-                        <span className="flex items-center -space-x-1 shrink-0">
-                          <CurrencyFlag code={pair.base} size="sm" />
-                          <CurrencyFlag code={pair.quote} size="sm" />
+                  return (
+                    <button
+                      key={pair.symbol}
+                      type="button"
+                      role="option"
+                      aria-selected={selected}
+                      onClick={() => handleSelect(pair.symbol)}
+                      onMouseEnter={() => setHighlightedIndex(index)}
+                      className={cn(
+                        'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
+                        highlighted && 'bg-accent',
+                        selected && !highlighted && 'bg-primary/5',
+                        !highlighted && !selected && 'hover:bg-muted'
+                      )}
+                    >
+                      <span className="flex items-center -space-x-1 shrink-0">
+                        <CurrencyFlag code={pair.base} size="sm" />
+                        <CurrencyFlag code={pair.quote} size="sm" />
+                      </span>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <span className="font-mono text-sm font-semibold">
+                          {pair.symbol}
                         </span>
-                        <div className="flex min-w-0 flex-1 flex-col">
-                          <span className="font-mono text-sm font-semibold">
-                            {pair.symbol}
-                          </span>
-                          <span className="truncate text-xs text-muted-foreground">
-                            {pair.name}
-                          </span>
-                        </div>
-                        {selected && (
-                          <Check className="size-4 shrink-0 text-primary" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+                        <span className="truncate text-xs text-muted-foreground">
+                          {pair.name}
+                        </span>
+                      </div>
+                      {selected && (
+                        <Check className="size-4 shrink-0 text-primary" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Footer hint */}
