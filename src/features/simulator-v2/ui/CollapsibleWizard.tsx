@@ -5,7 +5,6 @@ import {
   Calculator,
   CalendarClock,
   ChevronDown,
-  ChevronUp,
   Gauge,
   Info,
   Minus,
@@ -15,7 +14,7 @@ import {
   Wallet,
   X,
 } from 'lucide-react';
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { TooltipProvider, TooltipWrapper } from '@/components/ui/tooltip';
 import { cn } from '@/utils/Helpers';
@@ -25,9 +24,11 @@ import { DEFAULT_FOREX_PAIR } from '../data/forex-pairs';
 import type { SimulatorInput } from '../state/useSimulatorState';
 import { computeResults } from '../state/useSimulatorState';
 import { AssetSwitcher } from './AssetSwitcher';
-import { BrokerCard } from './BrokerCard';
 import { TRANSITION } from './motion';
 import { PairCommandSelector } from './PairCommandSelector';
+import { ResultsDetail } from './results/ResultsDetail';
+import { ResultsSkeleton } from './results/ResultsSkeleton';
+import { ResultsView } from './results/ResultsView';
 
 const CAPITAL_PRESETS = [100, 500, 1000, 5000, 25000, 100000];
 const TRADES_PRESETS = [5, 10, 20, 50, 100, 200, 500];
@@ -97,10 +98,13 @@ type CollapsibleWizardProps = {
 
 export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardProps) {
   const isForex = assetId === 'forex';
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [isDetail, setIsDetail] = useState(false);
+  type ViewState = 'wizard' | 'computing' | 'results' | 'detail';
+  const [viewState, setViewState] = useState<ViewState>('wizard');
   const [selectedBrokerId, setSelectedBrokerId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isExpanded = viewState === 'wizard';
+  const isDetail = viewState === 'detail';
+  const isComputing = viewState === 'computing';
 
   const [pairSymbol, setPairSymbol] = useState<string>(DEFAULT_FOREX_PAIR.symbol);
   const [capital, setCapital] = useState<number>(0);
@@ -165,22 +169,31 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   const selectedBroker = selectedBrokerId ? results.find(r => r.id === selectedBrokerId) : null;
 
   const handleSubmit = () => {
-    setIsExpanded(false);
+    setViewState('computing');
   };
 
   const handleExpand = () => {
-    setIsExpanded(true);
+    setViewState('wizard');
   };
 
   const handleSelectBroker = (brokerId: string) => {
     setSelectedBrokerId(brokerId);
-    setIsDetail(true);
+    setViewState('detail');
   };
 
   const handleBackToCompare = () => {
-    setIsDetail(false);
     setSelectedBrokerId(null);
+    setViewState('results');
   };
+
+  // Transizione artificiale skeleton → results (400ms, accessibility-aware)
+  useEffect(() => {
+    if (viewState !== 'computing') return;
+    const t = setTimeout(() => {
+      setViewState('results');
+    }, 400);
+    return () => clearTimeout(t);
+  }, [viewState]);
 
   const formatCapital = (v: number) => (v >= 1000 ? `${v / 1000}k` : String(v));
 
@@ -448,79 +461,48 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
         )}
       </AnimatePresence>
 
-      {/* Results - visibili quando collassato */}
+      {/* Results / Computing / Detail - visibili quando non si è nel wizard */}
       <AnimatePresence mode="wait">
-        {!isExpanded && !isDetail && (
+        {isComputing && (
           <motion.div
+            key="computing"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="flex-1 space-y-3 overflow-y-auto p-4 sm:p-5"
+            className="flex-1 overflow-y-auto"
           >
-            {results
-              .filter(r => r.isEligible)
-              .map(broker => (
-                <BrokerCard
-                  key={broker.id}
-                  broker={broker}
-                  isOpen={false}
-                  onToggleAction={() => {}}
-                  onOpenDetailAction={() => handleSelectBroker(broker.id)}
-                  lotSize={lotSize}
-                  tradesPerMonth={tradesPerMonth}
-                />
-              ))}
+            <ResultsSkeleton />
           </motion.div>
         )}
-      </AnimatePresence>
 
-      {/* Detail View */}
-      <AnimatePresence mode="wait">
-        {isDetail && selectedBroker && (
+        {viewState === 'results' && (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            key="results"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="flex-1 overflow-y-auto p-4 sm:p-5"
+            className="flex-1 overflow-y-auto"
           >
-            <button
-              type="button"
-              onClick={handleBackToCompare}
-              className="mb-4 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            >
-              <ChevronUp className="size-4" />
-              Torna ai risultati
-            </button>
-            <div className="rounded-xl border border-border/60 bg-popover/40 p-4">
-              <h3 className="mb-2 text-lg font-semibold">{selectedBroker.brokerName}</h3>
-              <p className="text-sm text-muted-foreground">{selectedBroker.accountName}</p>
-              <div className="mt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Costo/mese</span>
-                  <span className="font-semibold">
-{selectedBroker.costPerMonth}
-€
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Costo/trade</span>
-                  <span className="font-semibold">
-{selectedBroker.costPerTrade}
-€
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Score</span>
-                  <span className="font-semibold">
-{selectedBroker.score}
-/100
-                  </span>
-                </div>
-              </div>
-            </div>
+            <ResultsView
+              results={results}
+              capital={capital}
+              onSelectBrokerAction={handleSelectBroker}
+              onEditAction={handleExpand}
+            />
           </motion.div>
+        )}
+
+        {isDetail && selectedBroker && (
+          <div key="detail" className="flex flex-1 flex-col overflow-hidden">
+            <ResultsDetail
+              broker={selectedBroker}
+              lotSize={lotSize}
+              tradesPerMonth={tradesPerMonth}
+              onBackAction={handleBackToCompare}
+            />
+          </div>
         )}
       </AnimatePresence>
 

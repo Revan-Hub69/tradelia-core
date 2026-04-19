@@ -72,10 +72,9 @@ export function PairCommandSelector({
         setOpen(false);
       }
     };
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
+    if (!open) return undefined;
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [open]);
 
   // Keyboard navigation
