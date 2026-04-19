@@ -288,6 +288,12 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
       foundedYear: 2007,
       publiclyListed: false,
     },
+    accountFees: {
+      minCommissionPerOrderEur: 2.0,
+      deposit: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      withdrawal: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      gslAvailable: false,
+    },
   },
   {
     id: 'pepperstone-razor',
@@ -317,6 +323,12 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
       groupName: 'Pepperstone Group Ltd',
       foundedYear: 2010,
       publiclyListed: false,
+    },
+    accountFees: {
+      minCommissionPerOrderEur: 2.0,
+      deposit: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      withdrawal: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      gslAvailable: false,
     },
   },
   {
@@ -365,6 +377,7 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
       withdrawal: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
       gslAvailable: false,
       tripleSwapDay: 'wednesday',
+      minCommissionPerOrderEur: 2.0,
     },
     features: {
       swapFree: true,
@@ -425,6 +438,12 @@ export const BROKER_ACCOUNTS: BrokerAccount[] = [
       groupName: 'International Capital Markets',
       foundedYear: 2007,
       publiclyListed: false,
+    },
+    accountFees: {
+      minCommissionPerOrderEur: 2.0,
+      deposit: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      withdrawal: { bankWireEur: 0, cardPct: 0, ewalletPct: 0 },
+      gslAvailable: false,
     },
   },
 ];
