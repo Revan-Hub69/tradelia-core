@@ -544,8 +544,12 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
           <div key="detail" className="flex flex-1 flex-col overflow-hidden">
             <ResultsDetail
               broker={selectedBroker}
+              capital={capital}
               lotSize={lotSize}
               tradesPerMonth={tradesPerMonth}
+              exposureDaysPerMonth={exposureDaysPerMonth}
+              assetId={assetId}
+              pairSymbol={isForex ? pairSymbol : undefined}
               onBackAction={handleBackToCompare}
               onCloseAction={onCloseAction}
             />

@@ -4,11 +4,15 @@ import { motion } from 'framer-motion';
 import {
   ArrowLeft,
   ArrowRight,
+  CalendarClock,
   Clock,
   ExternalLink,
+  Gauge,
   Handshake,
   Info,
+  Layers,
   Percent,
+  Repeat,
   ShieldAlert,
   Trophy,
   Wallet,
@@ -18,6 +22,7 @@ import {
 
 import { cn } from '@/utils/Helpers';
 
+import type { AssetId } from '../../data/assets';
 import { BROKER_ACCOUNTS, getBrokerQualitative } from '../../data/brokers';
 import { TIER_LABELS, TIER_STYLES, TIER_TOOLTIPS } from '../../data/tiers';
 import type { BrokerResult } from '../../state/useSimulatorState';
@@ -27,20 +32,37 @@ import { CostBreakdownBar } from './CostBreakdownBar';
 
 type ResultsDetailProps = {
   broker: BrokerResult;
+  capital: number;
   lotSize: number;
   tradesPerMonth: number;
+  exposureDaysPerMonth: number;
+  assetId: AssetId;
+  /** Simbolo coppia forex, se asset = forex */
+  pairSymbol?: string;
   onBackAction: () => void;
   onCloseAction?: () => void;
 };
 
+const ASSET_LABELS: Record<AssetId, string> = {
+  forex: 'Forex',
+  indices: 'Indici',
+  commodities: 'Materie prime',
+  crypto: 'Crypto',
+  equities: 'Azioni',
+};
+
 /**
- * Scheda conto compatta: header minimal con back + close, hero, breakdown,
- * specifiche, sticky CTA footer con disclaimer ESMA sempre + affiliate se partner.
+ * Scheda conto focalizzata sull'operatività specifica dell'utente.
+ * Ogni numero è esplicitamente etichettato con il contesto di input.
  */
 export function ResultsDetail({
   broker,
+  capital,
   lotSize,
   tradesPerMonth,
+  exposureDaysPerMonth,
+  assetId,
+  pairSymbol,
   onBackAction,
   onCloseAction,
 }: ResultsDetailProps) {
@@ -115,6 +137,32 @@ export function ResultsDetail({
             )}
       </div>
 
+      {/* Your Setup strip — contesto operativo sempre visibile.
+          Tutti i numeri nella scheda si riferiscono a QUESTO setup. */}
+      <div className="flex-shrink-0 border-b border-border/40 bg-muted/20 px-4 py-2 sm:px-5">
+        <div className="flex items-center gap-2 overflow-x-auto">
+          <p className="flex-shrink-0 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Il tuo setup
+          </p>
+          <span className="text-muted-foreground/40">·</span>
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs tabular-nums">
+            <SetupPill icon={Layers} value={pairSymbol ?? ASSET_LABELS[assetId]} strong />
+            <span className="text-muted-foreground/40">·</span>
+            <SetupPill icon={Wallet} value={formatEURWhole(capital)} />
+            <span className="text-muted-foreground/40">·</span>
+            <SetupPill icon={Gauge} value={`${formatNum2(lotSize)} lot`} />
+            <span className="text-muted-foreground/40">·</span>
+            <SetupPill icon={Repeat} value={`${formatInt(tradesPerMonth)}/mese`} />
+            {exposureDaysPerMonth > 0 && (
+              <>
+                <span className="text-muted-foreground/40">·</span>
+                <SetupPill icon={CalendarClock} value={`${exposureDaysPerMonth} gg`} />
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Scrollable content */}
       <div className="flex-1 space-y-4 overflow-y-auto p-4 pb-6 sm:p-5">
         {/* Hero compatto */}
@@ -180,8 +228,16 @@ export function ResultsDetail({
             </div>
           </div>
 
-          {/* Metriche chiave */}
-          <div className="relative mt-4 grid grid-cols-3 gap-2 border-t border-border/40 pt-3">
+          {/* Metriche chiave — riferite esplicitamente all'asset selezionato */}
+          <div className="relative mt-4 border-t border-border/40 pt-3">
+            <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Risultato su
+              {' '}
+              <span className="font-bold text-foreground">
+                {pairSymbol ?? ASSET_LABELS[assetId]}
+              </span>
+            </p>
+            <div className="grid grid-cols-3 gap-2">
             <MetricBox label="Costo/mese" primary>
               <AnimatedCounter
                 value={broker.costPerMonth}
@@ -206,14 +262,21 @@ export function ResultsDetail({
                 className="block text-lg font-bold tabular-nums leading-none tracking-tight text-foreground"
               />
             </MetricBox>
+            </div>
           </div>
         </div>
 
         {/* Breakdown dettagliato */}
         <section className="space-y-3">
-          <h2 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <h2 className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             <Percent className="size-3" />
-            Costi inclusi nel calcolo
+            <span>Costi per</span>
+            <span className="font-bold text-foreground">
+              {pairSymbol ?? ASSET_LABELS[assetId]}
+            </span>
+            <span className="text-muted-foreground/60 normal-case tracking-normal">
+              · setup sopra
+            </span>
           </h2>
           <CostBreakdownBar segments={segments} height={10} />
           <div className="space-y-2 rounded-xl border border-border/60 bg-card/40 p-3">
@@ -371,6 +434,25 @@ export function ResultsDetail({
 }
 
 // ── Subcomponents ─────────────────────────────────────────────
+
+function SetupPill({
+  icon: Icon,
+  value,
+  strong = false,
+}: {
+  icon: React.ElementType;
+  value: string;
+  strong?: boolean;
+}) {
+  return (
+    <span className="flex items-center gap-1">
+      <Icon className="size-3 text-muted-foreground" />
+      <span className={cn(strong ? 'font-semibold text-foreground' : 'text-foreground')}>
+        {value}
+      </span>
+    </span>
+  );
+}
 
 function MetricBox({
   label,
