@@ -86,6 +86,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDetail, setIsDetail] = useState(false);
   const [selectedBrokerId, setSelectedBrokerId] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [pairSymbol, setPairSymbol] = useState<string>(DEFAULT_FOREX_PAIR.symbol);
   const [capital, setCapital] = useState<number>(0);
@@ -95,6 +96,20 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
 
   // Validation: CTA disabled if required fields are empty
   const isValid = capital > 0 && lotSize > 0 && tradesPerMonth > 0;
+
+  // Helper to scroll element into view within the scrollable container
+  const scrollIntoView = (element: HTMLElement) => {
+    const container = scrollContainerRef.current;
+    if (!container || !element) return;
+    const containerRect = container.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
+    const relativeTop = elementRect.top - containerRect.top + container.scrollTop;
+    const padding = 16; // px padding
+    container.scrollTo({
+      top: Math.max(0, relativeTop - padding),
+      behavior: 'smooth',
+    });
+  };
 
   /**
    * Aggiorna capitale + adatta il lotto al nuovo tier.
@@ -210,6 +225,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
         {isExpanded ? (
           <motion.div
             key="expanded"
+            ref={scrollContainerRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -258,6 +274,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     min={10}
                     step={capitalStep}
                     placeholder="Inserisci capitale"
+                    onFocusScroll={scrollIntoView}
                   />
                   <PresetChips<number>
                     values={CAPITAL_PRESETS}
@@ -284,6 +301,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     min={0.001}
                     step={lotStep}
                     placeholder="Inserisci lotto"
+                    onFocusScroll={scrollIntoView}
                   />
                   <PresetChips<number>
                     values={getLotPresets(capital)}
@@ -310,6 +328,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     max={500}
                     step={1}
                     placeholder="Inserisci frequenza"
+                    onFocusScroll={scrollIntoView}
                   />
                   <PresetChips<number>
                     values={TRADES_PRESETS}
@@ -337,6 +356,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     max={25}
                     step={1}
                     placeholder="Inserisci giorni"
+                    onFocusScroll={scrollIntoView}
                   />
                   <PresetChips<number>
                     values={EXPOSURE_PRESETS}
@@ -599,6 +619,8 @@ type EditableAmountProps = {
   /** Numero fisso oppure funzione che calcola lo step in base al valore corrente (tiered). */
   step?: number | ((v: number) => number);
   placeholder?: string;
+  /** Optional callback to scroll element into view when focused */
+  onFocusScroll?: (element: HTMLElement) => void;
 };
 
 function EditableAmount({
@@ -611,6 +633,7 @@ function EditableAmount({
   max,
   step = 1,
   placeholder,
+  onFocusScroll,
 }: EditableAmountProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [focused, setFocused] = useState(false);
@@ -689,11 +712,10 @@ function EditableAmount({
           onFocus={() => {
             setDraft(value === 0 ? '' : String(value));
             setFocused(true);
-            // Defer to next tick so keyboard/layout is stable, then scroll parent card
+            // Defer to next tick so keyboard/layout is stable, then scroll into view
             setTimeout(() => {
-              const card = inputRef.current?.closest('[data-input-card]');
-              if (card) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              if (inputRef.current) {
+                onFocusScroll?.(inputRef.current);
               }
             }, 100);
           }}
