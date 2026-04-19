@@ -241,7 +241,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
               {/* Gruppo: Parametri */}
               <motion.section variants={itemVariants} aria-labelledby="group-params" className="space-y-3">
                 <h3 id="group-params" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Parametri</h3>
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
+                <div className="grid grid-cols-1 gap-4">
                 <InputCard
                   icon={Wallet}
                   accent="emerald"
