@@ -182,14 +182,14 @@ export function ResultsDetail({
               <AnimatedCounter
                 value={broker.costPerTrade}
                 formatAction={v => formatEUR(v)}
-                className="block text-lg font-bold leading-none tabular-nums tracking-tight text-foreground"
+                className="block text-lg font-bold tabular-nums leading-none tracking-tight text-foreground"
               />
             </MetricBox>
             <MetricBox label="Score">
               <AnimatedCounter
                 value={broker.score}
                 formatAction={v => `${Math.round(v)}`}
-                className="block text-lg font-bold leading-none tabular-nums tracking-tight text-foreground"
+                className="block text-lg font-bold tabular-nums leading-none tracking-tight text-foreground"
               />
             </MetricBox>
           </div>
@@ -282,7 +282,7 @@ export function ResultsDetail({
                 Partner Tradelia
               </p>
               <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
-                Riceviamo una commissione se apri un conto tramite questo link. Questo
+                Potremmo ricevere una commissione se apri un conto tramite questo link. Questo
                 {' '}
                 <strong className="font-semibold text-foreground/80">non influenza il ranking</strong>
                 {' '}
@@ -293,7 +293,7 @@ export function ResultsDetail({
         )}
       </div>
 
-      {/* Sticky CTA footer — SOTA 2026: disclaimer ESMA sempre, CTA dominante, safe-area aware */}
+      {/* Sticky CTA footer — conforme ESMA/CONSOB: disclaimer integrale prima della CTA */}
       <div className="relative flex-shrink-0 border-t border-border/60 bg-card/95 backdrop-blur-md">
         {/* Gradient accent top */}
         {broker.isWinner && (
@@ -301,21 +301,28 @@ export function ResultsDetail({
         )}
 
         <div className="space-y-2.5 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-5">
-          {/* ESMA disclaimer — obbligatorio, sempre visibile, per-broker */}
+          {/* ESMA/CONSOB disclaimer — testo integrale obbligatorio per ogni broker CFD.
+              Riferimento: ESMA Decision (EU) 2018/796 e orientamenti CONSOB.
+              Font ridotto ma sufficientemente leggibile (min 10px), contrasto amber su card. */}
           {esmaLossRatePct !== undefined && (
             <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-2">
               <ShieldAlert className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-500" />
-              <p className="text-[10px] leading-[1.35] text-amber-900 dark:text-amber-200">
-                <strong className="font-bold tabular-nums">
-                  {esmaLossRatePct.toFixed(2)}
-                  %
+              <p className="text-[10px] leading-[1.45] text-amber-900 dark:text-amber-200">
+                I CFD sono strumenti complessi che presentano un elevato rischio di perdere rapidamente denaro a causa della leva finanziaria.
+                {' '}
+                <strong className="font-bold">
+                  Il
+                  {' '}
+                  <span className="tabular-nums">
+                    {esmaLossRatePct.toFixed(2)}
+                    %
+                  </span>
+                  {' '}
+                  dei conti degli investitori retail perde denaro nel trading di CFD con
+                  {' '}
+                  {broker.brokerName}
                 </strong>
-                {' '}
-                dei conti retail di
-                {' '}
-                <strong className="font-semibold">{broker.brokerName}</strong>
-                {' '}
-                perde denaro con i CFD. Valuta se puoi permetterti questo rischio.
+                . Dovresti assicurarti di avere ben compreso come funzionano i CFD e se puoi permetterti di assumerti l'alto rischio di perdere i tuoi soldi.
               </p>
             </div>
           )}
