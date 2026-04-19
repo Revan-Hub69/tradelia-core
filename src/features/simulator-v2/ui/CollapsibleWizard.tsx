@@ -91,7 +91,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   };
 
   return (
-    <div className="flex h-full flex-col bg-card text-foreground">
+    <div className="flex h-full min-h-0 flex-col bg-card text-foreground">
       {/* Close button - sempre visibile */}
       <div className="flex items-center justify-end px-4 py-2 sm:px-5 flex-shrink-0">
         <button
@@ -109,11 +109,11 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
         {isExpanded ? (
           <motion.div
             key="expanded"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="border-b border-border/60 overflow-hidden"
+            className="border-b border-border/60 flex-1 min-h-0 overflow-y-auto"
           >
             <div className="space-y-4 p-4 sm:p-5">
               {/* Asset Switcher */}
@@ -238,28 +238,15 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                 </InputCard>
               </div>
             </div>
-
-            {/* Footer CTA */}
-            <div className="border-t border-border/60 bg-card/80 p-4 backdrop-blur-sm">
-              <motion.button
-                type="button"
-                onClick={handleSubmit}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
-                className="group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <Calculator className="size-4" />
-                Calcola stima
-              </motion.button>
-            </div>
           </motion.div>
         ) : (
           <motion.div
             key="collapsed"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
+            className="flex-shrink-0"
           >
             <div className="border-b border-border/60 bg-muted/30 px-4 py-2.5 sm:px-5">
               <button
@@ -375,11 +362,11 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
       <AnimatePresence mode="wait">
         {isExpanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="border-t border-border/60 bg-card/80 p-4 backdrop-blur-sm"
+            className="border-t border-border/60 bg-card/80 p-4 backdrop-blur-sm flex-shrink-0"
           >
             <motion.button
               type="button"

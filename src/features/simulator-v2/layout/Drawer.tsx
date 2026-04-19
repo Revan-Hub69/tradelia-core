@@ -54,17 +54,17 @@ function DrawerContent({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            style={{ width, height: '100dvh' }}
+            style={{ width }}
             className={cn(
-              'fixed top-0 right-0 z-[101]',
+              'fixed top-0 bottom-0 right-0 z-[101]',
               'bg-card border-l border-border',
               'shadow-2xl shadow-black/50',
               'pb-[env(safe-area-inset-bottom)]',
-              'flex flex-col',
+              'flex flex-col overflow-hidden',
             )}
           >
             {/* Content — inner views provide their own close button */}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="flex-1 min-h-0 flex flex-col">
               {children}
             </div>
           </motion.div>

@@ -73,17 +73,17 @@ function BottomSheetContent({ isOpen, onClose, children }: BottomSheetProps) {
               'bg-card border-t border-border',
               'shadow-2xl shadow-black/50',
               'pb-[env(safe-area-inset-bottom)]',
-              'flex flex-col',
+              'flex flex-col overflow-hidden',
             )}
             style={{ height: '92dvh' }}
           >
             {/* Handle */}
-            <div className="flex justify-center pb-1 pt-3 shrink-0">
+            <div className="flex shrink-0 justify-center pb-1 pt-3">
               <div className="h-1.5 w-12 rounded-full bg-muted" />
             </div>
 
             {/* Content */}
-            <div className="overflow-y-auto flex-1 min-h-0">
+            <div className="flex min-h-0 flex-1 flex-col">
               {children}
             </div>
           </motion.div>
