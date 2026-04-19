@@ -48,25 +48,39 @@ function capitalStep(v: number): number {
 }
 
 /**
- * Step a scaglioni per il lotto: salti pratici per trading reale.
- * <=0.01 → 0.01 (nano, min 0.01) · <=0.1 → 0.05 (micro) · <=1 → 0.1 (mini) · >1 → 0.5 (std).
+ * Step a scaglioni per il lotto: rispetta granularità reale del broker.
+ * Usa strict less-than con epsilon per evitare stalli ai confini di tier.
+ * <0.01 → 0.001 (nano) · <0.1 → 0.01 (micro) · <1 → 0.1 (mini) · >=1 → 1 (standard).
  */
 function lotStep(v: number): number {
-  if (v <= 0.01) return 0.01;
-  if (v <= 0.1) return 0.05;
-  if (v <= 1) return 0.1;
-  return 0.5;
+  if (v < 0.01 - 1e-9) return 0.001;
+  if (v < 0.1 - 1e-9) return 0.01;
+  if (v < 1 - 1e-9) return 0.1;
+  return 1;
 }
 
 /**
- * Preset lotto adattivi al capitale. Salti pratici: 0.01, 0.05, 0.1, 0.5, 1, 2, 5...
+ * Step a scaglioni per i trade/mese: evita +1 all'infinito fino a 500.
+ * <10 → 1 · <50 → 5 · <100 → 10 · <200 → 25 · <500 → 50 · >=500 → 100.
+ */
+function tradesStep(v: number): number {
+  if (v < 10) return 1;
+  if (v < 50) return 5;
+  if (v < 100) return 10;
+  if (v < 200) return 25;
+  if (v < 500) return 50;
+  return 100;
+}
+
+/**
+ * Preset lotto adattivi al capitale. Include nano (0.001) per conti piccoli.
  */
 function getLotPresets(capital: number): number[] {
-  if (capital < 1000) return [0.01, 0.05, 0.1, 0.25, 0.5];
-  if (capital < 5000) return [0.05, 0.1, 0.25, 0.5, 1, 2];
-  if (capital < 25000) return [0.1, 0.5, 1, 2, 5, 10];
-  if (capital < 100000) return [0.5, 1, 2, 5, 10, 20];
-  return [1, 2, 5, 10, 20, 50];
+  if (capital < 500) return [0.001, 0.005, 0.01, 0.05, 0.1];
+  if (capital < 2500) return [0.01, 0.05, 0.1, 0.25, 0.5];
+  if (capital < 10000) return [0.05, 0.1, 0.25, 0.5, 1, 2];
+  if (capital < 50000) return [0.1, 0.5, 1, 2, 5, 10];
+  return [0.5, 1, 2, 5, 10, 20];
 }
 
 function formatLot(v: number): string {
@@ -326,8 +340,8 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={tradesPerMonth}
                     onChange={setTradesPerMonth}
                     min={1}
-                    max={500}
-                    step={1}
+                    max={1000}
+                    step={tradesStep}
                     placeholder="Inserisci frequenza"
                     onFocusScroll={scrollIntoView}
                   />
@@ -673,22 +687,28 @@ function EditableAmount({
 
   const resolveStep = (v: number) => (typeof step === 'function' ? step(v) : step);
 
-  /** Snap al multiplo di step più vicino così da uscire da valori "sporchi" (es. 1010 → 1000/1500). */
-  const snapTo = (v: number, s: number) => Math.round(v / s) * s;
+  /** Arrotonda v al numero di decimali implicato dallo step (evita 0.30000000004). */
+  const roundToStep = (v: number, s: number) => {
+    const decimals = s < 1 ? Math.max(0, Math.ceil(-Math.log10(s))) : 0;
+    return Number(v.toFixed(decimals));
+  };
+
+  const EPS = 1e-9;
 
   const decrement = () => {
     hapticTick();
-    const s = resolveStep(value);
-    const snapped = snapTo(value, s);
-    const next = snapped < value ? snapped : snapped - s;
-    onChange(clamp(Number(next.toFixed(4))));
+    // Usa step di un valore appena sotto: gestisce down-tier (es. 0.01 → 0.009)
+    const s = resolveStep(Math.max(0, value - EPS));
+    // Più grande multiplo di s strettamente < value
+    const next = Math.ceil(value / s - EPS) * s - s;
+    onChange(clamp(roundToStep(next, s)));
   };
   const increment = () => {
     hapticTick();
     const s = resolveStep(value);
-    const snapped = snapTo(value, s);
-    const next = snapped > value ? snapped : snapped + s;
-    onChange(clamp(Number(next.toFixed(4))));
+    // Più piccolo multiplo di s strettamente > value
+    const next = Math.floor(value / s + EPS) * s + s;
+    onChange(clamp(roundToStep(next, s)));
   };
 
   return (
