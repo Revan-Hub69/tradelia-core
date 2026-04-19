@@ -94,17 +94,31 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   const [exposureDaysPerMonth, setExposureDaysPerMonth] = useState<number>(0);
 
   /**
-   * Snap-down automatico: se il capitale cala e il lotto corrente supera il
-   * max preset del tier, lo riporta al max consentito. Evita stati "ridicoli"
-   * (es. 2 lotti su 100€). Non fa snap-up: l'utente può sempre aumentare a mano.
+   * Aggiorna capitale + adatta il lotto al nuovo tier.
+   * - Se il lotto corrente coincide con un preset del vecchio tier, mantiene
+   *   lo stesso indice nel nuovo tier (es. "2° preset" resta "2° preset").
+   * - Altrimenti scala proporzionalmente sul max del tier e fa snap al
+   *   preset più vicino.
+   * Così l'utente vede sempre la selezione muoversi in modo coerente.
    */
-  useEffect(() => {
-    const presets = getLotPresets(capital);
-    const maxAllowed = presets[presets.length - 1]!;
-    if (lotSize > maxAllowed) {
-      setLotSize(maxAllowed);
+  const handleCapitalChange = (newCapital: number) => {
+    const oldPresets = getLotPresets(capital);
+    const newPresets = getLotPresets(newCapital);
+    const oldIdx = oldPresets.findIndex(p => Math.abs(p - lotSize) < 1e-6);
+    let nextLot: number;
+    if (oldIdx >= 0) {
+      nextLot = newPresets[oldIdx]!;
+    } else {
+      const oldMax = oldPresets[oldPresets.length - 1]!;
+      const newMax = newPresets[newPresets.length - 1]!;
+      const scaled = lotSize * (newMax / oldMax);
+      nextLot = newPresets.reduce((a, b) =>
+        Math.abs(b - scaled) < Math.abs(a - scaled) ? b : a,
+      );
     }
-  }, [capital, lotSize]);
+    setCapital(newCapital);
+    setLotSize(nextLot);
+  };
 
   const input: SimulatorInput = {
     assetId,
@@ -239,7 +253,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     id={capitalId}
                     prefix="€"
                     value={capital}
-                    onChange={setCapital}
+                    onChange={handleCapitalChange}
                     min={10}
                     step={capitalStep}
                     placeholder="Inserisci capitale"
@@ -247,7 +261,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   <PresetChips<number>
                     values={CAPITAL_PRESETS}
                     value={capital}
-                    onSelect={setCapital}
+                    onSelect={handleCapitalChange}
                     format={formatCapital}
                     onPresetSelect={handlePresetSelect}
                   />
