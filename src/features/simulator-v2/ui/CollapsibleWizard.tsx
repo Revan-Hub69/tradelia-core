@@ -34,40 +34,39 @@ const TRADES_PRESETS = [5, 10, 20, 50, 100, 200, 500];
 const EXPOSURE_PRESETS = [0, 5, 10, 15, 20, 25];
 
 /**
- * Step a scaglioni per il capitale: evita +10 su conto da 10k.
- * Regole: <100 → 10 · <1k → 50 · <10k → 500 · <100k → 1000 · >=100k → 5000.
+ * Step a scaglioni per il capitale: salti più ampi per cambiare valore più velocemente.
+ * Regole: <500 → 50 · <2k → 100 · <5k → 250 · <10k → 500 · <25k → 1000 · <100k → 2500 · >=100k → 5000.
  */
 function capitalStep(v: number): number {
-  if (v < 100) return 10;
-  if (v < 1000) return 50;
+  if (v < 500) return 50;
+  if (v < 2000) return 100;
+  if (v < 5000) return 250;
   if (v < 10000) return 500;
-  if (v < 100000) return 1000;
+  if (v < 25000) return 1000;
+  if (v < 100000) return 2500;
   return 5000;
 }
 
 /**
- * Step a scaglioni per il lotto: rispetta la granularità reale del broker.
- * <0.01 → 0.001 (nano) · <0.1 → 0.01 (micro) · <1 → 0.1 (mini) · >=1 → 0.5 (std).
- * Gestisce correttamente i confini tra tier (es. 0.009→0.01, 0.01→0.009).
+ * Step a scaglioni per il lotto: salti pratici per trading reale.
+ * <=0.01 → 0.01 (nano, min 0.01) · <=0.1 → 0.05 (micro) · <=1 → 0.1 (mini) · >1 → 0.5 (std).
  */
 function lotStep(v: number): number {
-  if (v <= 0.009) return 0.001;
-  if (v <= 0.09) return 0.01;
-  if (v <= 0.9) return 0.1;
+  if (v <= 0.01) return 0.01;
+  if (v <= 0.1) return 0.05;
+  if (v <= 1) return 0.1;
   return 0.5;
 }
 
 /**
- * Preset lotto adattivi al capitale. Segue una regola di buon senso: max
- * ~1 lotto standard ogni 50k di equity (risk-aware, ~2% per trade con SL 100 pip).
- * Garantisce che per conti piccoli il primo preset sia 0.001 (nano).
+ * Preset lotto adattivi al capitale. Salti pratici: 0.01, 0.05, 0.1, 0.5, 1, 2, 5...
  */
 function getLotPresets(capital: number): number[] {
-  if (capital < 500) return [0.001, 0.005, 0.01, 0.02, 0.05, 0.1];
-  if (capital < 2500) return [0.01, 0.02, 0.05, 0.1, 0.2, 0.5];
-  if (capital < 10000) return [0.05, 0.1, 0.25, 0.5, 1, 2];
-  if (capital < 50000) return [0.1, 0.5, 1, 2, 5, 10];
-  return [0.5, 1, 2, 5, 10, 20];
+  if (capital < 1000) return [0.01, 0.05, 0.1, 0.25, 0.5];
+  if (capital < 5000) return [0.05, 0.1, 0.25, 0.5, 1, 2];
+  if (capital < 25000) return [0.1, 0.5, 1, 2, 5, 10];
+  if (capital < 100000) return [0.5, 1, 2, 5, 10, 20];
+  return [1, 2, 5, 10, 20, 50];
 }
 
 function formatLot(v: number): string {
