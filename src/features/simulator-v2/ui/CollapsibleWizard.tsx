@@ -281,6 +281,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     onSelect={handleCapitalChange}
                     format={formatCapital}
                     onPresetSelect={handlePresetSelect}
+                    onSelectScroll={scrollIntoView}
                   />
                 </InputCard>
 
@@ -307,6 +308,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={lotSize}
                     onSelect={setLotSize}
                     format={formatLot}
+                    onSelectScroll={scrollIntoView}
                     onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
@@ -334,6 +336,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={tradesPerMonth}
                     onSelect={setTradesPerMonth}
                     format={v => String(v)}
+                    onSelectScroll={scrollIntoView}
                     onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
@@ -362,6 +365,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={exposureDaysPerMonth}
                     onSelect={setExposureDaysPerMonth}
                     format={v => `${v}gg`}
+                    onSelectScroll={scrollIntoView}
                     onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
@@ -763,15 +767,26 @@ type PresetChipsProps<T> = {
   onSelect: (v: T) => void;
   format: (v: T) => string;
   onPresetSelect?: (v: T, onSelect: (v: T) => void) => void;
+  /** Optional callback to scroll element into view when selected */
+  onSelectScroll?: (element: HTMLElement) => void;
 };
 
-function PresetChips<T>({ values, value, onSelect, format, onPresetSelect }: PresetChipsProps<T>) {
+function PresetChips<T>({ values, value, onSelect, format, onPresetSelect, onSelectScroll }: PresetChipsProps<T>) {
+  const buttonRefs = useRef<Map<T, HTMLButtonElement>>(new Map());
+
   const handleClick = (v: T) => {
     if (onPresetSelect) {
       onPresetSelect(v, onSelect);
     } else {
       onSelect(v);
     }
+    // Scroll into view after selection
+    setTimeout(() => {
+      const btn = buttonRefs.current.get(v);
+      if (btn) {
+        onSelectScroll?.(btn);
+      }
+    }, 50);
   };
 
   return (
@@ -783,6 +798,9 @@ function PresetChips<T>({ values, value, onSelect, format, onPresetSelect }: Pre
       {values.map(v => (
         <button
           key={String(v)}
+          ref={(el) => {
+            if (el) buttonRefs.current.set(v, el);
+          }}
           type="button"
           onClick={() => handleClick(v)}
           aria-pressed={value === v}
