@@ -286,7 +286,7 @@ export function ResultsDetail({
                 {' '}
                 <strong className="font-semibold text-foreground/80">non influenza il ranking</strong>
                 {' '}
-                né i costi calcolati, basati sui parametri pubblici del broker.
+                né i costi calcolati, basati sui parametri pubblici del broker e rilevazioni autonome.
               </p>
             </div>
           </div>
