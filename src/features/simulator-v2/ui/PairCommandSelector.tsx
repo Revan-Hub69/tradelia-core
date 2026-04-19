@@ -1,21 +1,28 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, Search, X } from 'lucide-react';
+import { Check, Search } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
-import { FOREX_PAIRS, type ForexPair } from '../data/forex-pairs';
+import { FOREX_PAIRS } from '../data/forex-pairs';
 import { CurrencyFlag } from './CurrencyFlag';
 
 type PairCommandSelectorProps = {
   value: string;
   onSelectAction: (symbol: string) => void;
   placeholder?: string;
+  /** Optional callback to scroll element into view when opened */
+  onOpenScrollAction?: (element: HTMLElement) => void;
 };
 
-export function PairCommandSelector({ value, onSelectAction, placeholder = "Cerca coppia..." }: PairCommandSelectorProps) {
+export function PairCommandSelector({
+  value,
+  onSelectAction,
+  placeholder = 'Seleziona coppia...',
+  onOpenScrollAction,
+}: PairCommandSelectorProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -30,10 +37,10 @@ export function PairCommandSelector({ value, onSelectAction, placeholder = "Cerc
   const filteredPairs = FOREX_PAIRS.filter(pair => {
     const q = query.toLowerCase();
     return (
-      pair.symbol.toLowerCase().includes(q) ||
-      pair.base.toLowerCase().includes(q) ||
-      pair.quote.toLowerCase().includes(q) ||
-      pair.name.toLowerCase().includes(q)
+      (pair.symbol.toLowerCase().includes(q) ||
+        pair.base.toLowerCase().includes(q) ||
+        pair.quote.toLowerCase().includes(q) ||
+        pair.name.toLowerCase().includes(q))
     );
   });
 
@@ -42,14 +49,21 @@ export function PairCommandSelector({ value, onSelectAction, placeholder = "Cerc
     setHighlightedIndex(0);
   }, [query]);
 
-  // Focus input when opened
+  // Focus input and scroll into view when opened
   useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-    } else {
+    if (!open) {
       setQuery('');
+      return;
     }
-  }, [open]);
+    const timer = setTimeout((): void => {
+      inputRef.current?.focus();
+      if (containerRef.current) {
+        onOpenScrollAction?.(containerRef.current);
+      }
+      return undefined;
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [open, onOpenScrollAction]);
 
   // Click outside to close
   useEffect(() => {
@@ -100,11 +114,6 @@ export function PairCommandSelector({ value, onSelectAction, placeholder = "Cerc
     setOpen(true);
   };
 
-  const handleClear = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setQuery('');
-    inputRef.current?.focus();
-  };
 
   return (
     <div ref={containerRef} className="relative w-full">

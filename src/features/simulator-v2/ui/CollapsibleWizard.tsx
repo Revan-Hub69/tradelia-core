@@ -246,7 +246,11 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   }}
                 />
                 {isForex && (
-                  <PairCommandSelector value={pairSymbol} onSelectAction={setPairSymbol} />
+                  <PairCommandSelector
+                    value={pairSymbol}
+                    onSelectAction={setPairSymbol}
+                    onOpenScrollAction={scrollIntoView}
+                  />
                 )}
               </motion.section>
 
