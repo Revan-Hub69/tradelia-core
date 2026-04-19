@@ -1,18 +1,20 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   Calculator,
   CalendarClock,
   ChevronUp,
   ChevronDown,
   Gauge,
+  Minus,
   Pencil,
+  Plus,
   Repeat,
   Wallet,
   X,
 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
@@ -90,17 +92,41 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
     onSelect(v);
   };
 
+  const capitalId = useId();
+  const lotId = useId();
+  const tradesId = useId();
+  const daysId = useId();
+
+  const prefersReduced = useReducedMotion();
+  const stagger = prefersReduced
+    ? { initial: false as const, animate: {}, transition: { duration: 0 } }
+    : {
+        initial: 'hidden' as const,
+        animate: 'visible' as const,
+        variants: {
+          hidden: { opacity: 0 },
+          visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
+        },
+      };
+  const itemVariants = prefersReduced
+    ? undefined
+    : {
+        hidden: { opacity: 0, y: 8 },
+        visible: { opacity: 1, y: 0, transition: TRANSITION.standard },
+      };
+
   return (
     <div className="flex h-full min-h-0 flex-col bg-card text-foreground">
-      {/* Close button - sempre visibile */}
-      <div className="flex items-center justify-end px-4 py-2 sm:px-5 flex-shrink-0">
+      {/* Header: titolo + close */}
+      <div className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
+        <h2 className="text-sm font-semibold text-foreground">Configura simulazione</h2>
         <button
           type="button"
           onClick={onCloseAction}
-          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          aria-label="Chiudi"
+          className="inline-flex size-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          aria-label="Chiudi simulatore"
         >
-          <X className="size-4" />
+          <X className="size-5" />
         </button>
       </div>
 
@@ -113,43 +139,46 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="border-b border-border/60 flex-1 min-h-0 overflow-y-auto"
+            className="border-b border-border flex-1 min-h-0 overflow-y-auto"
           >
-            <div className="space-y-4 p-4 sm:p-5">
-              {/* Asset Switcher */}
-              <div className="flex items-center gap-3">
-                <span className="inline-flex size-1.5 shrink-0 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary))]" />
-                <div className="min-w-0 flex-1">
-                  <AssetSwitcher
-                    value={assetId}
-                    onSelectAction={() => {
-                      // Per ora solo Forex è attivo
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Coppia (solo forex) */}
-              {isForex && (
-                <div className="rounded-xl border border-border/60 bg-popover/40 p-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      Coppia
-                    </span>
-                    <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
+            <motion.div
+              {...stagger}
+              className="space-y-6 p-4 sm:p-5 lg:p-6"
+            >
+              {/* Gruppo: Strumento */}
+              <motion.section variants={itemVariants} aria-labelledby="group-instrument" className="space-y-3">
+                <h3 id="group-instrument" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Strumento</h3>
+                <AssetSwitcher
+                  value={assetId}
+                  onSelectAction={() => {
+                    // Per ora solo Forex è attivo
+                  }}
+                />
+                {isForex && (
+                  <div className="rounded-xl border border-border bg-muted/40 p-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Coppia
+                      </span>
+                      <PairChip value={pairSymbol} onSelectAction={setPairSymbol} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </motion.section>
 
-              {/* Parametri - grid layout per desktop */}
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {/* Gruppo: Parametri */}
+              <motion.section variants={itemVariants} aria-labelledby="group-params" className="space-y-3">
+                <h3 id="group-params" className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Parametri</h3>
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
                 <InputCard
                   icon={Wallet}
                   accent="emerald"
                   label="Dimensione account"
                   hint="Il capitale del tuo conto trading"
+                  htmlFor={capitalId}
                 >
                   <EditableAmount
+                    id={capitalId}
                     prefix="€"
                     value={capital}
                     onChange={setCapital}
@@ -171,8 +200,10 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   accent="teal"
                   label="Dimensione posizione"
                   hint={`Lotti per trade · ${formatLotLabel(lotSize)}`}
+                  htmlFor={lotId}
                 >
                   <EditableAmount
+                    id={lotId}
                     suffix="lot"
                     value={lotSize}
                     onChange={setLotSize}
@@ -194,8 +225,10 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   accent="emerald"
                   label="Trade al mese"
                   hint="Frequenza operativa media"
+                  htmlFor={tradesId}
                 >
                   <EditableAmount
+                    id={tradesId}
                     suffix="/mese"
                     value={tradesPerMonth}
                     onChange={setTradesPerMonth}
@@ -217,9 +250,11 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   icon={CalendarClock}
                   accent="teal"
                   label="Esposizione overnight"
-                  hint="Giorni al mese con posizione aperta al rollover · 0 = solo intraday"
+                  hint="Giorni/mese con posizione aperta al rollover"
+                  htmlFor={daysId}
                 >
                   <EditableAmount
+                    id={daysId}
                     suffix="gg/mese"
                     value={exposureDaysPerMonth}
                     onChange={setExposureDaysPerMonth}
@@ -236,8 +271,9 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
-              </div>
-            </div>
+                </div>
+              </motion.section>
+            </motion.div>
           </motion.div>
         ) : (
           <motion.div
@@ -248,16 +284,19 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             transition={TRANSITION.standard}
             className="flex-shrink-0"
           >
-            <div className="border-b border-border/60 bg-muted/30 px-4 py-2.5 sm:px-5">
+            <div className="border-b border-border bg-muted/40 px-4 py-2.5 sm:px-5">
               <button
                 type="button"
                 onClick={handleExpand}
                 className="flex w-full items-center justify-between gap-2 text-left transition-colors hover:bg-muted/50 rounded-lg px-2 py-1.5"
               >
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs tabular-nums">
                   <div className="flex items-center gap-1.5">
                     <Wallet className="size-3.5 text-muted-foreground" />
-                    <span className="font-semibold text-foreground">{formatCapital(capital)}€</span>
+                    <span className="font-semibold text-foreground">
+                      {formatCapital(capital)}
+                      €
+                    </span>
                   </div>
                   <span className="text-muted-foreground/40">·</span>
                   <div className="flex items-center gap-1.5">
@@ -267,12 +306,18 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                   <span className="text-muted-foreground/40">·</span>
                   <div className="flex items-center gap-1.5">
                     <Repeat className="size-3.5 text-muted-foreground" />
-                    <span className="font-semibold text-foreground">{tradesPerMonth}/m</span>
+                    <span className="font-semibold text-foreground">
+                      {tradesPerMonth}
+                      /m
+                    </span>
                   </div>
                   <span className="text-muted-foreground/40">·</span>
                   <div className="flex items-center gap-1.5">
                     <CalendarClock className="size-3.5 text-muted-foreground" />
-                    <span className="font-semibold text-foreground">{exposureDaysPerMonth}gg</span>
+                    <span className="font-semibold text-foreground">
+                      {exposureDaysPerMonth}
+                      gg
+                    </span>
                   </div>
                   {isForex && (
                     <>
@@ -366,7 +411,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={TRANSITION.standard}
-            className="border-t border-border/60 bg-card/80 p-4 backdrop-blur-sm flex-shrink-0"
+            className="border-t border-border bg-card/95 p-4 backdrop-blur-md flex-shrink-0 shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.15)]"
           >
             <motion.button
               type="button"
@@ -402,15 +447,16 @@ type InputCardProps = {
   label: string;
   hint: string;
   children: React.ReactNode;
+  htmlFor?: string;
 };
 
-function InputCard({ icon: Icon, accent, label, hint, children }: InputCardProps) {
+function InputCard({ icon: Icon, accent, label, hint, children, htmlFor }: InputCardProps) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card/80 p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-card/90">
-      <div className="mb-3 flex items-center gap-2.5">
+    <div className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md">
+      <label htmlFor={htmlFor} className="mb-3 flex cursor-pointer items-center gap-2.5">
         <div
           className={cn(
-            'flex size-8 items-center justify-center rounded-lg transition-colors',
+            'flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors',
             accent === 'emerald' && 'bg-primary/15 text-primary dark:bg-primary/20',
             accent === 'teal' && 'bg-accent/15 text-accent dark:bg-accent/20',
           )}
@@ -418,16 +464,17 @@ function InputCard({ icon: Icon, accent, label, hint, children }: InputCardProps
           <Icon className="size-4" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground sm:text-xs">{label}</p>
-          <p className="truncate text-xs text-muted-foreground sm:text-[11px]">{hint}</p>
+          <p className="text-sm font-semibold text-foreground">{label}</p>
+          <p className="truncate text-xs text-muted-foreground">{hint}</p>
         </div>
-      </div>
+      </label>
       {children}
     </div>
   );
 }
 
 type EditableAmountProps = {
+  id?: string;
   value: number;
   onChange: (v: number) => void;
   prefix?: string;
@@ -439,41 +486,83 @@ type EditableAmountProps = {
 };
 
 function EditableAmount({
+  id,
   value,
   onChange,
   prefix,
   suffix,
   min,
   max,
-  step,
+  step = 1,
   placeholder,
 }: EditableAmountProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const hapticTick = () => {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(8);
+  };
+
+  const clamp = (v: number) => {
+    let n = v;
+    if (typeof min === 'number') n = Math.max(min, n);
+    if (typeof max === 'number') n = Math.min(max, n);
+    return n;
+  };
+
+  const decrement = () => {
+    hapticTick();
+    onChange(clamp(Number((value - step).toFixed(4))));
+  };
+  const increment = () => {
+    hapticTick();
+    onChange(clamp(Number((value + step).toFixed(4))));
+  };
+
   return (
-    <div className="group mb-3 flex items-baseline gap-2 rounded-sm border-b-2 border-border pb-1.5 transition-all focus-within:border-primary focus-within:bg-primary/5">
-      {prefix && (
-        <span className="text-xl font-semibold text-muted-foreground sm:text-lg">{prefix}</span>
-      )}
-      <input
-        ref={inputRef}
-        type="number"
-        value={value}
-        placeholder={placeholder}
-        onChange={(e) => {
-          const v = e.target.value;
-          onChange(v === '' ? 0 : Number(v));
-        }}
-        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tabular-nums tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0 sm:text-xl"
-        min={min}
-        max={max}
-        step={step}
-        inputMode="decimal"
-        style={{ fontSize: 'clamp(1.25rem, 4vw, 1.5rem)' }}
-      />
-      {suffix && (
-        <span className="text-xs font-medium text-muted-foreground sm:text-[11px]">{suffix}</span>
-      )}
+    <div className="mb-3 flex items-stretch gap-2">
+      <button
+        type="button"
+        onClick={decrement}
+        disabled={typeof min === 'number' && value <= min}
+        aria-label="Diminuisci"
+        className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:hover:bg-background disabled:hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      >
+        <Minus className="size-4" />
+      </button>
+      <div className="group flex min-w-0 flex-1 items-baseline gap-2 rounded-lg border border-border bg-background px-3 py-2 transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30">
+        {prefix && (
+          <span className="shrink-0 text-lg font-semibold text-muted-foreground">{prefix}</span>
+        )}
+        <input
+          id={id}
+          ref={inputRef}
+          type="number"
+          value={value === 0 ? '' : value}
+          placeholder={placeholder}
+          onChange={(e) => {
+            const v = e.target.value;
+            onChange(v === '' ? 0 : Number(v));
+          }}
+          className="min-w-0 flex-1 border-0 bg-transparent text-xl font-bold tabular-nums tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          min={min}
+          max={max}
+          step={step}
+          inputMode="decimal"
+          aria-label={placeholder}
+        />
+        {suffix && (
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">{suffix}</span>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={increment}
+        disabled={typeof max === 'number' && value >= max}
+        aria-label="Aumenta"
+        className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40 disabled:hover:bg-background disabled:hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      >
+        <Plus className="size-4" />
+      </button>
     </div>
   );
 }
@@ -496,18 +585,23 @@ function PresetChips<T>({ values, value, onSelect, format, onPresetSelect }: Pre
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div
+      role="group"
+      aria-label="Valori preimpostati"
+      className="scrollbar-none -mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible"
+    >
       {values.map(v => (
         <button
           key={String(v)}
           type="button"
           onClick={() => handleClick(v)}
+          aria-pressed={value === v}
           className={cn(
-            'min-h-[44px] rounded-lg px-3 py-2 text-sm font-medium transition-all sm:px-4 sm:py-2.5',
+            'inline-flex min-h-[44px] shrink-0 snap-start items-center justify-center rounded-lg px-4 py-2 text-sm font-medium tabular-nums transition-all',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
             value === v
               ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
-              : 'border border-border/60 bg-card/80 text-muted-foreground hover:border-primary/50 hover:bg-card hover:text-foreground dark:bg-card/90 dark:hover:bg-card/95',
+              : 'border border-border bg-background text-foreground hover:border-primary/50 hover:bg-muted',
           )}
         >
           {format(v)}
