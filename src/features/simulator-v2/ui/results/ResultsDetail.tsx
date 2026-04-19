@@ -275,13 +275,13 @@ export function ResultsDetail({
 
         {/* Affiliate disclosure — trasparenza prima della CTA */}
         {isAffiliate && (
-          <div className="flex items-start gap-2.5 rounded-xl border border-border/40 bg-muted/30 p-3">
-            <Handshake className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+          <div className="flex items-start gap-2.5 rounded-xl border border-border/40 bg-muted/30 p-3.5">
+            <Handshake className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <div className="flex-1">
-              <p className="text-[11px] font-semibold text-foreground">
+              <p className="text-sm font-semibold text-foreground">
                 Partner Tradelia
               </p>
-              <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                 Potremmo ricevere una commissione se apri un conto tramite questo link. Questo
                 {' '}
                 <strong className="font-semibold text-foreground/80">non influenza il ranking</strong>
@@ -303,11 +303,11 @@ export function ResultsDetail({
         <div className="space-y-2.5 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-5">
           {/* ESMA/CONSOB disclaimer — testo integrale obbligatorio per ogni broker CFD.
               Riferimento: ESMA Decision (EU) 2018/796 e orientamenti CONSOB.
-              Font ridotto ma sufficientemente leggibile (min 10px), contrasto amber su card. */}
+              Font standard del sito (text-xs = 12px), leggibilità WCAG AA. */}
           {esmaLossRatePct !== undefined && (
-            <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-2">
-              <ShieldAlert className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-500" />
-              <p className="text-[10px] leading-[1.45] text-amber-900 dark:text-amber-200">
+            <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5">
+              <ShieldAlert className="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-500" />
+              <p className="text-xs leading-relaxed text-amber-900 dark:text-amber-200">
                 I CFD sono strumenti complessi che presentano un elevato rischio di perdere rapidamente denaro a causa della leva finanziaria.
                 {' '}
                 <strong className="font-bold">
