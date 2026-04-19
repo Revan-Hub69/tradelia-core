@@ -75,7 +75,7 @@ function BottomSheetContent({ isOpen, onClose, children }: BottomSheetProps) {
               'pb-[env(safe-area-inset-bottom)]',
               'flex flex-col',
             )}
-            style={{ height: 'auto', maxHeight: 'calc(100dvh - env(safe-area-inset-bottom))' }}
+            style={{ height: '92dvh' }}
           >
             {/* Handle */}
             <div className="flex justify-center pb-1 pt-3 shrink-0">

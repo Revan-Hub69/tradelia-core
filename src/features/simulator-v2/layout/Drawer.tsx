@@ -54,7 +54,7 @@ function DrawerContent({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            style={{ width, maxHeight: '100dvh' }}
+            style={{ width, height: '100dvh' }}
             className={cn(
               'fixed top-0 right-0 z-[101]',
               'bg-card border-l border-border',
