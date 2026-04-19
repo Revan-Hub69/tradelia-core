@@ -42,7 +42,7 @@ export function ResultsSkeleton() {
           className="size-3 rounded-full border-2 border-primary border-t-transparent"
         />
         <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-          Analisi broker in corso…
+          Analisi conti in corso…
         </span>
       </div>
 

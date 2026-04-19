@@ -34,7 +34,7 @@ export function PairCommandSelector({
   const currentPair = FOREX_PAIRS.find(p => p.symbol === value);
 
   // Filter pairs based on query
-  const filteredPairs = FOREX_PAIRS.filter(pair => {
+  const filteredPairs = FOREX_PAIRS.filter((pair) => {
     const q = query.toLowerCase();
     return (
       (pair.symbol.toLowerCase().includes(q) ||
@@ -72,14 +72,18 @@ export function PairCommandSelector({
         setOpen(false);
       }
     };
-    if (!open) return undefined;
+    if (!open) {
+      return undefined;
+    }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [open]);
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!open) return;
+    if (!open) {
+      return;
+    }
 
     switch (e.key) {
       case 'ArrowDown':
@@ -113,7 +117,6 @@ export function PairCommandSelector({
     setOpen(true);
   };
 
-
   return (
     <div ref={containerRef} className="relative w-full">
       {/* Trigger - shows current selection */}
@@ -126,7 +129,7 @@ export function PairCommandSelector({
           open
             ? 'border-primary bg-primary/5 shadow-sm shadow-primary/10'
             : 'border-border bg-background hover:border-primary/40 hover:bg-muted/50',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2'
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         )}
         aria-expanded={open}
         aria-haspopup="listbox"
@@ -162,7 +165,7 @@ export function PairCommandSelector({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.15, ease: [0.2, 0, 0.2, 1] }}
-            className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-popover shadow-xl"
+            className="absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-popover shadow-xl"
             style={{ maxHeight: 'min(60vh, 320px)' }}
             onKeyDown={handleKeyDown}
             tabIndex={-1}
@@ -190,10 +193,10 @@ export function PairCommandSelector({
                         'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
                         highlighted && 'bg-accent',
                         selected && !highlighted && 'bg-primary/5',
-                        !highlighted && !selected && 'hover:bg-muted'
+                        !highlighted && !selected && 'hover:bg-muted',
                       )}
                     >
-                      <span className="flex items-center -space-x-1 shrink-0">
+                      <span className="flex shrink-0 items-center -space-x-1">
                         <CurrencyFlag code={pair.base} size="sm" />
                         <CurrencyFlag code={pair.quote} size="sm" />
                       </span>

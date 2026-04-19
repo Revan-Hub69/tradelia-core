@@ -67,7 +67,7 @@ export function ResultsView({
         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {eligible.length}
           {' '}
-          broker analizzati
+          {eligible.length === 1 ? 'conto analizzato' : 'conti analizzati'}
         </p>
       </motion.div>
 
@@ -89,7 +89,7 @@ export function ResultsView({
       {competitors.length > 0 && (
         <div className="space-y-2 pt-1">
           <p className="px-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Altri broker (
+            Altri conti (
             {competitors.length}
             )
           </p>

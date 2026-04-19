@@ -25,7 +25,7 @@ export function EmptyResults({ capital, minCapitalRequired, onEditAction }: Empt
       </div>
       <div>
         <h3 className="text-base font-semibold text-foreground">
-          Nessun broker compatibile
+          Nessun conto compatibile
         </h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Il tuo capitale di
