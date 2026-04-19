@@ -305,12 +305,12 @@ export function ResultsDetail({
               Riferimento: ESMA Decision (EU) 2018/796 e orientamenti CONSOB.
               Font standard del sito (text-xs = 12px), leggibilità WCAG AA. */}
           {esmaLossRatePct !== undefined && (
-            <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5">
-              <ShieldAlert className="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-500" />
-              <p className="text-xs leading-relaxed text-amber-900 dark:text-amber-200">
+            <div className="flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/30 px-3 py-2.5">
+              <ShieldAlert className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+              <p className="text-xs leading-relaxed text-muted-foreground">
                 I CFD sono strumenti complessi che presentano un elevato rischio di perdere rapidamente denaro a causa della leva finanziaria.
                 {' '}
-                <strong className="font-bold">
+                <strong className="font-semibold text-foreground">
                   Il
                   {' '}
                   <span className="tabular-nums">
