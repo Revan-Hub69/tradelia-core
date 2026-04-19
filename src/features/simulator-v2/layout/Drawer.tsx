@@ -54,15 +54,16 @@ function DrawerContent({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            style={{ width }}
+            style={{ width, maxHeight: '100dvh' }}
             className={cn(
-              'fixed top-0 right-0 h-full z-[101]',
+              'fixed top-0 right-0 z-[101]',
               'bg-card border-l border-border',
               'shadow-2xl shadow-black/50',
+              'pb-[env(safe-area-inset-bottom)]',
             )}
           >
             {/* Content — inner views provide their own close button */}
-            <div className="h-full overflow-hidden">
+            <div className="h-full overflow-hidden" style={{ maxHeight: 'calc(100dvh - env(safe-area-inset-bottom))' }}>
               {children}
             </div>
           </motion.div>

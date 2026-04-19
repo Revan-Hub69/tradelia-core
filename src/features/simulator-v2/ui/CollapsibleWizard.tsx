@@ -79,6 +79,17 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
 
   const formatCapital = (v: number) => (v >= 1000 ? `${v / 1000}k` : String(v));
 
+  const hapticFeedback = () => {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(10);
+    }
+  };
+
+  const handlePresetSelect = <T,>(v: T, onSelect: (v: T) => void) => {
+    hapticFeedback();
+    onSelect(v);
+  };
+
   return (
     <div className="flex h-full flex-col bg-card text-foreground">
       {/* Close button - sempre visibile */}
@@ -151,6 +162,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={capital}
                     onSelect={setCapital}
                     format={formatCapital}
+                    onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
 
@@ -173,6 +185,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={lotSize}
                     onSelect={setLotSize}
                     format={v => String(v)}
+                    onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
 
@@ -196,6 +209,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={tradesPerMonth}
                     onSelect={setTradesPerMonth}
                     format={v => String(v)}
+                    onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
 
@@ -219,6 +233,7 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
                     value={exposureDaysPerMonth}
                     onSelect={setExposureDaysPerMonth}
                     format={v => `${v}gg`}
+                    onPresetSelect={handlePresetSelect}
                   />
                 </InputCard>
               </div>
@@ -404,20 +419,20 @@ type InputCardProps = {
 
 function InputCard({ icon: Icon, accent, label, hint, children }: InputCardProps) {
   return (
-    <div className="rounded-xl border border-border/60 bg-popover/40 p-4">
+    <div className="rounded-xl border border-border/60 bg-card/80 p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-card/90">
       <div className="mb-3 flex items-center gap-2.5">
         <div
           className={cn(
-            'flex size-8 items-center justify-center rounded-lg',
-            accent === 'emerald' && 'bg-primary/10 text-primary',
-            accent === 'teal' && 'bg-accent/10 text-accent',
+            'flex size-8 items-center justify-center rounded-lg transition-colors',
+            accent === 'emerald' && 'bg-primary/15 text-primary dark:bg-primary/20',
+            accent === 'teal' && 'bg-accent/15 text-accent dark:bg-accent/20',
           )}
         >
           <Icon className="size-4" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold text-foreground">{label}</p>
-          <p className="truncate text-[11px] text-muted-foreground">{hint}</p>
+          <p className="text-sm font-semibold text-foreground sm:text-xs">{label}</p>
+          <p className="truncate text-xs text-muted-foreground sm:text-[11px]">{hint}</p>
         </div>
       </div>
       {children}
@@ -451,7 +466,7 @@ function EditableAmount({
   return (
     <div className="group mb-3 flex items-baseline gap-2 rounded-sm border-b-2 border-border pb-1.5 transition-all focus-within:border-primary focus-within:bg-primary/5">
       {prefix && (
-        <span className="text-xl font-semibold text-muted-foreground">{prefix}</span>
+        <span className="text-xl font-semibold text-muted-foreground sm:text-lg">{prefix}</span>
       )}
       <input
         ref={inputRef}
@@ -462,14 +477,15 @@ function EditableAmount({
           const v = e.target.value;
           onChange(v === '' ? 0 : Number(v));
         }}
-        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tabular-nums tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0"
+        className="min-w-0 flex-1 border-0 bg-transparent text-2xl font-bold tabular-nums tracking-tight text-foreground outline-none placeholder:text-base placeholder:font-medium placeholder:text-muted-foreground/60 focus:ring-0 sm:text-xl"
         min={min}
         max={max}
         step={step}
         inputMode="decimal"
+        style={{ fontSize: 'clamp(1.25rem, 4vw, 1.5rem)' }}
       />
       {suffix && (
-        <span className="text-xs font-medium text-muted-foreground">{suffix}</span>
+        <span className="text-xs font-medium text-muted-foreground sm:text-[11px]">{suffix}</span>
       )}
     </div>
   );
@@ -480,22 +496,31 @@ type PresetChipsProps<T> = {
   value: T;
   onSelect: (v: T) => void;
   format: (v: T) => string;
+  onPresetSelect?: (v: T, onSelect: (v: T) => void) => void;
 };
 
-function PresetChips<T>({ values, value, onSelect, format }: PresetChipsProps<T>) {
+function PresetChips<T>({ values, value, onSelect, format, onPresetSelect }: PresetChipsProps<T>) {
+  const handleClick = (v: T) => {
+    if (onPresetSelect) {
+      onPresetSelect(v, onSelect);
+    } else {
+      onSelect(v);
+    }
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
       {values.map(v => (
         <button
           key={String(v)}
           type="button"
-          onClick={() => onSelect(v)}
+          onClick={() => handleClick(v)}
           className={cn(
-            'rounded-lg px-3 py-1.5 text-xs font-medium transition-all sm:px-4 sm:py-2 sm:text-sm',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+            'min-h-[44px] rounded-lg px-3 py-2 text-sm font-medium transition-all sm:px-4 sm:py-2.5',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
             value === v
-              ? 'bg-primary text-primary-foreground shadow-sm'
-              : 'border border-border/60 bg-card/60 text-muted-foreground hover:border-primary/40 hover:text-foreground',
+              ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
+              : 'border border-border/60 bg-card/80 text-muted-foreground hover:border-primary/50 hover:bg-card hover:text-foreground dark:bg-card/90 dark:hover:bg-card/95',
           )}
         >
           {format(v)}
