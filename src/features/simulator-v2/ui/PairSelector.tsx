@@ -106,13 +106,10 @@ export function PairSelector({ value, onSelectAction, className }: PairSelectorP
                   <CurrencyFlag code={pair.quote} size="md" />
                 </div>
 
-                {/* Symbol + name */}
+                {/* Symbol */}
                 <div className="min-w-0 flex-1">
                   <p className="font-mono text-sm font-semibold tracking-tight text-foreground">
                     {pair.symbol}
-                  </p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {pair.name}
                   </p>
                 </div>
 

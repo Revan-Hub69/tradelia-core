@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/utils/Helpers';
 
@@ -25,6 +25,7 @@ type PairChipProps = {
 export function PairChip({ value, onSelectAction }: PairChipProps) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const pair: ForexPair | undefined = FOREX_PAIRS.find(p => p.symbol === value);
 
@@ -33,6 +34,13 @@ export function PairChip({ value, onSelectAction }: PairChipProps) {
     setOpen(false);
     triggerRef.current?.focus();
   };
+
+  // Scroll into view when opened
+  useEffect(() => {
+    if (open && contentRef.current) {
+      contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [open]);
 
   return (
     <div className="w-full">
@@ -77,7 +85,7 @@ export function PairChip({ value, onSelectAction }: PairChipProps) {
             transition={{ duration: 0.22, ease: [0.2, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="mt-3 rounded-xl border border-border/60 bg-popover/60 p-3 backdrop-blur-sm">
+            <div ref={contentRef} className="mt-3 max-h-[40vh] overflow-y-auto rounded-xl border border-border/60 bg-popover/60 p-3 backdrop-blur-sm">
               <PairSelector value={value} onSelectAction={handleSelect} />
             </div>
           </motion.div>

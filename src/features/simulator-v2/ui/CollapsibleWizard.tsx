@@ -88,9 +88,9 @@ export function CollapsibleWizard({ assetId, onCloseAction }: CollapsibleWizardP
   const [selectedBrokerId, setSelectedBrokerId] = useState<string | null>(null);
 
   const [pairSymbol, setPairSymbol] = useState<string>(DEFAULT_FOREX_PAIR.symbol);
-  const [capital, setCapital] = useState<number>(5000);
-  const [lotSize, setLotSize] = useState<number>(0.1);
-  const [tradesPerMonth, setTradesPerMonth] = useState<number>(20);
+  const [capital, setCapital] = useState<number>(0);
+  const [lotSize, setLotSize] = useState<number>(0);
+  const [tradesPerMonth, setTradesPerMonth] = useState<number>(0);
   const [exposureDaysPerMonth, setExposureDaysPerMonth] = useState<number>(0);
 
   /**
@@ -542,8 +542,20 @@ type InputCardProps = {
 };
 
 function InputCard({ icon: Icon, accent, label, hint, children, htmlFor, tooltip }: InputCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleClick = () => {
+    if (cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   return (
-    <div className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md">
+    <div
+      ref={cardRef}
+      onClick={handleClick}
+      className="rounded-xl border border-border bg-background/60 p-4 shadow-sm transition-all hover:border-border hover:shadow-md"
+    >
       <div className="mb-3 flex items-center gap-2.5">
         <div
           className={cn(
